@@ -29,7 +29,6 @@ class _OnboardingViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    print(state.onboardingSlide);
     return Container(
       color: Colors.transparent,
       margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -96,7 +95,7 @@ class _OnboardingViewState
                 } else {
                   await viewModel.setOnboardingValue(true);
                   Future.delayed(const Duration(seconds: 0), () async {
-                    await AutoRouter.of(context).pushNamed("/home");
+                    await AutoRouter.of(context).push(const HomeRoute());
                   });
                 }
               },

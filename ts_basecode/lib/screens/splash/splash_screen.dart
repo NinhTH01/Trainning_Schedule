@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
+import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/splash/splash_view_model.dart';
+import 'package:ts_basecode/utilities/app_text_styles.dart';
+import 'package:ts_basecode/utilities/text_constants.dart';
 
 final _provider = StateNotifierProvider.autoDispose(
   (ref) => SplashViewModel(),
@@ -36,14 +39,14 @@ class _SplashViewState extends BaseViewState<SplashScreen, SplashViewModel> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: 250,
+          Assets.images.icon.image(
             width: 250,
-            child: Image.asset('assets/images/icon.jpg'),
+            height: 250,
+            fit: BoxFit.contain,
           ),
           const Text(
-            "Training Schedule",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            TextConstants.appName,
+            style: AppTextStyles.appNameStyle,
           ),
           const SizedBox(
             height: 200,
@@ -63,9 +66,9 @@ class _SplashViewState extends BaseViewState<SplashScreen, SplashViewModel> {
     final onboarding = await SharedPreferencesManager.getOnboarding();
     Future.delayed(const Duration(seconds: 1), () async {
       if (onboarding) {
-        await AutoRouter.of(context).pushNamed("/home");
+        await AutoRouter.of(context).push(const HomeRoute());
       } else {
-        await AutoRouter.of(context).pushNamed("/onboarding");
+        await AutoRouter.of(context).push(const OnboardingRoute());
       }
     });
   }
