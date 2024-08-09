@@ -1,10 +1,18 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/src/consumer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
+import 'package:ts_basecode/providers/geolocator_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
+import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
+
+final _provider = StateNotifierProvider.autoDispose<MapViewModel, MapState>(
+    (ref) => MapViewModel(
+          ref: ref,
+          geolocatorManager: ref.watch(geolocatorProvider),
+        ));
 
 @RoutePage()
 class MapScreen extends BaseView {
@@ -15,6 +23,13 @@ class MapScreen extends BaseView {
 }
 
 class _MapViewState extends BaseViewState<MapScreen, MapViewModel> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    viewModel.initData();
+  }
+
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
 
@@ -59,5 +74,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel> {
 
   @override
   // TODO: implement viewModel
-  MapViewModel get viewModel => throw UnimplementedError();
+  MapViewModel get viewModel => ref.read(_provider.notifier);
+
+  MapState get state => ref.watch(_provider);
 }
