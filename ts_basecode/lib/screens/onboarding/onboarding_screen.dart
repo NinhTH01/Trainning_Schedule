@@ -3,16 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
-import 'package:ts_basecode/providers/secure_storage_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_view_model.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<OnboardingViewModel, OnboardingState>(
-  (ref) => OnboardingViewModel(
-      secureStorageManager: ref.watch(secureStorageProvider)),
-);
+        (ref) => OnboardingViewModel());
 
 /// Screen code: A_01
 @RoutePage()
@@ -31,13 +28,8 @@ class _OnboardingViewState
   OnboardingState get state => ref.watch(_provider);
 
   @override
-  void initState() {
-    super.initState();
-    viewModel.initData();
-  }
-
-  @override
   Widget buildBody(BuildContext context) {
+    print(state.onboardingSlide);
     return Container(
       color: Colors.transparent,
       margin: const EdgeInsets.symmetric(horizontal: 15),

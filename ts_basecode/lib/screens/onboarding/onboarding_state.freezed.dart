@@ -105,7 +105,7 @@ class __$$OnboardingStateImplCopyWithImpl<$Res>
 
 class _$OnboardingStateImpl extends _OnboardingState {
   const _$OnboardingStateImpl(
-      {final List<OnboardingSlide> onboardingSlide = const [],
+      {final List<OnboardingSlide> onboardingSlide = defaultOnboardingSlideList,
       this.currentPageIndex = 0})
       : _onboardingSlide = onboardingSlide,
         super._();
