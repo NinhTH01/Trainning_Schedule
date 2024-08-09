@@ -15,10 +15,34 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
-    HomeRoute.name: (routeData) {
+    CalendarRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const HomeScreen(),
+        child: const CalendarScreen(),
+      );
+    },
+    CalendarTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CalendarTabPage(),
+      );
+    },
+    MainRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MainScreen(),
+      );
+    },
+    MapRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MapScreen(),
+      );
+    },
+    MapTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MapTabPage(),
       );
     },
     OnboardingRoute.name: (routeData) {
@@ -33,19 +57,87 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const SplashScreen(),
       );
     },
+    WeatherRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const WeatherScreen(),
+      );
+    },
+    WeatherTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const WeatherTabPage(),
+      );
+    },
   };
 }
 
 /// generated route for
-/// [HomeScreen]
-class HomeRoute extends PageRouteInfo<void> {
-  const HomeRoute({List<PageRouteInfo>? children})
+/// [CalendarScreen]
+class CalendarRoute extends PageRouteInfo<void> {
+  const CalendarRoute({List<PageRouteInfo>? children})
       : super(
-          HomeRoute.name,
+          CalendarRoute.name,
           initialChildren: children,
         );
 
-  static const String name = 'HomeRoute';
+  static const String name = 'CalendarRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CalendarTabPage]
+class CalendarTabRoute extends PageRouteInfo<void> {
+  const CalendarTabRoute({List<PageRouteInfo>? children})
+      : super(
+          CalendarTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MainScreen]
+class MainRoute extends PageRouteInfo<void> {
+  const MainRoute({List<PageRouteInfo>? children})
+      : super(
+          MainRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MainRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MapScreen]
+class MapRoute extends PageRouteInfo<void> {
+  const MapRoute({List<PageRouteInfo>? children})
+      : super(
+          MapRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MapRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MapTabPage]
+class MapTabRoute extends PageRouteInfo<void> {
+  const MapTabRoute({List<PageRouteInfo>? children})
+      : super(
+          MapTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MapTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -74,6 +166,34 @@ class SplashRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'SplashRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [WeatherScreen]
+class WeatherRoute extends PageRouteInfo<void> {
+  const WeatherRoute({List<PageRouteInfo>? children})
+      : super(
+          WeatherRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'WeatherRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [WeatherTabPage]
+class WeatherTabRoute extends PageRouteInfo<void> {
+  const WeatherTabRoute({List<PageRouteInfo>? children})
+      : super(
+          WeatherTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'WeatherTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
