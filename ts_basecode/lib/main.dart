@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
 import 'package:ts_basecode/providers/app_router_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final onboarding = await SharedPreferencesManager.getOnboarding();
+
   runApp(
     ProviderScope(
       child: MaterialApp(
-        home: MyApp(
-          onboarding: onboarding,
-        ),
+        home: MyApp(),
       ),
     ),
   );
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  final bool onboarding;
-
-  const MyApp({super.key, required this.onboarding});
+  const MyApp({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AppState();

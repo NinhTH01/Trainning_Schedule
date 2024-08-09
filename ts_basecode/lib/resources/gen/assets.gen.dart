@@ -28,6 +28,9 @@ class $AssetsFontsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/icon.jpg
+  AssetGenImage get icon => const AssetGenImage('assets/images/icon.jpg');
+
   /// File path: assets/images/onboarding1.png
   AssetGenImage get onboarding1 =>
       const AssetGenImage('assets/images/onboarding1.png');
@@ -41,7 +44,8 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/onboarding3.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [onboarding1, onboarding2, onboarding3];
+  List<AssetGenImage> get values =>
+      [icon, onboarding1, onboarding2, onboarding3];
 }
 
 class $AssetsSamplesGen {
