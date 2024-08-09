@@ -15,7 +15,7 @@ class AppRouter extends _$AppRouter {
   List<AutoRoute> get routes => [
         AutoRoute(page: SplashRoute.page, path: "/", initial: true),
         AutoRoute(page: OnboardingRoute.page, path: "/onboarding"),
-        AutoRoute(page: MainRoute.page, path: "/main", children: [
+        AutoRoute(page: MainRoute.page, path: "/home", children: [
           AutoRoute(
             page: CalendarTabRoute.page,
             path: 'calendarTab',
