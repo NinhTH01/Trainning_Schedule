@@ -6,7 +6,7 @@ import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_view_model.dart';
-import 'package:ts_basecode/utilities/text_constants.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<OnboardingViewModel, OnboardingState>(
