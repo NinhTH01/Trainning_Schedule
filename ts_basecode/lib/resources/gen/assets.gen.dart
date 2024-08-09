@@ -48,22 +48,11 @@ class $AssetsImagesGen {
       [icon, onboarding1, onboarding2, onboarding3];
 }
 
-class $AssetsSamplesGen {
-  const $AssetsSamplesGen();
-
-  /// File path: assets/samples/onboarding_slide.json
-  String get onboardingSlide => 'assets/samples/onboarding_slide.json';
-
-  /// List of all assets
-  List<String> get values => [onboardingSlide];
-}
-
 class Assets {
   Assets._();
 
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
-  static const $AssetsSamplesGen samples = $AssetsSamplesGen();
 }
 
 class AssetGenImage {
