@@ -23,7 +23,16 @@ class TextConstants {
   static const title_3 = 'Map Your Route';
 
   /// Map Screen
-  static const mapStop = 'Stop';
   static const mapStart = 'Start';
+  static const mapStop = 'Stop';
   static const close = 'Close';
+
+  /// Calendar Screen
+  static const weekday_1 = 'Mon';
+  static const weekday_2 = 'Tue';
+  static const weekday_3 = 'Wed';
+  static const weekday_4 = 'Thu';
+  static const weekday_5 = 'Fri';
+  static const weekday_6 = 'Sat';
+  static const weekday_7 = 'Sun';
 }

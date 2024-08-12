@@ -8,6 +8,7 @@ import 'package:ts_basecode/providers/local_notification_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final mapProvider =
@@ -103,12 +104,10 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               viewModel.toggleRunning(showFinishDialog);
             },
             child: Text(
-              state.isRunning ? TextConstants.mapStop : TextConstants.mapStart,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+                state.isRunning
+                    ? TextConstants.mapStop
+                    : TextConstants.mapStart,
+                style: AppTextStyles.startButtonStyle),
           ),
         ),
       ],

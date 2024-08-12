@@ -1,13 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:ts_basecode/models/storage/event/event.dart';
 
 class SecureStorageManager {
   SecureStorageManager(this._storage);
 
   final FlutterSecureStorage _storage;
 
-  static const _onboarding = 'onboarding';
+  static const _event = 'event';
 
   Future<dynamic> _read({
     required String key,
@@ -28,17 +29,17 @@ class SecureStorageManager {
     await _storage.write(key: key, value: value);
   }
 
-  Future<void> writeOnboarding(bool onboarding) async {
+  Future<void> writeEventList(List<Event> eventList) async {
     try {
       await _write(
-        key: _onboarding,
-        value: json.encode(onboarding),
+        key: _event,
+        value: json.encode(eventList),
       );
     } catch (_) {}
   }
 
-  Future<bool?> readOnboarding() async {
-    final result = await _read(key: _onboarding);
+  Future<List<Event>?> readEventList() async {
+    final result = await _read(key: _event);
     if (result == null) {
       return null;
     } else {

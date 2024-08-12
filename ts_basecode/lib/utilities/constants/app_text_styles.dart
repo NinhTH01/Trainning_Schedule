@@ -28,4 +28,27 @@ class AppTextStyles {
   /// Splash Screen
   static const appNameStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 24);
+
+  /// Map Screen
+  static const startButtonStyle = TextStyle(
+    color: ColorName.black,
+    fontWeight: FontWeight.w500,
+  );
+
+  /// Calendar Screen
+  static const calendarTitleCurrentDateStyle =
+      TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+
+  static const calendarWeekStyle =
+      TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0);
+
+  static const isTodayContainerStyle =
+      TextStyle(fontWeight: FontWeight.w500, color: ColorName.white);
+
+  static const notTodayContainerStyle = TextStyle(fontWeight: FontWeight.w500);
+
+  static const otherMonthContainerStyle = TextStyle(
+    fontWeight: FontWeight.w500,
+    color: ColorName.greyFF757575,
+  );
 }
