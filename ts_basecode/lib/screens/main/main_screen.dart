@@ -28,8 +28,8 @@ class _HomeViewState extends BaseViewState<MainScreen, MainViewModel> {
     return AutoTabsScaffold(
       routes: const [
         CalendarTabRoute(),
-        MapRoute(),
-        WeatherRoute(),
+        MapTabRoute(),
+        WeatherTabRoute(),
       ],
       resizeToAvoidBottomInset: true,
       bottomNavigationBuilder: (context, tabsRouter) {

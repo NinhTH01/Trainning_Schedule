@@ -66,7 +66,7 @@ class _SplashViewState extends BaseViewState<SplashScreen, SplashViewModel> {
     final onboarding = await SharedPreferencesManager.getOnboarding();
     Future.delayed(const Duration(seconds: 1), () async {
       if (onboarding) {
-        await AutoRouter.of(context).push(const HomeRoute());
+        await AutoRouter.of(context).push(const MainRoute());
       } else {
         await AutoRouter.of(context).push(const OnboardingRoute());
       }

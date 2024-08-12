@@ -41,9 +41,6 @@ class TabBarItem extends ConsumerWidget {
               mainTab.getLabel(context),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              // style: isActive
-              //     ? AppTextStyles.bottomBarItemOn
-              //     : AppTextStyles.bottomBarItem,
             ),
           ],
         ),
