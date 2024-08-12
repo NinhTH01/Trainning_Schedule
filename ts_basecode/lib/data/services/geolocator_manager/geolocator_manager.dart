@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 
 class GeolocatorManager {
@@ -38,6 +40,19 @@ class GeolocatorManager {
     try {
       await checkPermission();
       return Geolocator.getCurrentPosition();
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  Future<Stream<Position>> getActiveCurrentLocationStream() async {
+    try {
+      await checkPermission();
+      const LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      );
+      return Geolocator.getPositionStream(locationSettings: locationSettings);
     } catch (e) {
       return Future.error(e);
     }

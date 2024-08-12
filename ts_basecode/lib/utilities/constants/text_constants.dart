@@ -9,4 +9,9 @@ class TextConstants {
   /// Onboarding Screen
   static const next = 'Next';
   static const started = 'Get started!';
+
+  /// Map
+  static const mapStart = 'Start';
+  static const mapStop = 'Stop';
+  static const close = 'Close';
 }
