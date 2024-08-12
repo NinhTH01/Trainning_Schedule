@@ -46,6 +46,9 @@ class ColorName {
   /// Color: #FFF44336
   static const Color red = Color(0xFFF44336);
 
+  /// Color: #00000000
+  static const Color transparent = Color(0x00000000);
+
   /// Color: #FFFFFF
   static const Color white = Color(0xFFFFFFFF);
 }

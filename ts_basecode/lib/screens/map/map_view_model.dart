@@ -10,6 +10,8 @@ import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
+import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
+import 'package:ts_basecode/models/storage/event/event.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/models/marker_type.dart';
@@ -93,6 +95,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     final isRunning = state.isRunning;
 
     if (isRunning) {
+      _addEventToDatabase();
       await _takeScreenshot(onScreenshotCaptured, state.totalDistance);
 
       state = state.copyWith(
@@ -109,6 +112,18 @@ class MapViewModel extends BaseViewModel<MapState> {
           LatLng(currentLocation.latitude, currentLocation.longitude));
     }
     state = state.copyWith(isRunning: !state.isRunning);
+  }
+
+  static Future<void> _addEventToDatabase() async {
+    var event = Event(
+      createdTime: DateTime.now(),
+      distance: state.totalDistance,
+      description: 'You have run ${distance.toStringAsFixed(2)} meters.',
+    );
+
+    final eventsDatabase = EventsDatabase();
+
+    await eventsDatabase.insert(event);
   }
 
   void _showNotification() {

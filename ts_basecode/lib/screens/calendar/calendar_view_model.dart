@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
+import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/models/storage/event_date_info/event_date_info.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
 
@@ -13,6 +14,10 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   Future<void> onInitData() async {
     state = state.copyWith(currentDate: DateTime.now());
     getThisMonthDateList();
+
+    final eventsDatabase = EventsDatabase();
+    var list = await eventsDatabase.getList();
+    print(list);
   }
 
   void changeCurrentDateToNextMonth() {
