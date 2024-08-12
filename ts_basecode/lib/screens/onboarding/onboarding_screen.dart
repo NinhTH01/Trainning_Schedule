@@ -96,7 +96,7 @@ class _OnboardingViewState
                 } else {
                   await viewModel.setOnboardingValue(true);
                   Future.delayed(const Duration(seconds: 0), () async {
-                    await AutoRouter.of(context).push(const HomeRoute());
+                    await AutoRouter.of(context).push(const MainRoute());
                   });
                 }
               },
