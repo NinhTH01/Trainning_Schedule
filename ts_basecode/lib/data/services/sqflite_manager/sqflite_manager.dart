@@ -76,7 +76,6 @@ class SqfliteManager {
     const orderBy = '${EventFields.time} ASC';
     // Query the table for all the dogs.
     final result = await db.query(tableEvents, orderBy: orderBy);
-
     // Convert the list of each dog's fields into a list of `Dog` objects.
     return result.map(Event.fromJson).toList();
   }
@@ -90,13 +89,12 @@ class SqfliteManager {
     // const orderBy = '${EventFields.time} ${orderBy}';
 
     var startDate = DateTime(date.year, date.month, date.day);
-    var endDate = DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
+    var endDate = DateTime(date.year, date.month, date.day + 1);
 
     // Format the date range
     var formattedStartDate =
         DateFormat('yyyy-MM-dd HH:mm:ss').format(startDate);
     var formattedEndDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(endDate);
-
     // Query the table for all the dogs.
     final result = await db.query(
       tableEvents,

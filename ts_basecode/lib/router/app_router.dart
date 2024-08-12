@@ -1,10 +1,13 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:ts_basecode/models/storage/event_date_info/event_date_info.dart';
 import 'package:ts_basecode/screens/calendar/calendar_screen.dart';
 import 'package:ts_basecode/screens/main/main_screen.dart';
 import 'package:ts_basecode/screens/map/map_screen.dart';
 import 'package:ts_basecode/screens/splash/splash_screen.dart';
 import 'package:ts_basecode/screens/weather/weather_screen.dart';
 
+import '../screens/calendar_date_event_list/calendar_date_event_list_screen.dart';
 import '../screens/onboarding/onboarding_screen.dart';
 
 part 'app_router.gr.dart';
@@ -20,11 +23,9 @@ class AppRouter extends _$AppRouter {
             page: CalendarTabRoute.page,
             path: 'calendarTab',
             children: [
+              AutoRoute(page: CalendarRoute.page, path: ''),
               AutoRoute(
-                page: CalendarRoute.page,
-                path: '',
-              ),
-              // inspection child page define here
+                  page: CalendarDateEventListRoute.page, path: 'dateEventList')
             ],
           ),
           AutoRoute(

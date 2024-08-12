@@ -51,4 +51,10 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     color: ColorName.greyFF757575,
   );
+
+  /// Calendar Date Event List Screen
+  static const itemTime =
+      TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold);
+  static const itemDescription =
+      TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500);
 }

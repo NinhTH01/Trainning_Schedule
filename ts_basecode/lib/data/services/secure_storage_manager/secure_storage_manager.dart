@@ -16,12 +16,6 @@ class SecureStorageManager {
     return _storage.read(key: key);
   }
 
-  // Future<void> _delete({
-  //   required String key,
-  // }) async {
-  //   await _storage.delete(key: key);
-  // }
-
   Future<void> _write({
     required String key,
     required String? value,

@@ -15,6 +15,16 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    CalendarDateEventListRoute.name: (routeData) {
+      final args = routeData.argsAs<CalendarDateEventListRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CalendarDateEventListScreen(
+          key: args.key,
+          calendarDate: args.calendarDate,
+        ),
+      );
+    },
     CalendarRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -70,6 +80,45 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [CalendarDateEventListScreen]
+class CalendarDateEventListRoute
+    extends PageRouteInfo<CalendarDateEventListRouteArgs> {
+  CalendarDateEventListRoute({
+    Key? key,
+    required EventDateInfo calendarDate,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CalendarDateEventListRoute.name,
+          args: CalendarDateEventListRouteArgs(
+            key: key,
+            calendarDate: calendarDate,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarDateEventListRoute';
+
+  static const PageInfo<CalendarDateEventListRouteArgs> page =
+      PageInfo<CalendarDateEventListRouteArgs>(name);
+}
+
+class CalendarDateEventListRouteArgs {
+  const CalendarDateEventListRouteArgs({
+    this.key,
+    required this.calendarDate,
+  });
+
+  final Key? key;
+
+  final EventDateInfo calendarDate;
+
+  @override
+  String toString() {
+    return 'CalendarDateEventListRouteArgs{key: $key, calendarDate: $calendarDate}';
+  }
 }
 
 /// generated route for

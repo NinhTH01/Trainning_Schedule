@@ -33,6 +33,12 @@ class _CalendarViewState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _onInitState());
+
+    context.tabsRouter.addListener(() {
+      if (context.tabsRouter.activeIndex == 0) {
+        viewModel.fetchEventDateList();
+      }
+    });
   }
 
   @override
@@ -52,41 +58,21 @@ class _CalendarViewState
         state.eventDateList.isNotEmpty
             ? Expanded(
                 child: calendarBody(
-                  dateList: state.eventDateList,
-                  currentDate: state.currentDate ?? DateTime.now(),
-                  changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
-                  changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
-                ),
+                    dateList: state.eventDateList,
+                    currentDate: state.currentDate ?? DateTime.now(),
+                    changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
+                    changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
+                    goToEventListScreen: (date) {
+                      context.router
+                          .push(CalendarDateEventListRoute(
+                        calendarDate: date,
+                      ))
+                          .then((_) {
+                        viewModel.fetchEventDateList();
+                      });
+                    }),
               )
             : const Center(child: CircularProgressIndicator()),
-        // dateList.isNotEmpty
-        //     ? Expanded(
-        //         child: buildCalendar(
-        //           dateList,
-        //           calendarState.currentDate,
-        //           () => ref
-        //               .read(calendarStateProvider.notifier)
-        //               .changeToNextMonth(),
-        //           () => ref
-        //               .read(calendarStateProvider.notifier)
-        //               .changeToLastMonth(),
-        //           (date) {
-        //             Navigator.push(
-        //               context,
-        //               MaterialPageRoute(
-        //                 builder: (context) => CalendarEventListView(date: date),
-        //               ),
-        //             ).then((_) {
-        //               ref
-        //                   .read(calendarStateProvider.notifier)
-        //                   .fetchAndUpdateDateList(
-        //                     calendarState.currentDate,
-        //                   );
-        //             });
-        //           },
-        //         ),
-        //       )
-        //     : const Center(child: CircularProgressIndicator()),
       ],
     );
   }

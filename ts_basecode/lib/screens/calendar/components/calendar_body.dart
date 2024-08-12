@@ -8,6 +8,7 @@ Widget calendarBody({
   required DateTime currentDate,
   required void Function() changeToNextMonth,
   required void Function() changeToLastMonth,
+  required void Function(EventDateInfo) goToEventListScreen,
 }
     // void Function(EventDateInfo) goToEventListView,
     ) {
@@ -32,7 +33,7 @@ Widget calendarBody({
         return buildDayInMonth(
           dateList[index],
           // () => goToEventListView(dateList[index]),
-          () {},
+          () => goToEventListScreen(dateList[index]),
           true,
         );
       }
