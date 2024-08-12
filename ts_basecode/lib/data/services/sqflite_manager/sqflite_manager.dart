@@ -3,11 +3,11 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:ts_basecode/models/storage/event/event.dart';
 
-class EventsDatabase {
-  static const _databaseName = 'events.db';
-  static const _databaseVersion = 4;
+class SqfliteManager {
+  final _databaseName = 'events.db';
+  final _databaseVersion = 4;
 
-  static Database? _database;
+  Database? _database;
 
   Future<Database> get database async {
     if (_database != null) {

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
+import 'package:ts_basecode/providers/sqflite_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
 import 'package:ts_basecode/screens/calendar/calendar_view_model.dart';
@@ -12,9 +13,11 @@ import 'components/calendar_body.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<CalendarViewModel, CalendarState>(
-        (ref) => CalendarViewModel(
-              ref: ref,
-            ));
+  (ref) => CalendarViewModel(
+    ref: ref,
+    sqfliteManager: ref.watch(sqfliteProvider),
+  ),
+);
 
 @RoutePage()
 class CalendarScreen extends BaseView {

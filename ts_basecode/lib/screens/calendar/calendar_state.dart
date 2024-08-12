@@ -8,6 +8,7 @@ class CalendarState with _$CalendarState {
   const factory CalendarState({
     @Default(null) DateTime? currentDate,
     @Default([]) List<EventDateInfo> eventDateList,
+    @Default([]) List<EventDateInfo> defaultDateList,
   }) = _CalendarState;
 
   const CalendarState._();

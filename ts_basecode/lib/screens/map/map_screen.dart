@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/providers/geolocator_provider.dart';
 import 'package:ts_basecode/providers/local_notification_provider.dart';
+import 'package:ts_basecode/providers/sqflite_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
@@ -16,6 +17,7 @@ final mapProvider =
           ref: ref,
           geolocatorManager: ref.watch(geolocatorProvider),
           localNotificationManager: ref.watch(localNotificationProvider),
+          sqfliteManager: ref.watch(sqfliteProvider),
         ));
 
 @RoutePage()

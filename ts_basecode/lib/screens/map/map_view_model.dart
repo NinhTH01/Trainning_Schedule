@@ -1,14 +1,10 @@
-import 'dart:async';
-import 'dart:math' as math;
-import 'dart:ui' as ui;
-
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
-import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
+import 'package:ts_basecode/data/services/geolocator_manager/geolocatorways_permission_exception.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/models/storage/event/event.dart';
@@ -22,6 +18,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     required this.ref,
     required this.geolocatorManager,
     required this.localNotificationManager,
+    required this.sqfliteManager,
   }) : super(const MapState());
 
   final Ref ref;
@@ -29,6 +26,8 @@ class MapViewModel extends BaseViewModel<MapState> {
   final GeolocatorManager geolocatorManager;
 
   final LocalNotificationManager localNotificationManager;
+
+  final SqfliteManager sqfliteManager;
 
   final double distanceThreshold = 100.0;
 
@@ -114,17 +113,14 @@ class MapViewModel extends BaseViewModel<MapState> {
     state = state.copyWith(isRunning: !state.isRunning);
   }
 
-  Future<void> _addEventToDatabase() async {
+  Future<void> _addEventToDatabase(double distance) async {
     var event = Event(
       createdTime: DateTime.now(),
-      distance: state.totalDistance,
-      description:
-          'You have run ${state.totalDistance.toStringAsFixed(2)} meters.',
+      distance: distance,
+      description: 'You have run ${distance.toStringAsFixed(2)} meters.',
     );
 
-    final eventsDatabase = EventsDatabase();
-
-    await eventsDatabase.insert(event);
+    await sqfliteManager.insert(event);
   }
 
   void _showNotification() {
