@@ -1,22 +1,20 @@
 import 'package:ts_basecode/models/api/responses/onboarding_slide.dart';
+import 'package:ts_basecode/utilities/text_constants.dart';
 
 const List<OnboardingSlide> defaultOnboardingSlideList = [
   OnboardingSlide(
-    description:
-        'Monitor your performance with detailed running stats. Track your distance, pace, and progress over time to achieve your fitness goals.',
+    description: TextConstants.description_1,
     imageUrl: 'assets/images/onboarding1.png',
-    title: 'Track Your Run',
+    title: TextConstants.title_1,
   ),
   OnboardingSlide(
-    description:
-        'Stay prepared with accurate weather forecasts. Get real-time updates on temperature, humidity, and precipitation to plan your runs around the best conditions.',
+    description: TextConstants.description_2,
     imageUrl: 'assets/images/onboarding2.png',
-    title: 'Weather Forecast',
+    title: TextConstants.title_2,
   ),
   OnboardingSlide(
-    description:
-        'Plan your perfect run with our interactive map feature. Explore new routes, track your favorite paths, and never get lost with real-time navigation descriptions',
+    description: TextConstants.description_3,
     imageUrl: 'assets/images/onboarding3.png',
-    title: 'Map Your Route',
+    title: TextConstants.title_3,
   ),
 ];
