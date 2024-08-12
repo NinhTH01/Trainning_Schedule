@@ -5,7 +5,7 @@ import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 class OnboardingViewModel extends BaseViewModel<OnboardingState> {
   OnboardingViewModel() : super(const OnboardingState());
 
-  void setCurrentPageIndex(num index) {
+  void setCurrentPageIndex(int index) {
     state = state.copyWith(currentPageIndex: index);
   }
 
