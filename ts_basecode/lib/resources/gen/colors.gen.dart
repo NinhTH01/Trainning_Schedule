@@ -16,6 +16,9 @@ class ColorName {
   /// Color: #000000
   static const Color black = Color(0xFF000000);
 
+  /// Color: #1F000000
+  static const Color black12 = Color(0x1F000000);
+
   /// Color: #FF2196F3
   static const Color blue = Color(0xFF2196F3);
 

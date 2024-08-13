@@ -53,8 +53,19 @@ class AppTextStyles {
   );
 
   /// Calendar Date Event List Screen
-  static const itemTime =
+  static const itemTimeStyle =
       TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold);
-  static const itemDescription =
+  static const itemDescriptionStyle =
       TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500);
+
+  /// Calendar Date Event Edit Screen
+  static const rightButtonStyle =
+      TextStyle(fontWeight: FontWeight.w600, color: ColorName.black);
+
+  /// Components
+  static const titleHeaderStyle =
+      TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0);
+
+  static const redTextStyle = TextStyle(color: ColorName.red);
+  static const blackTextStyle = TextStyle(color: ColorName.black);
 }

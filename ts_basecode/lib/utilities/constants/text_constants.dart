@@ -35,4 +35,20 @@ class TextConstants {
   static const weekday_5 = 'Fri';
   static const weekday_6 = 'Sat';
   static const weekday_7 = 'Sun';
+
+  /// Calendar Date Event List Screen
+  static const noEvent = 'There is no event';
+
+  /// Calendar Date Event Edit Screen
+  static const newEvent = 'New Event';
+  static const editEvent = 'Edit Event';
+  static const description = 'Description';
+  static const save = 'Save';
+  static const edit = 'Edit';
+  static const delete = 'Delete';
+
+  static const deleteEvent = 'Delete Event';
+  static const confirmToProceed = 'Are you sure you want to proceed?';
+  static const confirm = 'Confirm';
+  static const cancel = 'Cancel';
 }

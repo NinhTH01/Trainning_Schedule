@@ -17,7 +17,7 @@ class CalendarDateEventListViewModel
   final SqfliteManager sqfliteManager;
 
   Future<void> getCurrentDateEventList(EventDateInfo calendarDate) async {
-    if (calendarDate.date != null && calendarDate.hasEvent) {
+    if (calendarDate.date != null) {
       List<Event> eventList =
           await sqfliteManager.getListOnDate(calendarDate.date!);
       state = state.copyWith(eventList: eventList);

@@ -5,13 +5,10 @@ import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
 class EventListItem extends StatelessWidget {
-  const EventListItem({
-    super.key,
-    required this.event,
-  });
+  const EventListItem({super.key, required this.event, required this.onTap});
 
   final Event event;
-  // final void Function({required bool isEdit, Event event}) onTap;
+  final void Function({required bool isEdit, Event event}) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +25,18 @@ class EventListItem extends StatelessWidget {
           children: [
             Text(
               DateFormat('HH:mm').format(event.createdTime!),
-              style: AppTextStyles.itemTime,
+              style: AppTextStyles.itemTimeStyle,
             ),
             Text(
               event.description!,
-              style: AppTextStyles.itemDescription,
+              style: AppTextStyles.itemDescriptionStyle,
               overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       ),
       onTap: () {
-        // onTap(isEdit: true, event: event);
+        onTap(isEdit: true, event: event);
       },
     );
   }

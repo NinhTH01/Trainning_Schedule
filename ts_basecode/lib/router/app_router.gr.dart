@@ -15,6 +15,18 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    CalendarDateEventEditRoute.name: (routeData) {
+      final args = routeData.argsAs<CalendarDateEventEditRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CalendarDateEventEditScreen(
+          key: args.key,
+          calendarDate: args.calendarDate,
+          isEdit: args.isEdit,
+          event: args.event,
+        ),
+      );
+    },
     CalendarDateEventListRoute.name: (routeData) {
       final args = routeData.argsAs<CalendarDateEventListRouteArgs>();
       return AutoRoutePage<dynamic>(
@@ -80,6 +92,55 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [CalendarDateEventEditScreen]
+class CalendarDateEventEditRoute
+    extends PageRouteInfo<CalendarDateEventEditRouteArgs> {
+  CalendarDateEventEditRoute({
+    Key? key,
+    required EventDateInfo calendarDate,
+    required bool isEdit,
+    Event? event,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CalendarDateEventEditRoute.name,
+          args: CalendarDateEventEditRouteArgs(
+            key: key,
+            calendarDate: calendarDate,
+            isEdit: isEdit,
+            event: event,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarDateEventEditRoute';
+
+  static const PageInfo<CalendarDateEventEditRouteArgs> page =
+      PageInfo<CalendarDateEventEditRouteArgs>(name);
+}
+
+class CalendarDateEventEditRouteArgs {
+  const CalendarDateEventEditRouteArgs({
+    this.key,
+    required this.calendarDate,
+    required this.isEdit,
+    this.event,
+  });
+
+  final Key? key;
+
+  final EventDateInfo calendarDate;
+
+  final bool isEdit;
+
+  final Event? event;
+
+  @override
+  String toString() {
+    return 'CalendarDateEventEditRouteArgs{key: $key, calendarDate: $calendarDate, isEdit: $isEdit, event: $event}';
+  }
 }
 
 /// generated route for
