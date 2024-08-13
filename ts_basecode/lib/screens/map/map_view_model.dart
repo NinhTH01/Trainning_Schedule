@@ -276,6 +276,18 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
+  Future<double> getTotalDistance() async {
+    List<Event> eventList = await sqfliteManager.getList();
+
+    double totalDistance = 0.0;
+
+    for (var item in eventList) {
+      totalDistance += item.distance ?? 0;
+    }
+
+    return totalDistance;
+  }
+
   /// Angle Direction handle
   void _calculateBearing(LatLng startPoint, LatLng endPoint) {
     final double startLat = toRadians(startPoint.latitude);

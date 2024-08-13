@@ -23,6 +23,14 @@ import GoogleMaps
 
 
     GMSServices.provideAPIKey("AIzaSyDsLxsd0qDWOO1ANXC-mSzpzYS7V-PahhA")
+
+      guard let pluginRegisterar = self.registrar(forPlugin: "Runner") else { return false }
+
+      let factory = FLNativeViewFactory(messenger: pluginRegisterar.messenger())
+      pluginRegisterar.register(
+          factory,
+          withId: "congratulation_view")
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
+import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
@@ -114,5 +116,64 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
         ),
       ],
     );
+  }
+
+  void _showAchieveDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const SimpleDialog(
+          children: [
+            Center(
+              child: SizedBox(
+                width: 300,
+                height: 300,
+                child: UiKitView(
+                  viewType: 'congratulation_view',
+                  creationParams: {},
+                  creationParamsCodec: StandardMessageCodec(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFinishDialog(
+    Uint8List image,
+    double distance,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(child: Image.memory(image)),
+              Text('You have run ${distance.toStringAsFixed(2)} meters'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(TextConstants.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    viewModel.getTotalDistance().then((totalDistance) async {
+      final hasAchieved = await SharedPreferencesManager.getAchievement();
+      if (!hasAchieved && totalDistance > 100.0) {
+        await SharedPreferencesManager.setAchievement(value: true);
+        _showAchieveDialog();
+      }
+    });
   }
 }
