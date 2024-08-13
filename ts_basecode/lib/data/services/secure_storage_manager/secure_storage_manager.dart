@@ -1,14 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
+import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 
 class SecureStorageManager {
   SecureStorageManager(this._storage);
 
   final FlutterSecureStorage _storage;
 
-  static const _event = 'event';
+  static const _weather = 'weather';
+  static const _weather_forecast = 'weather_forecast';
 
   Future<dynamic> _read({
     required String key,
@@ -23,17 +25,39 @@ class SecureStorageManager {
     await _storage.write(key: key, value: value);
   }
 
-  Future<void> writeEventList(List<Event> eventList) async {
+  Future<void> writeWeather(Weather weather) async {
     try {
       await _write(
-        key: _event,
-        value: json.encode(eventList),
+        key: _weather,
+        value: json.encode(weather),
       );
     } catch (_) {}
   }
 
-  Future<List<Event>?> readEventList() async {
-    final result = await _read(key: _event);
+  Future<Weather?> readWeather() async {
+    final result = await _read(key: _weather);
+    if (result == null) {
+      return null;
+    } else {
+      try {
+        return result;
+      } catch (_) {
+        return null;
+      }
+    }
+  }
+
+  Future<void> writeWeatherForecast(WeatherForecast weatherForecast) async {
+    try {
+      await _write(
+        key: _weather_forecast,
+        value: json.encode(weatherForecast),
+      );
+    } catch (_) {}
+  }
+
+  Future<WeatherForecast?> readWeatherForecast() async {
+    final result = await _read(key: _weather_forecast);
     if (result == null) {
       return null;
     } else {

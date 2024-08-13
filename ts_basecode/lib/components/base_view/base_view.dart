@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:ts_basecode/components/dialog/dialog_provider.dart';
+import 'package:ts_basecode/components/dialog/dialog_provider.dart';
+import 'package:ts_basecode/data/models/api/responses/base_response_error/base_response_error.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 
 import 'base_view_mixin.dart';
@@ -82,7 +84,7 @@ abstract class BaseViewState<View extends BaseView,
             errorMessage = response.data['message'];
           } else {
             final errorJson = jsonDecode(response.data);
-            // errorMessage = BaseResponseError.fromJson(errorJson).message;
+            errorMessage = BaseResponseError.fromJson(errorJson).message;
           }
         } catch (_) {
           errorMessage = error.response?.statusMessage;
@@ -98,11 +100,11 @@ abstract class BaseViewState<View extends BaseView,
     }
 
     if (errorMessage != null) {
-      // await ref.read(alertDialogProvider).showAlertDialog(
-      //       context: context,
-      //       title: errorMessage,
-      //       onClosed: onButtonTapped,
-      //     );
+      await ref.read(alertDialogProvider).showAlertDialog(
+            context: context,
+            title: errorMessage,
+            onClosed: onButtonTapped,
+          );
     }
   }
 }

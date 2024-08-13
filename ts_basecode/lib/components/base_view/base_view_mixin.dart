@@ -11,7 +11,7 @@ mixin BaseViewMixin {
 
   Color? get backgroundColor => ColorName.white;
 
-  bool get ignoreSafeAreaTop => true;
+  bool get ignoreSafeAreaTop => false;
 
   bool get ignoreSafeAreaBottom => true;
 

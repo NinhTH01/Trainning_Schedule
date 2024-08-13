@@ -130,6 +130,9 @@ class _CalendarDateEventEditState extends BaseViewState<
   CalendarDateEventEditState get state => ref.watch(_provider);
 
   @override
+  bool get ignoreSafeAreaTop => true;
+
+  @override
   String get screenName => CalendarDateEventEditRoute.name;
 
   @override

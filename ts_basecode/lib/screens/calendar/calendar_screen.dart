@@ -80,6 +80,9 @@ class _CalendarViewState
   CalendarState get state => ref.watch(_provider);
 
   @override
+  bool get ignoreSafeAreaTop => true;
+
+  @override
   String get screenName => CalendarRoute.name;
 
   @override
