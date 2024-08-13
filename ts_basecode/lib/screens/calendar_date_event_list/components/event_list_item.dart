@@ -25,11 +25,11 @@ class EventListItem extends StatelessWidget {
           children: [
             Text(
               DateFormat('HH:mm').format(event.createdTime!),
-              style: AppTextStyles.itemTimeStyle,
+              style: AppTextStyles.s12b,
             ),
             Text(
               event.description!,
-              style: AppTextStyles.itemDescriptionStyle,
+              style: AppTextStyles.s16w500,
               overflow: TextOverflow.ellipsis,
             ),
           ],

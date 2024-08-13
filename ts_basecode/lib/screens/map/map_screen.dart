@@ -109,7 +109,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
                 state.isRunning
                     ? TextConstants.mapStop
                     : TextConstants.mapStart,
-                style: AppTextStyles.startButtonStyle),
+                style: AppTextStyles.w500),
           ),
         ),
       ],

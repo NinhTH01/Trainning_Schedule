@@ -18,7 +18,7 @@ Widget calendarHeader({
         ),
         Text(
           DateFormat('MMMM').format(currentDate ?? DateTime.now()),
-          style: AppTextStyles.calendarTitleCurrentDateStyle,
+          style: AppTextStyles.s18b,
         ),
         IconButton(
           onPressed: changeToNextMonth,
