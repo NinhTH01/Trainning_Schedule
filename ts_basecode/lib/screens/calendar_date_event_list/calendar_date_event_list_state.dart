@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ts_basecode/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/event/event.dart';
 
 part 'calendar_date_event_list_state.freezed.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ts_basecode/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/event/event.dart';
 
 class SecureStorageManager {
   SecureStorageManager(this._storage);

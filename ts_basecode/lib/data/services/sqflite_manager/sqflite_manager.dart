@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:ts_basecode/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/event/event.dart';
 
 class SqfliteManager {
   final _databaseName = 'events.db';

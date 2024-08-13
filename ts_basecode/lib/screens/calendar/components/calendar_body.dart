@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ts_basecode/models/storage/event_date_info/event_date_info.dart';
+import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
