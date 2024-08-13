@@ -28,12 +28,25 @@ class $AssetsFontsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/clear.jpg
+  AssetGenImage get clear => const AssetGenImage('assets/images/clear.jpg');
+
+  /// File path: assets/images/cloud.jpg
+  AssetGenImage get cloud => const AssetGenImage('assets/images/cloud.jpg');
+
+  /// File path: assets/images/drizzle.jpg
+  AssetGenImage get drizzle => const AssetGenImage('assets/images/drizzle.jpg');
+
   /// File path: assets/images/finish_marker.png
   AssetGenImage get finishMarker =>
       const AssetGenImage('assets/images/finish_marker.png');
 
   /// File path: assets/images/icon.jpg
   AssetGenImage get icon => const AssetGenImage('assets/images/icon.jpg');
+
+  /// File path: assets/images/lightning.jpg
+  AssetGenImage get lightning =>
+      const AssetGenImage('assets/images/lightning.jpg');
 
   /// File path: assets/images/location_marker.png
   AssetGenImage get locationMarker =>
@@ -47,6 +60,9 @@ class $AssetsImagesGen {
   AssetGenImage get markerRight =>
       const AssetGenImage('assets/images/marker_right.png');
 
+  /// File path: assets/images/normal.jpg
+  AssetGenImage get normal => const AssetGenImage('assets/images/normal.jpg');
+
   /// File path: assets/images/onboarding1.png
   AssetGenImage get onboarding1 =>
       const AssetGenImage('assets/images/onboarding1.png');
@@ -59,16 +75,25 @@ class $AssetsImagesGen {
   AssetGenImage get onboarding3 =>
       const AssetGenImage('assets/images/onboarding3.png');
 
+  /// File path: assets/images/rain.jpg
+  AssetGenImage get rain => const AssetGenImage('assets/images/rain.jpg');
+
   /// List of all assets
   List<AssetGenImage> get values => [
+        clear,
+        cloud,
+        drizzle,
         finishMarker,
         icon,
+        lightning,
         locationMarker,
         markerLeft,
         markerRight,
+        normal,
         onboarding1,
         onboarding2,
-        onboarding3
+        onboarding3,
+        rain
       ];
 }
 

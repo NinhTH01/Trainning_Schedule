@@ -25,6 +25,15 @@ class ColorName {
   /// Color: #FF5FC1C7
   static const Color blueFF5FC1C7 = Color(0xFF5FC1C7);
 
+  /// Color: #90007AFF
+  static const Color clearColor = Color(0x90007AFF);
+
+  /// Color: #808E8E92
+  static const Color cloudColor = Color(0x808E8E92);
+
+  /// Color: #80FFFFFF
+  static const Color drizzleColor = Color(0x80FFFFFF);
+
   /// Color: #F2F6FA
   static const Color grayF2F6FA = Color(0xFFF2F6FA);
 
@@ -46,8 +55,14 @@ class ColorName {
   /// Color: #FFE040FB
   static const Color purple = Color(0xFFE040FB);
 
+  /// Color: #8000C7BD
+  static const Color rainColor = Color(0x8000C7BD);
+
   /// Color: #FFF44336
   static const Color red = Color(0xFFF44336);
+
+  /// Color: #80FFFFFF
+  static const Color thunderColor = Color(0x80FFFFFF);
 
   /// Color: #00000000
   static const Color transparent = Color(0x00000000);
