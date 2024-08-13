@@ -40,7 +40,7 @@ Widget buildWeekDay(String day) {
     child: Center(
       child: Text(
         day,
-        style: AppTextStyles.calendarWeekStyle,
+        style: AppTextStyles.s16w600,
       ),
     ),
   );
