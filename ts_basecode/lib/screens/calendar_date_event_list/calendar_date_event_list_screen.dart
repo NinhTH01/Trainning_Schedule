@@ -6,7 +6,7 @@ import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
-import 'package:ts_basecode/providers/sqflite_provider.dart';
+import 'package:ts_basecode/data/providers/sqflite_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar_date_event_list/calendar_date_event_list_state.dart';
 import 'package:ts_basecode/screens/calendar_date_event_list/calendar_date_event_list_view_model.dart';
