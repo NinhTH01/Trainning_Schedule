@@ -187,30 +187,34 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   /// Camera handle
-  LatLngBounds _calculateBoundsForPolylines(List<LatLng> points) {
-    var southWestLat = points[0].latitude;
-    var southWestLng = points[0].longitude;
-    var northEastLat = points[0].latitude;
-    var northEastLng = points[0].longitude;
+  LatLngBounds? _calculateBoundsForPolylines(List<LatLng> points) {
+    if (points.isNotEmpty) {
+      var southWestLat = points[0].latitude;
+      var southWestLng = points[0].longitude;
+      var northEastLat = points[0].latitude;
+      var northEastLng = points[0].longitude;
 
-    for (var point in points) {
-      if (point.latitude < southWestLat) {
-        southWestLat = point.latitude;
+      for (var point in points) {
+        if (point.latitude < southWestLat) {
+          southWestLat = point.latitude;
+        }
+        if (point.longitude < southWestLng) {
+          southWestLng = point.longitude;
+        }
+        if (point.latitude > northEastLat) {
+          northEastLat = point.latitude;
+        }
+        if (point.longitude > northEastLng) {
+          northEastLng = point.longitude;
+        }
       }
-      if (point.longitude < southWestLng) {
-        southWestLng = point.longitude;
-      }
-      if (point.latitude > northEastLat) {
-        northEastLat = point.latitude;
-      }
-      if (point.longitude > northEastLng) {
-        northEastLng = point.longitude;
-      }
+
+      return LatLngBounds(
+        southwest: LatLng(southWestLat, southWestLng),
+        northeast: LatLng(northEastLat, northEastLng),
+      );
     }
-    return LatLngBounds(
-      southwest: LatLng(southWestLat, southWestLng),
-      northeast: LatLng(northEastLat, northEastLng),
-    );
+    return null;
   }
 
   Future<void> _setCameraToPolylineBounds() async {
@@ -218,8 +222,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     if (controller != null) {
       var bounds = _calculateBoundsForPolylines(state.polylineCoordinateList);
 
-      var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
-      await controller.animateCamera(cameraUpdate);
+      if (bounds != null) {
+        var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+        await controller.animateCamera(cameraUpdate);
+      }
     }
   }
 

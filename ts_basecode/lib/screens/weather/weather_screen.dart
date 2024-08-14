@@ -300,7 +300,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   dynamic _getBackgroundImagePath(String? weatherCondition) {
     switch (weatherCondition) {
       case WeatherCondition.clear:
-        return 'assets/images/default.jpg';
+        return 'assets/images/normal.jpg';
       case WeatherCondition.cloud:
         return 'assets/images/cloud.jpg';
       case WeatherCondition.drizzle:
