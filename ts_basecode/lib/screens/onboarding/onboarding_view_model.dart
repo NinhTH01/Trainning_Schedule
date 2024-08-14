@@ -3,13 +3,17 @@ import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 
 class OnboardingViewModel extends BaseViewModel<OnboardingState> {
-  OnboardingViewModel() : super(const OnboardingState());
+  OnboardingViewModel({
+    required this.sharedPreferencesManager,
+  }) : super(const OnboardingState());
+
+  final SharedPreferencesManager sharedPreferencesManager;
 
   void setCurrentPageIndex(int index) {
     state = state.copyWith(currentPageIndex: index);
   }
 
   Future<void> setOnboardingValue(bool value) async {
-    await SharedPreferencesManager.setOnboarding(value: value);
+    await sharedPreferencesManager.setOnboarding(value: value);
   }
 }

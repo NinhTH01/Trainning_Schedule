@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
+import 'package:ts_basecode/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_view_model.dart';
@@ -10,7 +11,9 @@ import 'package:ts_basecode/utilities/text_constants.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<OnboardingViewModel, OnboardingState>(
-        (ref) => OnboardingViewModel());
+  (ref) => OnboardingViewModel(
+      sharedPreferencesManager: ref.watch(sharedPreferenceProvider)),
+);
 
 /// Screen code: A_01
 @RoutePage()
@@ -27,6 +30,15 @@ class _OnboardingViewState
   final _pageController = PageController();
 
   OnboardingState get state => ref.watch(_provider);
+
+  @override
+  PreferredSizeWidget? buildAppBar(BuildContext context) => null;
+
+  @override
+  OnboardingViewModel get viewModel => ref.read(_provider.notifier);
+
+  @override
+  String get screenName => OnboardingRoute.name;
 
   @override
   Widget buildBody(BuildContext context) {
@@ -95,7 +107,7 @@ class _OnboardingViewState
                   );
                 } else {
                   await viewModel.setOnboardingValue(true);
-                  Future.delayed(const Duration(seconds: 0), () async {
+                  Future.delayed(Duration.zero, () async {
                     await AutoRouter.of(context).push(const MainRoute());
                   });
                 }
@@ -116,13 +128,4 @@ class _OnboardingViewState
       ),
     );
   }
-
-  @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) => null;
-
-  @override
-  OnboardingViewModel get viewModel => ref.read(_provider.notifier);
-
-  @override
-  String get screenName => OnboardingRoute.name;
 }
