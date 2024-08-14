@@ -6,8 +6,8 @@ import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/splash/splash_view_model.dart';
-import 'package:ts_basecode/utilities/app_text_styles.dart';
-import 'package:ts_basecode/utilities/text_constants.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final _provider = StateNotifierProvider.autoDispose(
   (ref) => SplashViewModel(),

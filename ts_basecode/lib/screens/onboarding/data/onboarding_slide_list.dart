@@ -1,5 +1,5 @@
 import 'package:ts_basecode/models/api/responses/onboarding_slide.dart';
-import 'package:ts_basecode/utilities/text_constants.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 const List<OnboardingSlide> defaultOnboardingSlideList = [
   OnboardingSlide(
