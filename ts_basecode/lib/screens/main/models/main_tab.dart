@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
-enum MainTab { calender, map, weather }
+enum MainTab { calendar, map, weather }
 
 extension MainTabExtension on MainTab {
-  String getLabel(BuildContext context) {
+  String get label {
     switch (this) {
-      case MainTab.calender:
+      case MainTab.calendar:
         return TextConstants.calendar;
       case MainTab.map:
         return TextConstants.map;
@@ -15,9 +15,9 @@ extension MainTabExtension on MainTab {
     }
   }
 
-  Icon getIcon(BuildContext context) {
+  Icon get icon {
     switch (this) {
-      case MainTab.calender:
+      case MainTab.calendar:
         return const Icon(Icons.calendar_month);
       case MainTab.map:
         return const Icon(Icons.map);

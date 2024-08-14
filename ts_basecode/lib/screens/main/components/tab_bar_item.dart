@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/main/models/main_tab.dart';
 
-class TabBarItem extends ConsumerWidget {
+class TabBarItem extends StatelessWidget {
   const TabBarItem({
     required this.mainTab,
     required this.isActive,
@@ -18,7 +17,7 @@ class TabBarItem extends ConsumerWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -35,10 +34,10 @@ class TabBarItem extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            mainTab.getIcon(context),
+            mainTab.icon,
             const SizedBox(height: 5),
             Text(
-              mainTab.getLabel(context),
+              mainTab.label,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),

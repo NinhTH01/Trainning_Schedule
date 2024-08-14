@@ -24,6 +24,12 @@ class _HomeViewState extends BaseViewState<MainScreen, MainViewModel> {
   bool get ignoreSafeAreaBottom => false;
 
   @override
+  String get screenName => MainRoute.name;
+
+  @override
+  MainViewModel get viewModel => ref.read(_provider.notifier);
+
+  @override
   Widget buildBody(BuildContext context) {
     return AutoTabsScaffold(
       routes: const [
@@ -37,10 +43,4 @@ class _HomeViewState extends BaseViewState<MainScreen, MainViewModel> {
       },
     );
   }
-
-  @override
-  String get screenName => MainRoute.name;
-
-  @override
-  MainViewModel get viewModel => ref.read(_provider.notifier);
 }
