@@ -15,6 +15,7 @@ class WeatherState with _$WeatherState {
     @Default(1.0) double descriptionOpacity,
     @Default(0.0) double minimizeOpacity,
     @Default(0.0) double scrollPadding,
+    @Default(false) bool needRetry,
   }) = _WeatherState;
 
   const WeatherState._();

@@ -39,11 +39,15 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   final SecureStorageManager secureStorageManager;
 
   Future<void> initData() async {
-    Position currentLocation = await geolocatorManager.getCurrentLocation();
-    await Future.wait([
-      _getWeather(currentLocation),
-      _getWeatherForecast(currentLocation),
-    ]);
+    try {
+      Position currentLocation = await geolocatorManager.getCurrentLocation();
+      await Future.wait([
+        _getWeather(currentLocation),
+        _getWeatherForecast(currentLocation),
+      ]);
+    } catch (e) {
+      return Future.error(e);
+    }
   }
 
   Future<void> _getWeather(Position currentLocation) async {
@@ -136,6 +140,12 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
       descriptionOpacity: descriptionOpacity,
       minimizeOpacity: minimizeOpacity,
       scrollPadding: scrollPadding,
+    );
+  }
+
+  void handleRetryState(bool needRetry) {
+    state = state.copyWith(
+      needRetry: needRetry,
     );
   }
 }

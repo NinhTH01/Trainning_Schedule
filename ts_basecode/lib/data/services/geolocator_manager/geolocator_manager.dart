@@ -49,7 +49,14 @@ class GeolocatorManager {
   Future<Position> getCurrentLocation() async {
     try {
       await checkPermission();
-      return Geolocator.getCurrentPosition();
+      const LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        timeLimit: Duration(seconds: 5),
+        distanceFilter: 4,
+      );
+      final location = await Geolocator.getCurrentPosition(
+          locationSettings: locationSettings);
+      return location;
     } catch (e) {
       return Future.error(e);
     }

@@ -256,7 +256,20 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                     ],
                   ),
                 ))
-            : const Center(child: CircularProgressIndicator())
+            : (Center(
+                child: state.needRetry
+                    ? TextButton(
+                        onPressed: () async {
+                          viewModel.handleRetryState(false);
+                          try {
+                            await viewModel.initData();
+                          } catch (e) {
+                            viewModel.handleRetryState(true);
+                          }
+                        },
+                        child: const Text(TextConstants.retry),
+                      )
+                    : const CircularProgressIndicator()))
       ],
     );
   }
@@ -287,8 +300,9 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
     });
 
     try {
-      viewModel.initData();
+      await viewModel.initData();
     } catch (e) {
+      viewModel.handleRetryState(true);
       error = e;
     }
 

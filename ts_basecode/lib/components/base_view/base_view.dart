@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -96,6 +97,13 @@ abstract class BaseViewState<View extends BaseView,
             buttonTitle: 'Go to Setting',
             title: error.message,
             onClosed: Geolocator.openLocationSettings,
+          );
+    }
+    if (error is TimeoutException) {
+      await ref.read(alertDialogProvider).showAlertDialog(
+            context: context,
+            title: 'Time out',
+            onClosed: onButtonTapped,
           );
     }
 

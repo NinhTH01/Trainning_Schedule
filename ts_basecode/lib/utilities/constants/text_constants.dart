@@ -68,4 +68,6 @@ class TextConstants {
 
   static const weatherForecastDescription =
       'Weather Forecast for next 5 days /3 hours';
+
+  static const retry = 'Retry';
 }
