@@ -6,7 +6,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    ProviderScope(
+    const ProviderScope(
       child: MaterialApp(
         home: MyApp(),
       ),

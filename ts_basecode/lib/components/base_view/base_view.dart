@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -64,7 +62,7 @@ abstract class BaseViewState<View extends BaseView,
           if (response.data is Map<String, dynamic>) {
             errorMessage = response.data['message'];
           } else {
-            final errorJson = jsonDecode(response.data);
+            // final errorJson = jsonDecode(response.data);
             // errorMessage = BaseResponseError.fromJson(errorJson).message;
           }
         } catch (_) {

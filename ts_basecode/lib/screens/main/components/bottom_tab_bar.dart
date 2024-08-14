@@ -19,7 +19,7 @@ class BottomTabBar extends StatelessWidget {
       color: ColorName.grayFFFAFAFA,
       child: Row(
         children: [
-          MainTab.calender,
+          MainTab.calendar,
           MainTab.map,
           MainTab.weather,
         ].map((tab) {
