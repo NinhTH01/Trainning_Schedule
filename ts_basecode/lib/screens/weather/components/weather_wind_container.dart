@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/screens/weather/models/weather_container.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class WeatherWindContainer extends StatelessWidget {
   const WeatherWindContainer({super.key, required this.weather});
@@ -19,23 +21,26 @@ class WeatherWindContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'WIND',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
+          Text(
+            TextConstants.windTitle,
+            style: AppTextStyles.white70s16,
           ),
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
-                child:
-                    windItemWidget(weather.wind!.speed! * 3.6, 'KM/H', 'Wind'),
+                child: windItemWidget(
+                  weather.wind!.speed! * 3.6,
+                  TextConstants.kmh,
+                  TextConstants.wind,
+                ),
               ),
               Expanded(
                 child: windItemWidget(
                   weather.wind?.deg,
-                  'Degrees',
-                  'Wind Direction',
+                  TextConstants.degrees,
+                  TextConstants.windDirection,
                 ),
               ),
             ],
@@ -43,8 +48,8 @@ class WeatherWindContainer extends StatelessWidget {
           const Divider(),
           windItemWidget(
             weather.wind?.gust == null ? null : weather.wind!.gust! * 3.6,
-            'KM/H',
-            'Gusts',
+            TextConstants.kmh,
+            TextConstants.gust,
           ),
         ],
       ),
@@ -67,19 +72,11 @@ class WeatherWindContainer extends StatelessWidget {
           children: [
             Text(
               unit,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.white70s12w500,
             ),
             Text(
               name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.whites12w500,
             ),
           ],
         ),

@@ -19,4 +19,5 @@
     <color name="rainColor">#8000C7BD</color>
     <color name="drizzleColor">#80FFFFFF</color>
     <color name="thunderColor">#80FFFFFF</color>
+    <color name="white70">#B3FFFFFF</color>
 </resources>

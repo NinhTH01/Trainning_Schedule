@@ -19,6 +19,8 @@ import 'package:ts_basecode/screens/weather/components/weather_status_container.
 import 'package:ts_basecode/screens/weather/components/weather_wind_container.dart';
 import 'package:ts_basecode/screens/weather/weather_state.dart';
 import 'package:ts_basecode/screens/weather/weather_view_model.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 import 'package:ts_basecode/utilities/helper/string.dart';
 
 import 'models/weather_container.dart';
@@ -138,14 +140,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         height: state.containerHeight,
                         child: Column(
                           children: [
-                            Text(
-                              state.currentWeather!.name!,
-                              style: const TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                            Text(state.currentWeather!.name!,
+                                style: AppTextStyles.whites30b),
                             state.containerHeight >
                                     _maxContainerHeight - _maxOffsetDescription
                                 ? Opacity(
@@ -154,29 +150,17 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                                       children: [
                                         Text(
                                           '${state.currentWeather?.main?.temp?.round()}°',
-                                          style: const TextStyle(
-                                            fontSize: 60,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
+                                          style: AppTextStyles.whites60b,
                                         ),
                                         Text(
                                           state.currentWeather!.weather![0]
                                               .description!
                                               .capitalizeFirstLetter(),
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ),
+                                          style: AppTextStyles.whites20w600,
                                         ),
                                         Text(
                                           'H:${state.currentWeather?.main?.tempMax?.round()}  L:${state.currentWeather?.main?.tempMin?.round()}',
-                                          style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ),
+                                          style: AppTextStyles.whites20w600,
                                         ),
                                       ],
                                     ),
@@ -185,11 +169,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                                     opacity: state.minimizeOpacity,
                                     child: Text(
                                       '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weather![0].description!.capitalizeFirstLetter()}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: AppTextStyles.whites16w600,
                                     ),
                                   ),
                           ],
@@ -227,7 +207,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                                 ),
                                 children: [
                                   WeatherStatusContainer(
-                                    title: 'HUMIDITY',
+                                    title: TextConstants.humidityTitle,
                                     value: state.currentWeather?.main
                                                 ?.humidity ==
                                             null
@@ -236,31 +216,31 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                                     backgroundColor: state.backgroundColor!,
                                   ),
                                   WeatherStatusContainer(
-                                    title: 'FEELS LIKE',
+                                    title: TextConstants.feelslikeTitle,
                                     value:
                                         '${state.currentWeather?.main?.feelsLike?.round()}°',
                                     backgroundColor: state.backgroundColor!,
                                   ),
                                   WeatherStatusContainer(
-                                    title: 'SUNSET',
+                                    title: TextConstants.sunsetTitle,
                                     value: WeatherHelper.unixToHHmm(
                                         state.currentWeather!.sys!.sunset!),
                                     backgroundColor: state.backgroundColor!,
                                   ),
                                   WeatherStatusContainer(
-                                    title: 'SUNRISE',
+                                    title: TextConstants.sunriseTitle,
                                     value: WeatherHelper.unixToHHmm(
                                         state.currentWeather!.sys!.sunrise!),
                                     backgroundColor: state.backgroundColor!,
                                   ),
                                   WeatherStatusContainer(
-                                    title: 'PRESSURE',
+                                    title: TextConstants.pressureTitle,
                                     value:
                                         '${state.currentWeather?.main?.pressure}\nhPa',
                                     backgroundColor: state.backgroundColor!,
                                   ),
                                   WeatherStatusContainer(
-                                    title: 'VISIBILITY',
+                                    title: TextConstants.visibilityTitle,
                                     value: state.currentWeather?.visibility ==
                                             null
                                         ? null

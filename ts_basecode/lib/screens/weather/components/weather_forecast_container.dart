@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/screens/weather/models/weather_container.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class WeatherForecastContainer extends StatelessWidget {
   const WeatherForecastContainer({
@@ -27,9 +29,9 @@ class WeatherForecastContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Weather Forecast for next 5 days /3 hours',
-            style: TextStyle(color: Colors.white, fontSize: 12),
+          Text(
+            TextConstants.weatherForecastDescription,
+            style: AppTextStyles.whites12,
             textAlign: TextAlign.start,
           ),
           const Divider(),
@@ -60,10 +62,7 @@ class WeatherForecastContainer extends StatelessWidget {
                       ),
                       Text(
                         '${weatherForecast.list?[index].main?.temp?.round()}°',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        style: AppTextStyles.whitew500,
                       ),
                     ],
                   ),

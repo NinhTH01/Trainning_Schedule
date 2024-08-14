@@ -10,7 +10,7 @@ class SecureStorageManager {
   final FlutterSecureStorage _storage;
 
   static const _weather = 'weather';
-  static const _weather_forecast = 'weather_forecast';
+  static const _weatherForecast = 'weather_forecast';
 
   Future<dynamic> _read({
     required String key,
@@ -50,14 +50,14 @@ class SecureStorageManager {
   Future<void> writeWeatherForecast(WeatherForecast weatherForecast) async {
     try {
       await _write(
-        key: _weather_forecast,
+        key: _weatherForecast,
         value: json.encode(weatherForecast),
       );
     } catch (_) {}
   }
 
   Future<WeatherForecast?> readWeatherForecast() async {
-    final result = await _read(key: _weather_forecast);
+    final result = await _read(key: _weatherForecast);
     if (result == null) {
       return null;
     } else {

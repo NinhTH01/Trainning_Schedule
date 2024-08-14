@@ -51,4 +51,21 @@ class TextConstants {
   static const confirmToProceed = 'Are you sure you want to proceed?';
   static const confirm = 'Confirm';
   static const cancel = 'Cancel';
+
+  static const humidityTitle = 'HUMIDITY';
+  static const feelslikeTitle = 'FEELS LIKE';
+  static const sunsetTitle = 'SUNSET';
+  static const sunriseTitle = 'SUNRISE';
+  static const pressureTitle = 'PRESSURE';
+  static const visibilityTitle = "VISIBILITY";
+
+  static const windTitle = 'WIND';
+  static const degrees = 'Degrees';
+  static const windDirection = 'Wind Direction';
+  static const kmh = 'KM/H';
+  static const gust = 'Gusts';
+  static const wind = 'Wind';
+
+  static const weatherForecastDescription =
+      'Weather Forecast for next 5 days /3 hours';
 }

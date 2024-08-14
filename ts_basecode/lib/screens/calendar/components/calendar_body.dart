@@ -73,7 +73,7 @@ Widget buildDayInMonth(EventDateInfo day, onPressed, inMonth) {
             child: Text(day.date!.day.toString(),
                 style: inMonth
                     ? isToday
-                        ? AppTextStyles.isTodayContainerStyle
+                        ? AppTextStyles.whitew500
                         : AppTextStyles.w500
                     : AppTextStyles.otherMonthContainerStyle),
           ),
