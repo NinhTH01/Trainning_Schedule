@@ -7,7 +7,8 @@ part 'onboarding_state.freezed.dart';
 @freezed
 class OnboardingState with _$OnboardingState {
   const factory OnboardingState({
-    @Default(defaultOnboardingSlideList) List<OnboardingSlide> onboardingSlide,
+    @Default(defaultOnboardingSlideList)
+    List<OnboardingSlide> onboardingSlideList,
     @Default(0) int currentPageIndex,
   }) = _OnboardingState;
 

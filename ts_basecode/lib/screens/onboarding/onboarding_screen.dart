@@ -41,6 +41,12 @@ class _OnboardingViewState
   String get screenName => OnboardingRoute.name;
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget buildBody(BuildContext context) {
     return Container(
       color: Colors.transparent,
@@ -50,18 +56,19 @@ class _OnboardingViewState
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              itemCount: state.onboardingSlide.length,
+              itemCount: state.onboardingSlideList.length,
               onPageChanged: (page) {
                 viewModel.setCurrentPageIndex(page);
               },
               itemBuilder: (context, index) {
+                final onboardingSlide = state.onboardingSlideList[index];
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(state.onboardingSlide[index].imageUrl ?? ''),
+                    Image.asset(onboardingSlide.imageUrl ?? ''),
                     const SizedBox(height: 15),
                     Text(
-                      state.onboardingSlide[index].title ?? '',
+                      onboardingSlide.title ?? '',
                       style: const TextStyle(
                         fontSize: 31,
                         fontWeight: FontWeight.w600,
@@ -69,7 +76,7 @@ class _OnboardingViewState
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      state.onboardingSlide[index].description ?? '',
+                      onboardingSlide.description ?? '',
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
@@ -80,10 +87,10 @@ class _OnboardingViewState
           ),
 
           // const SizedBox(height: 150),
-          state.onboardingSlide.isNotEmpty
+          state.onboardingSlideList.isNotEmpty
               ? SmoothPageIndicator(
                   controller: _pageController,
-                  count: state.onboardingSlide.length,
+                  count: state.onboardingSlideList.length,
                   effect: const WormEffect(
                     dotHeight: 8.0,
                     dotWidth: 8.0,
@@ -100,7 +107,8 @@ class _OnboardingViewState
             width: 150,
             child: OutlinedButton(
               onPressed: () async {
-                if (state.currentPageIndex < state.onboardingSlide.length - 1) {
+                if (state.currentPageIndex <
+                    state.onboardingSlideList.length - 1) {
                   await _pageController.nextPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn,
@@ -118,7 +126,7 @@ class _OnboardingViewState
                 ),
               ),
               child: Text(
-                state.currentPageIndex == state.onboardingSlide.length - 1
+                state.currentPageIndex == state.onboardingSlideList.length - 1
                     ? TextConstants.started
                     : TextConstants.next,
               ),
