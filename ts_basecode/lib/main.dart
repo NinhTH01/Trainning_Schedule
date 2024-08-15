@@ -14,16 +14,11 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends ConsumerStatefulWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AppState();
-}
-
-class _AppState extends ConsumerState<MyApp> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       builder: (context, child) {
         final data = MediaQuery.of(context);

@@ -54,7 +54,7 @@ abstract class BaseViewState<View extends BaseView,
   }) async {
     String? errorMessage;
 
-    if (error is DioError) {
+    if (error is DioException) {
       final response = error.response;
 
       if (response != null) {

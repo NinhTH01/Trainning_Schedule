@@ -11,13 +11,13 @@ mixin BaseViewMixin {
 
   Color? get backgroundColor => ColorName.white;
 
-  bool get ignoreSafeAreaTap => true;
+  bool get ignoreSafeAreaTop => true;
 
   bool get ignoreSafeAreaBottom => true;
 
-  String get screenName;
+  bool get canPop => true;
 
-  Future<bool> onWillPop() async => true;
+  String get screenName;
 
   Widget buildBody(BuildContext context);
 
@@ -44,10 +44,11 @@ mixin BaseViewMixin {
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       appBar: buildAppBar(context),
       body: SafeArea(
-        top: ignoreSafeAreaTap,
+        top: ignoreSafeAreaTop,
         bottom: ignoreSafeAreaBottom,
-        child: WillPopScope(
-          onWillPop: onWillPop,
+        child: PopScope(
+          canPop: canPop,
+          onPopInvoked: onPopInvoked,
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: (() {
@@ -69,6 +70,8 @@ mixin BaseViewMixin {
       bottomSheet: buildBottomSheet(context),
     );
   }
+
+  void onPopInvoked(bool didPop) {}
 
   void dismissKeyBoard(BuildContext context) {
     if (FocusScope.of(context).hasFocus) {
