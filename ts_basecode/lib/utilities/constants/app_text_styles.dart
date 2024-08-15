@@ -85,6 +85,9 @@ class AppTextStyles {
   static final s16w600 =
       blackDefaultStyle.copyWith(fontSize: 16, fontWeight: FontWeight.w600);
 
+  static final s14w400 =
+      blackDefaultStyle.copyWith(fontSize: 14, fontWeight: FontWeight.w400);
+
   static const whiteDefaultStyle = TextStyle(
     fontFamily: FontFamily.notoSans,
     color: ColorName.white,

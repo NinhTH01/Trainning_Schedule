@@ -23,6 +23,8 @@ mixin BaseViewMixin {
 
   PreferredSizeWidget? buildAppBar(BuildContext context);
 
+  Widget? buildFloatingActionButton(BuildContext context) => null;
+
   Widget? buildBottomNavigatorBar(BuildContext context) => null;
 
   Widget? buildBottomSheet(BuildContext context) => null;
@@ -66,6 +68,7 @@ mixin BaseViewMixin {
           ),
         ),
       ),
+      floatingActionButton: buildFloatingActionButton(context),
       bottomNavigationBar: buildBottomNavigatorBar(context),
       bottomSheet: buildBottomSheet(context),
     );

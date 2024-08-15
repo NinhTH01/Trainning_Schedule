@@ -9,7 +9,6 @@ import 'package:ts_basecode/screens/map/map_screen.dart';
 import 'package:ts_basecode/screens/splash/splash_screen.dart';
 import 'package:ts_basecode/screens/weather/weather_screen.dart';
 
-import '../screens/calendar_date_event_list/calendar_date_event_list_screen.dart';
 import '../screens/onboarding/onboarding_screen.dart';
 
 part 'app_router.gr.dart';
@@ -26,8 +25,6 @@ class AppRouter extends _$AppRouter {
             path: 'calendarTab',
             children: [
               AutoRoute(page: CalendarRoute.page, path: ''),
-              AutoRoute(
-                  page: CalendarDateEventListRoute.page, path: 'dateEventList'),
               AutoRoute(
                   page: CalendarDateEventEditRoute.page, path: 'dateEventEdit'),
             ],

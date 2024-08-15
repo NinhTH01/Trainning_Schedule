@@ -8,21 +8,25 @@ Widget calendarHeader({
   required void Function() changeToLastMonth,
 }) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    padding: const EdgeInsets.symmetric(horizontal: 20.0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(
-          onPressed: changeToLastMonth,
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
         Text(
-          DateFormat('MMMM').format(currentDate ?? DateTime.now()),
-          style: AppTextStyles.s18b,
+          DateFormat('MMMM yyyy').format(currentDate ?? DateTime.now()),
+          style: AppTextStyles.s24b,
         ),
-        IconButton(
-          onPressed: changeToNextMonth,
-          icon: const Icon(Icons.arrow_forward_ios),
+        Row(
+          children: [
+            IconButton(
+              onPressed: changeToLastMonth,
+              icon: const Icon(Icons.arrow_back_ios, size: 20),
+            ),
+            IconButton(
+              onPressed: changeToNextMonth,
+              icon: const Icon(Icons.arrow_forward_ios, size: 20),
+            ),
+          ],
         ),
       ],
     ),

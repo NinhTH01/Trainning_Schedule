@@ -98,6 +98,7 @@ abstract class BaseViewState<View extends BaseView,
             onClosed: Geolocator.openLocationSettings,
           );
     }
+
     if (error is TimeoutException) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,

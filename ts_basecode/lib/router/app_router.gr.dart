@@ -27,16 +27,6 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
-    CalendarDateEventListRoute.name: (routeData) {
-      final args = routeData.argsAs<CalendarDateEventListRouteArgs>();
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CalendarDateEventListScreen(
-          key: args.key,
-          calendarDate: args.calendarDate,
-        ),
-      );
-    },
     CalendarRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -100,7 +90,7 @@ class CalendarDateEventEditRoute
     extends PageRouteInfo<CalendarDateEventEditRouteArgs> {
   CalendarDateEventEditRoute({
     Key? key,
-    required EventDateInfo calendarDate,
+    required DateTime calendarDate,
     required bool isEdit,
     Event? event,
     List<PageRouteInfo>? children,
@@ -131,7 +121,7 @@ class CalendarDateEventEditRouteArgs {
 
   final Key? key;
 
-  final EventDateInfo calendarDate;
+  final DateTime calendarDate;
 
   final bool isEdit;
 
@@ -140,45 +130,6 @@ class CalendarDateEventEditRouteArgs {
   @override
   String toString() {
     return 'CalendarDateEventEditRouteArgs{key: $key, calendarDate: $calendarDate, isEdit: $isEdit, event: $event}';
-  }
-}
-
-/// generated route for
-/// [CalendarDateEventListScreen]
-class CalendarDateEventListRoute
-    extends PageRouteInfo<CalendarDateEventListRouteArgs> {
-  CalendarDateEventListRoute({
-    Key? key,
-    required EventDateInfo calendarDate,
-    List<PageRouteInfo>? children,
-  }) : super(
-          CalendarDateEventListRoute.name,
-          args: CalendarDateEventListRouteArgs(
-            key: key,
-            calendarDate: calendarDate,
-          ),
-          initialChildren: children,
-        );
-
-  static const String name = 'CalendarDateEventListRoute';
-
-  static const PageInfo<CalendarDateEventListRouteArgs> page =
-      PageInfo<CalendarDateEventListRouteArgs>(name);
-}
-
-class CalendarDateEventListRouteArgs {
-  const CalendarDateEventListRouteArgs({
-    this.key,
-    required this.calendarDate,
-  });
-
-  final Key? key;
-
-  final EventDateInfo calendarDate;
-
-  @override
-  String toString() {
-    return 'CalendarDateEventListRouteArgs{key: $key, calendarDate: $calendarDate}';
   }
 }
 

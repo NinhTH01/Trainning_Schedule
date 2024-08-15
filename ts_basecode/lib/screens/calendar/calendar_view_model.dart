@@ -16,30 +16,37 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   final SqfliteManager sqfliteManager;
 
   Future<void> onInitData() async {
-    state = state.copyWith(currentDate: DateTime.now());
-    await getDefaultDateList();
-    fetchEventDateList();
+    state = state.copyWith(
+      currentDate: DateTime.now(),
+      selectedDate: DateTime.now(),
+    );
+    fetchData();
   }
 
-  void changeCurrentDateToNextMonth() {
+  Future<void> fetchData() async {
+    await getDefaultDateList();
+    await getDateEventList(state.selectedDate ?? DateTime.now());
+  }
+
+  void changeCurrentDateToNextMonth() async {
     if (state.currentDate != null) {
       state = state.copyWith(
           currentDate: DateTime(
         state.currentDate!.year,
         state.currentDate!.month + 1,
       ));
-      fetchEventDateList();
+      await getDefaultDateList();
     }
   }
 
-  void changeCurrentDateToLastMonth() {
+  void changeCurrentDateToLastMonth() async {
     if (state.currentDate != null) {
       state = state.copyWith(
           currentDate: DateTime(
         state.currentDate!.year,
         state.currentDate!.month - 1,
       ));
-      fetchEventDateList();
+      await getDefaultDateList();
     }
   }
 
@@ -62,10 +69,12 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
       }
 
       state = state.copyWith(defaultDateList: defaultDateInfoList);
+
+      _fetchEventDateList();
     }
   }
 
-  Future<void> fetchEventDateList() async {
+  Future<void> _fetchEventDateList() async {
     if (state.defaultDateList.isNotEmpty) {
       final eventList = await sqfliteManager.getList();
 
@@ -74,7 +83,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
       for (EventDateInfo date in state.defaultDateList) {
         bool hasEvent = false;
         for (Event event in eventList) {
-          if (_isSameDay(date.date, event.createdTime)) {
+          if (isSameDay(date.date, event.createdTime)) {
             hasEvent = true;
             break;
           }
@@ -87,7 +96,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
     }
   }
 
-  bool _isSameDay(DateTime? date1, DateTime? date2) {
+  bool isSameDay(DateTime? date1, DateTime? date2) {
     if (date1 != null && date2 != null) {
       return date1.year == date2.year &&
           date1.month == date2.month &&
@@ -95,5 +104,15 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
     } else {
       return false;
     }
+  }
+
+  void updateSelectedDate(DateTime date) async {
+    state = state.copyWith(selectedDate: date);
+    await getDateEventList(date);
+  }
+
+  Future<void> getDateEventList(DateTime date) async {
+    List<Event> eventList = await sqfliteManager.getListOnDate(date);
+    state = state.copyWith(eventList: eventList);
   }
 }

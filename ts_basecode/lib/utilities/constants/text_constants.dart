@@ -37,7 +37,7 @@ class TextConstants {
   static const weekday_7 = 'Sun';
 
   /// Calendar Date Event List Screen
-  static const noEvent = 'There is no event';
+  static const noEvent = 'There is no events in this day.';
 
   /// Calendar Date Event Edit Screen
   static const newEvent = 'New Event';
@@ -70,4 +70,5 @@ class TextConstants {
       'Weather Forecast for next 5 days /3 hours';
 
   static const retry = 'Retry';
+  static const today = 'Today';
 }

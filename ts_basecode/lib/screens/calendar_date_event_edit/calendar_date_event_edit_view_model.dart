@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
-import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_state.dart';
 
@@ -21,6 +20,7 @@ class CalendarDateEventEditViewModel
     state = state.copyWith(
       textEditController: TextEditingController(text: event?.description ?? ''),
       eventTime: TimeOfDay.fromDateTime(event?.createdTime ?? DateTime.now()),
+      eventDate: event?.createdTime ?? DateTime.now(),
     );
   }
 
@@ -30,8 +30,13 @@ class CalendarDateEventEditViewModel
     );
   }
 
+  void updateEventDate(DateTime dateTime) {
+    state = state.copyWith(
+      eventDate: dateTime,
+    );
+  }
+
   Future<void> updateEvent({
-    required EventDateInfo date,
     required bool isEdit,
     Event? eventInfo,
   }) async {
@@ -40,9 +45,9 @@ class CalendarDateEventEditViewModel
 
     final event = eventInfo!.copyWith(
       createdTime: DateTime(
-        date.date!.year,
-        date.date!.month,
-        date.date!.day,
+        state.eventDate!.year,
+        state.eventDate!.month,
+        state.eventDate!.day,
         selectedTime.hour,
         selectedTime.minute,
       ),
@@ -51,18 +56,15 @@ class CalendarDateEventEditViewModel
     await sqfliteManager.update(event);
   }
 
-  Future<void> addEvent({
-    required EventDateInfo date,
-    required bool isEdit,
-  }) async {
+  Future<void> addEvent() async {
     final selectedTime = state.eventTime;
     final description = state.textEditController!.text;
 
     final event = Event(
       createdTime: DateTime(
-        date.date!.year,
-        date.date!.month,
-        date.date!.day,
+        state.eventDate!.year,
+        state.eventDate!.month,
+        state.eventDate!.day,
         selectedTime.hour,
         selectedTime.minute,
       ),
