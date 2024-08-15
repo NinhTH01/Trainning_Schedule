@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
+import 'package:ts_basecode/components/dialog/dialog_provider.dart';
+import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 
 import 'base_view_mixin.dart';
 import 'base_view_model.dart';
@@ -49,7 +52,7 @@ abstract class BaseViewState<View extends BaseView,
   }
 
   Future<void> handleError(
-    Object error, {
+    dynamic error, {
     void Function()? onButtonTapped,
   }) async {
     String? errorMessage;
@@ -69,6 +72,13 @@ abstract class BaseViewState<View extends BaseView,
           errorMessage = error.response?.statusMessage;
         }
       }
+    } else if (error is AlwaysPermissionException) {
+      await ref.read(alertDialogProvider).showAlertDialog(
+            context: context,
+            buttonTitle: 'Go to Setting',
+            title: error.message,
+            onClosed: Geolocator.openLocationSettings,
+          );
     }
 
     if (errorMessage != null) {
