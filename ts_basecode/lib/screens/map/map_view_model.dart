@@ -79,7 +79,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   /// Action handle
 
   Future<void> toggleRunning(
-    Future<void> Function({
+    Future<void>? Function({
       required Uint8List image,
       required double distance,
       required void Function() onClose,
@@ -139,7 +139,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> _takeScreenshot(
-    Future<void> Function({
+    Future<void>? Function({
       required Uint8List image,
       required double distance,
       required void Function() onClose,
@@ -240,6 +240,7 @@ class MapViewModel extends BaseViewModel<MapState> {
         lastCoordinate.latitude,
         lastCoordinate.longitude,
       );
+      // totalDistanceProvider.notifier.state = 12;
       state = state.copyWith(
         totalDistance: state.totalDistance + distance,
         distanceCoveredSinceLastNotification:
@@ -296,5 +297,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
         ?.buffer
         .asUint8List();
+  }
+
+  double getDis() {
+    state = state.copyWith(isRunning: !state.isRunning);
+    return state.totalDistance;
   }
 }

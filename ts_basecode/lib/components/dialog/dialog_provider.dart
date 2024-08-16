@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 import 'error_dialog.dart';
 
-final alertDialogProvider = Provider<AlertDialog>((ref) => AlertDialog(ref));
+final dialogProvider = Provider<Dialog>((ref) => Dialog(ref));
 
-class AlertDialog {
-  AlertDialog(this.ref);
+class Dialog {
+  Dialog(this.ref);
 
   final Ref ref;
 
@@ -45,5 +47,39 @@ class AlertDialog {
             },
           );
         });
+  }
+
+  Future<void> showFinishDialog({
+    required BuildContext context,
+    required Uint8List image,
+    required double distance,
+    VoidCallback? onClosed,
+  }) async {
+    await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(child: Image.memory(image)),
+              Text('You have run ${distance.toStringAsFixed(2)} meters'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text(TextConstants.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onClosed != null) {
+                  onClosed();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

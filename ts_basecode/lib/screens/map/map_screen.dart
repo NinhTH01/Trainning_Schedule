@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,8 +10,8 @@ import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
-final _provider = StateNotifierProvider.autoDispose<MapViewModel, MapState>(
-    (ref) => MapViewModel(
+final mapProvider =
+    StateNotifierProvider<MapViewModel, MapState>((ref) => MapViewModel(
           ref: ref,
           geolocatorManager: ref.watch(geolocatorProvider),
           localNotificationManager: ref.watch(localNotificationProvider),
@@ -52,13 +51,13 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
 
-  MapState get state => ref.watch(_provider);
+  MapState get state => ref.watch(mapProvider);
 
   @override
   String get screenName => MapRoute.name;
 
   @override
-  MapViewModel get viewModel => ref.read(_provider.notifier);
+  MapViewModel get viewModel => ref.read(mapProvider.notifier);
 
   Future<void> _onInitState() async {
     Object? error;
@@ -72,37 +71,6 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     if (error != null) {
       handleError(error);
     }
-  }
-
-  Future<void> _showFinishDialog({
-    required Uint8List image,
-    required double distance,
-    required void Function() onClose,
-  }) async {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(child: Image.memory(image)),
-              Text('You have run ${distance.toStringAsFixed(2)} meters'),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(TextConstants.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-                onClose();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -142,7 +110,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               padding: const EdgeInsets.all(24),
             ),
             onPressed: () {
-              viewModel.toggleRunning(_showFinishDialog);
+              viewModel.toggleRunning(showFinishDialog);
             },
             child: Text(
               state.isRunning ? TextConstants.mapStop : TextConstants.mapStart,

@@ -20,6 +20,11 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static final s12w500 = defaultStyle.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+  );
+
   /// Splash Screen
   static const appNameStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 24);

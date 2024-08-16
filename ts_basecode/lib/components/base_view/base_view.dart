@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,6 +53,19 @@ abstract class BaseViewState<View extends BaseView,
     FocusScope.of(context).nextFocus();
   }
 
+  Future<void> showFinishDialog({
+    required Uint8List image,
+    required double distance,
+    required void Function() onClose,
+  }) async {
+    await ref.read(dialogProvider).showFinishDialog(
+          context: context,
+          distance: distance,
+          image: image,
+          onClosed: onClose,
+        );
+  }
+
   Future<void> handleError(
     dynamic error, {
     void Function()? onButtonTapped,
@@ -73,7 +88,7 @@ abstract class BaseViewState<View extends BaseView,
         }
       }
     } else if (error is AlwaysPermissionException) {
-      await ref.read(alertDialogProvider).showAlertDialog(
+      await ref.read(dialogProvider).showAlertDialog(
             context: context,
             buttonTitle: 'Go to Setting',
             title: error.message,

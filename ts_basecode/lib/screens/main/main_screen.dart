@@ -30,6 +30,9 @@ class _HomeViewState extends BaseViewState<MainScreen, MainViewModel> {
   MainViewModel get viewModel => ref.read(_provider.notifier);
 
   @override
+  bool get canPop => false;
+
+  @override
   Widget buildBody(BuildContext context) {
     return AutoTabsScaffold(
       routes: const [
