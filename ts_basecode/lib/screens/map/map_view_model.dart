@@ -1,79 +1,115 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
+import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
+import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class MapViewModel extends BaseViewModel<MapState> {
   MapViewModel({
     required this.ref,
     required this.geolocatorManager,
+    required this.localNotificationManager,
   }) : super(const MapState());
 
   final Ref ref;
 
   final GeolocatorManager geolocatorManager;
 
+  final LocalNotificationManager localNotificationManager;
+
+  final double distanceThreshold = 100.0;
+
   void setupGoogleMapController(GoogleMapController mapController) {
     state = state.copyWith(googleMapController: mapController);
   }
 
+  Future<void> getLocationUpdate() async {
+    try {
+      if (await geolocatorManager.checkAlwaysPermission() &&
+          state.currentPosition == null) {
+        Stream<Position> activeCurrentLocationStream =
+            await geolocatorManager.getActiveCurrentLocationStream();
+
+        activeCurrentLocationStream.listen((Position? position) async {
+          if (position != null && !state.isTakingScreenshot) {
+            final updatedLocation =
+                LatLng(position.latitude, position.longitude);
+
+            state = state.copyWith(
+              currentPosition: updatedLocation,
+            );
+
+            _drawPolyline(updatedLocation);
+
+            if (await _checkIfCameraIsOutsideMarker() == false) {
+              _moveCamera(updatedLocation);
+            }
+          }
+        });
+      }
+    } on AlwaysPermissionException {
+      rethrow;
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  /// Action handle
+
   Future<void> toggleRunning(
-    Function(Uint8List, double) onScreenshotCaptured,
+    Future<void> Function({
+      required Uint8List image,
+      required double distance,
+      required void Function() onClose,
+    }) onScreenshotCaptured,
   ) async {
     final isRunning = state.isRunning;
-    if (isRunning) {
-      final newDistance =
-          calculatePolylineDistance(state.polylineCoordinateList);
 
-      await _takeScreenshot(onScreenshotCaptured, newDistance);
+    if (isRunning) {
+      await _takeScreenshot(onScreenshotCaptured, state.totalDistance);
 
       state = state.copyWith(
         polylines: {},
         polylineCoordinateList: [],
+        totalDistance: 0.0,
+        distanceCoveredSinceLastNotification: 0.0,
+        distanceThresholdPassCounter: 1,
       );
+    } else {
+      final currentLocation = await geolocatorManager.getCurrentLocation();
+
+      _drawPolyline(
+          LatLng(currentLocation.latitude, currentLocation.longitude));
     }
     state = state.copyWith(isRunning: !state.isRunning);
   }
 
-  Future<void> getLocationUpdate() async {
-    Stream<Position> activeCurrentLocationStream =
-        await geolocatorManager.getActiveCurrentLocationStream();
-
-    activeCurrentLocationStream.listen((Position? position) {
-      if (position != null) {
-        final updatedLocation = LatLng(position.latitude, position.longitude);
-
-        state = state.copyWith(
-          currentPosition: updatedLocation,
-        );
-
-        _moveCamera(updatedLocation);
-
-        _drawPolyline(updatedLocation);
-      }
-    });
-  }
-
-  void _moveCamera(LatLng updatedLocation) {
-    final controller = state.googleMapController;
-    if (controller != null) {
-      controller.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: updatedLocation,
-            zoom: 18.0,
-          ),
-        ),
+  void _showNotification() {
+    if (state.distanceCoveredSinceLastNotification >= distanceThreshold) {
+      localNotificationManager.showNotification(
+          title: TextConstants.appName,
+          description:
+              'You have run ${100 * state.distanceThresholdPassCounter}m');
+      state = state.copyWith(
+        distanceCoveredSinceLastNotification:
+            state.distanceCoveredSinceLastNotification - distanceThreshold,
+        distanceThresholdPassCounter: state.distanceThresholdPassCounter + 1,
       );
     }
   }
 
   void _drawPolyline(LatLng updatedLocation) {
     if (state.isRunning) {
+      _calculateNewDistance(updatedLocation);
+      _showNotification();
       state = state.copyWith(
         polylineCoordinateList: List.from(state.polylineCoordinateList)
           ..add(updatedLocation),
@@ -91,16 +127,33 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  Future<void> _setCameraToPolylineBounds() async {
+  Future<void> _takeScreenshot(
+    Future<void> Function({
+      required Uint8List image,
+      required double distance,
+      required void Function() onClose,
+    }) onScreenshotCaptured,
+    double distance,
+  ) async {
     final controller = state.googleMapController;
+    state = state.copyWith(isTakingScreenshot: true);
     if (controller != null) {
-      var bounds = _calculateBoundsForPolylines(state.polylineCoordinateList);
-
-      var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
-      await controller.animateCamera(cameraUpdate);
+      await _setCameraToPolylineBounds();
+      await Future.delayed(const Duration(seconds: 1));
+      final image = await controller.takeSnapshot();
+      if (image != null) {
+        onScreenshotCaptured(
+            image: image,
+            distance: distance,
+            onClose: () {
+              state = state.copyWith(isTakingScreenshot: false);
+              _moveCamera(state.currentPosition!);
+            });
+      }
     }
   }
 
+  /// Camera handle
   LatLngBounds _calculateBoundsForPolylines(List<LatLng> points) {
     var southWestLat = points[0].latitude;
     var southWestLng = points[0].longitude;
@@ -121,40 +174,65 @@ class MapViewModel extends BaseViewModel<MapState> {
         northEastLng = point.longitude;
       }
     }
-
     return LatLngBounds(
       southwest: LatLng(southWestLat, southWestLng),
       northeast: LatLng(northEastLat, northEastLng),
     );
   }
 
-  Future<void> _takeScreenshot(
-    Function(Uint8List, double) onScreenshotCaptured,
-    double distance,
-  ) async {
+  Future<void> _setCameraToPolylineBounds() async {
     final controller = state.googleMapController;
     if (controller != null) {
-      await _setCameraToPolylineBounds();
-      await Future.delayed(const Duration(seconds: 1));
-      final image = await controller.takeSnapshot();
-      if (image != null) {
-        onScreenshotCaptured(image, distance);
-      }
+      var bounds = _calculateBoundsForPolylines(state.polylineCoordinateList);
+
+      var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
+      await controller.animateCamera(cameraUpdate);
     }
   }
 
-  double calculatePolylineDistance(List<LatLng> polylinePoints) {
-    var totalDistance = 0.0;
+  Future<bool> _checkIfCameraIsOutsideMarker() async {
+    if (state.googleMapController == null) {
+      await Future.delayed(const Duration(seconds: 1));
+      return _checkIfCameraIsOutsideMarker();
+    }
+    final bounds = await state.googleMapController!.getVisibleRegion();
+    final isInside =
+        bounds.northeast.latitude >= state.currentPosition!.latitude &&
+            bounds.southwest.latitude <= state.currentPosition!.latitude &&
+            bounds.northeast.longitude >= state.currentPosition!.longitude &&
+            bounds.southwest.longitude <= state.currentPosition!.longitude;
+    return isInside;
+  }
 
-    for (var i = 0; i < polylinePoints.length - 1; i++) {
-      totalDistance += Geolocator.distanceBetween(
-        polylinePoints[i].latitude,
-        polylinePoints[i].longitude,
-        polylinePoints[i + 1].latitude,
-        polylinePoints[i + 1].longitude,
+  void _moveCamera(LatLng updatedLocation) {
+    final controller = state.googleMapController;
+    if (controller != null) {
+      controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: updatedLocation,
+            zoom: 18.0,
+          ),
+        ),
       );
     }
+  }
 
-    return totalDistance;
+  /// Distance handle
+  void _calculateNewDistance(newCoordinate) {
+    LatLng? lastCoordinate = state.polylineCoordinateList.lastOrNull;
+    if (lastCoordinate != null) {
+      var distance = Geolocator.distanceBetween(
+        newCoordinate!.latitude,
+        newCoordinate.longitude,
+        lastCoordinate.latitude,
+        lastCoordinate.longitude,
+      );
+      state = state.copyWith(
+        totalDistance: state.totalDistance + distance,
+        distanceCoveredSinceLastNotification:
+            state.distanceCoveredSinceLastNotification + distance,
+      );
+    }
   }
 }
