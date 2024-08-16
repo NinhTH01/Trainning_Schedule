@@ -7,6 +7,7 @@ part 'map_state.freezed.dart';
 class MapState with _$MapState {
   const factory MapState({
     @Default(null) LatLng? currentPosition,
+    @Default(null) LatLng? lastPosition,
     @Default(null) GoogleMapController? googleMapController,
     @Default([]) List<LatLng> polylineCoordinateList,
     @Default({}) Set<Polyline> polylines,
@@ -15,6 +16,8 @@ class MapState with _$MapState {
     @Default(0.0) double totalDistance,
     @Default(0.0) double distanceCoveredSinceLastNotification,
     @Default(1) int distanceThresholdPassCounter,
+    @Default(null) BitmapDescriptor? mapMarker,
+    @Default(0.0) double directionAngle,
   }) = _MapState;
 
   const MapState._();

@@ -32,6 +32,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    viewModel.updateMarker();
     _onInitState();
   }
 
@@ -120,11 +121,15 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
           ),
           markers: {
             Marker(
-                markerId: const MarkerId('Id'),
-                position: LatLng(
-                  state.currentPosition?.latitude ?? 0,
-                  state.currentPosition?.longitude ?? 0,
-                )),
+              markerId: const MarkerId('Id'),
+              position: LatLng(
+                state.currentPosition?.latitude ?? 0,
+                state.currentPosition?.longitude ?? 0,
+              ),
+              icon: state.mapMarker ?? BitmapDescriptor.defaultMarker,
+              rotation: state.directionAngle - 90,
+              anchor: const Offset(0.5, 0.5),
+            )
           },
           polylines: state.polylines,
           myLocationButtonEnabled: false,

@@ -31,6 +31,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/icon.jpg
   AssetGenImage get icon => const AssetGenImage('assets/images/icon.jpg');
 
+  /// File path: assets/images/marker_left.png
+  AssetGenImage get markerLeft =>
+      const AssetGenImage('assets/images/marker_left.png');
+
+  /// File path: assets/images/marker_right.png
+  AssetGenImage get markerRight =>
+      const AssetGenImage('assets/images/marker_right.png');
+
   /// File path: assets/images/onboarding1.png
   AssetGenImage get onboarding1 =>
       const AssetGenImage('assets/images/onboarding1.png');
@@ -45,7 +53,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [icon, onboarding1, onboarding2, onboarding3];
+      [icon, markerLeft, markerRight, onboarding1, onboarding2, onboarding3];
 }
 
 class Assets {

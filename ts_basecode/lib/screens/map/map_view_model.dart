@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -27,6 +29,10 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final double distanceThreshold = 100.0;
 
+  final int markerSize = 20;
+
+  final double defaultCameraZoom = 18.0;
+
   void setupGoogleMapController(GoogleMapController mapController) {
     state = state.copyWith(googleMapController: mapController);
   }
@@ -44,14 +50,22 @@ class MapViewModel extends BaseViewModel<MapState> {
                 LatLng(position.latitude, position.longitude);
 
             state = state.copyWith(
+              lastPosition: state.currentPosition,
               currentPosition: updatedLocation,
             );
-
-            _drawPolyline(updatedLocation);
 
             if (await _checkIfCameraIsOutsideMarker() == false) {
               _moveCamera(updatedLocation);
             }
+
+            if (state.isRunning) {
+              _drawPolyline(updatedLocation);
+            }
+
+            if (state.lastPosition != null && state.currentPosition != null) {
+              _calculateBearing(state.lastPosition!, state.currentPosition!);
+            }
+            updateMarker();
           }
         });
       }
@@ -97,7 +111,7 @@ class MapViewModel extends BaseViewModel<MapState> {
       localNotificationManager.showNotification(
           title: TextConstants.appName,
           description:
-              'You have run ${100 * state.distanceThresholdPassCounter}m');
+              'You have run ${distanceThreshold * state.distanceThresholdPassCounter}m');
       state = state.copyWith(
         distanceCoveredSinceLastNotification:
             state.distanceCoveredSinceLastNotification - distanceThreshold,
@@ -107,24 +121,21 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   void _drawPolyline(LatLng updatedLocation) {
-    if (state.isRunning) {
-      _calculateNewDistance(updatedLocation);
-      _showNotification();
-      state = state.copyWith(
-        polylineCoordinateList: List.from(state.polylineCoordinateList)
-          ..add(updatedLocation),
-        polylines: {
-          Polyline(
-            polylineId: const PolylineId('polyline'),
-            visible: true,
-            points: List.from(state.polylineCoordinateList)
-              ..add(updatedLocation),
-            color: ColorName.blue,
-            width: 4,
-          ),
-        },
-      );
-    }
+    _calculateNewDistance(updatedLocation);
+    _showNotification();
+    state = state.copyWith(
+      polylineCoordinateList: List.from(state.polylineCoordinateList)
+        ..add(updatedLocation),
+      polylines: {
+        Polyline(
+          polylineId: const PolylineId('polyline'),
+          visible: true,
+          points: List.from(state.polylineCoordinateList)..add(updatedLocation),
+          color: ColorName.blue,
+          width: 4,
+        ),
+      },
+    );
   }
 
   Future<void> _takeScreenshot(
@@ -211,7 +222,7 @@ class MapViewModel extends BaseViewModel<MapState> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: updatedLocation,
-            zoom: 18.0,
+            zoom: defaultCameraZoom,
           ),
         ),
       );
@@ -221,6 +232,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   /// Distance handle
   void _calculateNewDistance(newCoordinate) {
     LatLng? lastCoordinate = state.polylineCoordinateList.lastOrNull;
+
     if (lastCoordinate != null) {
       var distance = Geolocator.distanceBetween(
         newCoordinate!.latitude,
@@ -234,5 +246,55 @@ class MapViewModel extends BaseViewModel<MapState> {
             state.distanceCoveredSinceLastNotification + distance,
       );
     }
+  }
+
+  /// Angle Direction handle
+  void _calculateBearing(LatLng startPoint, LatLng endPoint) {
+    final double startLat = toRadians(startPoint.latitude);
+    final double startLng = toRadians(startPoint.longitude);
+    final double endLat = toRadians(endPoint.latitude);
+    final double endLng = toRadians(endPoint.longitude);
+
+    final double deltaLng = endLng - startLng;
+
+    final double y = math.sin(deltaLng) * math.cos(endLat);
+    final double x = math.cos(startLat) * math.sin(endLat) -
+        math.sin(startLat) * math.cos(endLat) * math.cos(deltaLng);
+
+    final double bearing = math.atan2(y, x);
+
+    state = state.copyWith(directionAngle: (toDegrees(bearing) + 360) % 360);
+  }
+
+  double toRadians(double degrees) {
+    return degrees * (math.pi / 180.0);
+  }
+
+  double toDegrees(double radians) {
+    return radians * (180.0 / math.pi);
+  }
+
+  /// Marker handle
+  Future<void> updateMarker() async {
+    Uint8List? byteAssets;
+    if (state.directionAngle > 0 && state.directionAngle < 180) {
+      byteAssets = await getBytesFromAsset(
+          path: 'assets/images/marker_right.png', size: markerSize);
+    } else {
+      byteAssets = await getBytesFromAsset(
+          path: 'assets/images/marker_left.png', size: markerSize);
+    }
+    state = state.copyWith(mapMarker: BitmapDescriptor.bytes(byteAssets!));
+  }
+
+  Future<Uint8List?> getBytesFromAsset(
+      {required String path, required int size}) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: size);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        ?.buffer
+        .asUint8List();
   }
 }
