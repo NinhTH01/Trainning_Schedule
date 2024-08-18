@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
+import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
@@ -10,6 +11,9 @@ import 'package:ts_basecode/data/providers/session_repository_provider.dart';
 import 'package:ts_basecode/data/providers/weather_repository.provider.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
+import 'package:ts_basecode/screens/map/map_screen.dart';
+import 'package:ts_basecode/screens/map/map_state.dart';
+import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/screens/weather/components/weather_forecast_container.dart';
 import 'package:ts_basecode/screens/weather/components/weather_status_container.dart';
 import 'package:ts_basecode/screens/weather/components/weather_wind_container.dart';
@@ -99,161 +103,182 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
 
   @override
   Widget buildBody(BuildContext context) {
-    return (state.currentWeather != null && state.weatherForecast != null)
-        ? DecoratedBox(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  _getBackgroundImagePath(
-                      state.currentWeather?.weather?[0].main),
-                ),
-                fit: BoxFit
-                    .cover, // Adjust the fit property to control how the image is resized to cover the container
-              ),
-            ),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  // Start: Weather Detail
-                  SizedBox(
-                    height: state.containerHeight,
-                    child: Column(
-                      children: [
-                        Text(
-                          state.currentWeather!.name!,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        state.containerHeight >
-                                _maxContainerHeight - _maxOffsetDescription
-                            ? Opacity(
-                                opacity: state.descriptionOpacity,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      '${state.currentWeather?.main?.temp?.round()}°',
-                                      style: const TextStyle(
-                                        fontSize: 60,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Text(
-                                      state.currentWeather!.weather![0]
-                                          .description!
-                                          .capitalizeFirstLetter(),
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Text(
-                                      'H:${state.currentWeather?.main?.tempMax?.round()}  L:${state.currentWeather?.main?.tempMin?.round()}',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Opacity(
-                                opacity: state.minimizeOpacity,
-                                child: Text(
-                                  '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weather![0].description!.capitalizeFirstLetter()}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                      ],
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    return Stack(
+      children: [
+        mapState.isRunning
+            ? StatusView(
+                distance: mapState.totalDistance,
+                onPress: () {
+                  context.tabsRouter.setActiveIndex(1);
+                  mapViewModel.toggleRunning(showFinishDialog);
+                },
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              )
+            : const SizedBox(),
+        (state.currentWeather != null && state.weatherForecast != null)
+            ? DecoratedBox(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      _getBackgroundImagePath(
+                          state.currentWeather?.weather?[0].main),
                     ),
+                    fit: BoxFit
+                        .cover, // Adjust the fit property to control how the image is resized to cover the container
                   ),
-                  // End: header Detail
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const _NoBounceScrollPhysics(),
-                      padding: EdgeInsets.only(top: state.scrollPadding),
-                      controller: _scrollController,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // First item
-                          WeatherForecastContainer(
-                            weather: state.currentWeather ?? const Weather(),
-                            weatherForecast: state.weatherForecast ??
-                                const WeatherForecast(),
-                          ),
-                          WeatherWindContainer(weather: state.currentWeather!),
-                          // Grid
-                          GridView(
-                            padding: const EdgeInsets.all(16.0),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, // Number of columns
-                              crossAxisSpacing: 20.0,
-                              mainAxisSpacing: 24.0,
-                              childAspectRatio: 1, // Width / Height ratio
+                ),
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      // Start: Weather Detail
+                      SizedBox(
+                        height: state.containerHeight,
+                        child: Column(
+                          children: [
+                            Text(
+                              state.currentWeather!.name!,
+                              style: const TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
+                            state.containerHeight >
+                                    _maxContainerHeight - _maxOffsetDescription
+                                ? Opacity(
+                                    opacity: state.descriptionOpacity,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '${state.currentWeather?.main?.temp?.round()}°',
+                                          style: const TextStyle(
+                                            fontSize: 60,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          state.currentWeather!.weather![0]
+                                              .description!
+                                              .capitalizeFirstLetter(),
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Text(
+                                          'H:${state.currentWeather?.main?.tempMax?.round()}  L:${state.currentWeather?.main?.tempMin?.round()}',
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Opacity(
+                                    opacity: state.minimizeOpacity,
+                                    child: Text(
+                                      '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weather![0].description!.capitalizeFirstLetter()}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                          ],
+                        ),
+                      ),
+                      // End: header Detail
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: const _NoBounceScrollPhysics(),
+                          padding: EdgeInsets.only(top: state.scrollPadding),
+                          controller: _scrollController,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              WeatherStatusContainer(
-                                title: 'HUMIDITY',
-                                value: state.currentWeather?.main?.humidity ==
-                                        null
-                                    ? null
-                                    : '${state.currentWeather?.main?.humidity}%',
-                                backgroundColor: state.backgroundColor!,
+                              // First item
+                              WeatherForecastContainer(
+                                weather:
+                                    state.currentWeather ?? const Weather(),
+                                weatherForecast: state.weatherForecast ??
+                                    const WeatherForecast(),
                               ),
-                              WeatherStatusContainer(
-                                title: 'FEELS LIKE',
-                                value:
-                                    '${state.currentWeather?.main?.feelsLike?.round()}°',
-                                backgroundColor: state.backgroundColor!,
-                              ),
-                              WeatherStatusContainer(
-                                title: 'SUNSET',
-                                value: WeatherHelper.unixToHHmm(
-                                    state.currentWeather!.sys!.sunset!),
-                                backgroundColor: state.backgroundColor!,
-                              ),
-                              WeatherStatusContainer(
-                                title: 'SUNRISE',
-                                value: WeatherHelper.unixToHHmm(
-                                    state.currentWeather!.sys!.sunrise!),
-                                backgroundColor: state.backgroundColor!,
-                              ),
-                              WeatherStatusContainer(
-                                title: 'PRESSURE',
-                                value:
-                                    '${state.currentWeather?.main?.pressure}\nhPa',
-                                backgroundColor: state.backgroundColor!,
-                              ),
-                              WeatherStatusContainer(
-                                title: 'VISIBILITY',
-                                value: state.currentWeather?.visibility == null
-                                    ? null
-                                    : '${state.currentWeather!.visibility! / 1000} km',
-                                backgroundColor: state.backgroundColor!,
+                              WeatherWindContainer(
+                                  weather: state.currentWeather!),
+                              // Grid
+                              GridView(
+                                padding: const EdgeInsets.all(16.0),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2, // Number of columns
+                                  crossAxisSpacing: 20.0,
+                                  mainAxisSpacing: 24.0,
+                                  childAspectRatio: 1, // Width / Height ratio
+                                ),
+                                children: [
+                                  WeatherStatusContainer(
+                                    title: 'HUMIDITY',
+                                    value: state.currentWeather?.main
+                                                ?.humidity ==
+                                            null
+                                        ? null
+                                        : '${state.currentWeather?.main?.humidity}%',
+                                    backgroundColor: state.backgroundColor!,
+                                  ),
+                                  WeatherStatusContainer(
+                                    title: 'FEELS LIKE',
+                                    value:
+                                        '${state.currentWeather?.main?.feelsLike?.round()}°',
+                                    backgroundColor: state.backgroundColor!,
+                                  ),
+                                  WeatherStatusContainer(
+                                    title: 'SUNSET',
+                                    value: WeatherHelper.unixToHHmm(
+                                        state.currentWeather!.sys!.sunset!),
+                                    backgroundColor: state.backgroundColor!,
+                                  ),
+                                  WeatherStatusContainer(
+                                    title: 'SUNRISE',
+                                    value: WeatherHelper.unixToHHmm(
+                                        state.currentWeather!.sys!.sunrise!),
+                                    backgroundColor: state.backgroundColor!,
+                                  ),
+                                  WeatherStatusContainer(
+                                    title: 'PRESSURE',
+                                    value:
+                                        '${state.currentWeather?.main?.pressure}\nhPa',
+                                    backgroundColor: state.backgroundColor!,
+                                  ),
+                                  WeatherStatusContainer(
+                                    title: 'VISIBILITY',
+                                    value: state.currentWeather?.visibility ==
+                                            null
+                                        ? null
+                                        : '${state.currentWeather!.visibility! / 1000} km',
+                                    backgroundColor: state.backgroundColor!,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ))
-        : const Center(child: CircularProgressIndicator());
+                ))
+            : const Center(child: CircularProgressIndicator())
+      ],
+    );
   }
 
   MapState get mapState => ref.watch(mapProvider);
