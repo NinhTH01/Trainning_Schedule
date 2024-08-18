@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ts_basecode/models/api/responses/onboarding_slide.dart';
+import 'package:ts_basecode/data/models/storage/onboarding_slide/onboarding_slide.dart';
 import 'package:ts_basecode/screens/onboarding/data/onboarding_slide_list.dart';
 
 part 'onboarding_state.freezed.dart';
