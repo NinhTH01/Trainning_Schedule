@@ -24,7 +24,7 @@ class StatusView extends ConsumerWidget {
     // Get the top inset
     final topInset = MediaQuery.of(context).padding.top;
 
-    const double viewSize = 60;
+    const double viewSize = 140;
 
     // Watch the position state
     final position = ref.watch(draggablePositionProvider);
@@ -52,7 +52,7 @@ class StatusView extends ConsumerWidget {
               );
         },
         child: Container(
-            // width: 150,
+            width: viewSize,
             // height: viewSize,
             decoration: BoxDecoration(
               color: ColorName.grayFFFAFAFA,
@@ -121,12 +121,14 @@ class StatusView extends ConsumerWidget {
         position.dy >= screenHeight - viewSize - snapThreshold - 140;
 
     return BorderRadius.only(
-      topLeft: nearLeft || nearTop ? Radius.zero : Radius.circular(radius),
-      topRight: nearRight || nearTop ? Radius.zero : Radius.circular(radius),
+      topLeft:
+          nearLeft || nearTop ? Radius.zero : const Radius.circular(radius),
+      topRight:
+          nearRight || nearTop ? Radius.zero : const Radius.circular(radius),
       bottomLeft:
-          nearLeft || nearBottom ? Radius.zero : Radius.circular(radius),
+          nearLeft || nearBottom ? Radius.zero : const Radius.circular(radius),
       bottomRight:
-          nearRight || nearBottom ? Radius.zero : Radius.circular(radius),
+          nearRight || nearBottom ? Radius.zero : const Radius.circular(radius),
     );
   }
 }
