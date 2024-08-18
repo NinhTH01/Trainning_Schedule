@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/components/divider/divider_horizontal.dart';
-import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
@@ -55,12 +54,8 @@ class ErrorDialog extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  TextConstants.close,
                   buttonTitle ?? TextConstants.close,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.s16w400.copyWith(
-                    color: ColorName.black,
-                  ),
                   style: AppTextStyles.s16w400,
                 ),
               ),
@@ -68,7 +63,6 @@ class ErrorDialog extends StatelessWidget {
           ],
         ),
       ),
-      onWillPop: () async => true,
     );
   }
 }
