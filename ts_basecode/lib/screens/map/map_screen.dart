@@ -31,7 +31,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    viewModel.updateMarker();
+    viewModel.updateCurrentLocationMarker();
     _onInitState();
   }
 
@@ -87,7 +87,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             ),
             zoom: 18.0,
           ),
-          onTap: viewModel.getLocation,
+          onTap: viewModel.createScheduleMarker,
           markers: state.markers,
           polylines: state.polylines,
           myLocationButtonEnabled: false,

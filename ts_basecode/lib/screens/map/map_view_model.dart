@@ -12,6 +12,7 @@ import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
+import 'package:ts_basecode/screens/map/models/marker_type.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class MapViewModel extends BaseViewModel<MapState> {
@@ -28,6 +29,8 @@ class MapViewModel extends BaseViewModel<MapState> {
   final LocalNotificationManager localNotificationManager;
 
   final double distanceThreshold = 100.0;
+
+  final double distanceMarkerThreshold = 10.0;
 
   final int markerSize = 20;
 
@@ -60,13 +63,14 @@ class MapViewModel extends BaseViewModel<MapState> {
 
             if (state.isRunning) {
               _drawPolyline(updatedLocation);
+              updateMarkerToFinish();
             }
 
             if (state.lastPosition != null && state.currentPosition != null) {
               _calculateBearing(state.lastPosition!, state.currentPosition!);
             }
-            updateMarker();
-            _createMarkersFromLocations();
+            updateCurrentLocationMarker();
+            _createMarkersFromLocationsBasedOnAngle();
           }
         });
       }
@@ -241,7 +245,6 @@ class MapViewModel extends BaseViewModel<MapState> {
         lastCoordinate.latitude,
         lastCoordinate.longitude,
       );
-      // totalDistanceProvider.notifier.state = 12;
       state = state.copyWith(
         totalDistance: state.totalDistance + distance,
         distanceCoveredSinceLastNotification:
@@ -277,7 +280,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   /// Marker handle
-  Future<void> updateMarker() async {
+  Future<void> updateCurrentLocationMarker() async {
     Uint8List? byteAssets;
     if (state.directionAngle > 0 && state.directionAngle < 180) {
       byteAssets = await getBytesFromAsset(
@@ -289,8 +292,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     state = state.copyWith(mapMarker: BitmapDescriptor.bytes(byteAssets!));
   }
 
-  Future<Uint8List?> getBytesFromAsset(
-      {required String path, required int size}) async {
+  Future<Uint8List?> getBytesFromAsset({
+    required String path,
+    required int size,
+  }) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
         targetWidth: size);
@@ -300,18 +305,31 @@ class MapViewModel extends BaseViewModel<MapState> {
         .asUint8List();
   }
 
-  void _createMarkersFromLocations() {
+  Future<void> _createMarkersFromLocationsBasedOnAngle() async {
     Set<Marker> markers = {};
 
-    for (var location in state.markersCoordinateList) {
+    for (LatLng location in state.locationMarkersCoordinateList) {
+      Uint8List? byteAssets = await getBytesFromAsset(
+          path: 'assets/images/location_marker.png', size: 40);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
-          icon: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueRed,
-          ),
+          icon: BitmapDescriptor.bytes(byteAssets!),
           onTap: () {
-            removeLocation(location);
+            removeMarker(location: location, markerType: MarkerType.schedule);
+          });
+      markers.add(marker);
+    }
+
+    for (LatLng location in state.finishMarkersCoordinateList) {
+      Uint8List? byteAssets = await getBytesFromAsset(
+          path: 'assets/images/finish_marker.png', size: 40);
+      Marker marker = Marker(
+          markerId: MarkerId(location.longitude.toString()),
+          position: LatLng(location.latitude, location.longitude),
+          icon: BitmapDescriptor.bytes(byteAssets!),
+          onTap: () {
+            removeMarker(location: location, markerType: MarkerType.finish);
           });
       markers.add(marker);
     }
@@ -331,19 +349,49 @@ class MapViewModel extends BaseViewModel<MapState> {
     state = state.copyWith(markers: markers);
   }
 
-  void getLocation(LatLng location) {
+  void createScheduleMarker(LatLng location) {
     state = state.copyWith(
-      markersCoordinateList: List.from(state.markersCoordinateList)
-        ..add(location),
+      locationMarkersCoordinateList:
+          List.from(state.locationMarkersCoordinateList)..add(location),
     );
-    _createMarkersFromLocations();
+    _createMarkersFromLocationsBasedOnAngle();
   }
 
-  void removeLocation(LatLng location) {
-    state = state.copyWith(
-      markersCoordinateList: List.from(state.markersCoordinateList)
-        ..remove(location),
-    );
-    _createMarkersFromLocations();
+  void updateMarkerToFinish() {
+    for (LatLng location in state.locationMarkersCoordinateList) {
+      double distanceInMeters = Geolocator.distanceBetween(
+        state.currentPosition!.latitude,
+        state.currentPosition!.longitude,
+        location.latitude,
+        location.longitude,
+      );
+      if (distanceInMeters < distanceMarkerThreshold) {
+        state = state.copyWith(
+          finishMarkersCoordinateList:
+              List.from(state.finishMarkersCoordinateList)..add(location),
+          locationMarkersCoordinateList:
+              List.from(state.locationMarkersCoordinateList)..remove(location),
+        );
+        _createMarkersFromLocationsBasedOnAngle();
+      }
+    }
+  }
+
+  void removeMarker({
+    required LatLng location,
+    required MarkerType markerType,
+  }) {
+    if (markerType == MarkerType.schedule) {
+      state = state.copyWith(
+        locationMarkersCoordinateList:
+            List.from(state.locationMarkersCoordinateList)..remove(location),
+      );
+    } else if (markerType == MarkerType.finish) {
+      state = state.copyWith(
+        finishMarkersCoordinateList:
+            List.from(state.finishMarkersCoordinateList)..remove(location),
+      );
+    }
+    _createMarkersFromLocationsBasedOnAngle();
   }
 }

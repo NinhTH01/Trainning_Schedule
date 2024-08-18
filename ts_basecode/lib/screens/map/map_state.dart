@@ -12,7 +12,6 @@ class MapState with _$MapState {
     @Default([]) List<LatLng> polylineCoordinateList,
     @Default({}) Set<Polyline> polylines,
     @Default({}) Set<Marker> markers,
-    @Default([]) List<LatLng> markersCoordinateList,
     @Default(false) bool isRunning,
     @Default(false) bool isTakingScreenshot,
     @Default(0.0) double totalDistance,
@@ -20,6 +19,8 @@ class MapState with _$MapState {
     @Default(1) int distanceThresholdPassCounter,
     @Default(null) BitmapDescriptor? mapMarker,
     @Default(0.0) double directionAngle,
+    @Default([]) List<LatLng> finishMarkersCoordinateList,
+    @Default([]) List<LatLng> locationMarkersCoordinateList,
   }) = _MapState;
 
   const MapState._();

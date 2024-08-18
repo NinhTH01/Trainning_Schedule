@@ -28,8 +28,16 @@ class $AssetsFontsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/finish_marker.png
+  AssetGenImage get finishMarker =>
+      const AssetGenImage('assets/images/finish_marker.png');
+
   /// File path: assets/images/icon.jpg
   AssetGenImage get icon => const AssetGenImage('assets/images/icon.jpg');
+
+  /// File path: assets/images/location_marker.png
+  AssetGenImage get locationMarker =>
+      const AssetGenImage('assets/images/location_marker.png');
 
   /// File path: assets/images/marker_left.png
   AssetGenImage get markerLeft =>
@@ -52,8 +60,16 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/onboarding3.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [icon, markerLeft, markerRight, onboarding1, onboarding2, onboarding3];
+  List<AssetGenImage> get values => [
+        finishMarker,
+        icon,
+        locationMarker,
+        markerLeft,
+        markerRight,
+        onboarding1,
+        onboarding2,
+        onboarding3
+      ];
 }
 
 class Assets {
