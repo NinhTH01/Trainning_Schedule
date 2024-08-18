@@ -11,6 +11,7 @@ import 'package:ts_basecode/data/models/exception/always_permission_exception/al
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
+import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
@@ -23,6 +24,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     required this.geolocatorManager,
     required this.localNotificationManager,
     required this.sqfliteManager,
+    required this.sharedPreferencesManager,
   }) : super(const MapState());
 
   final Ref ref;
@@ -32,6 +34,8 @@ class MapViewModel extends BaseViewModel<MapState> {
   final LocalNotificationManager localNotificationManager;
 
   final SqfliteManager sqfliteManager;
+
+  final SharedPreferencesManager sharedPreferencesManager;
 
   final double distanceThreshold = 100.0;
 
@@ -276,7 +280,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  Future<double> getTotalDistance() async {
+  Future<void> getTotalDistanceFromDatabase(Function showAchievement) async {
     List<Event> eventList = await sqfliteManager.getList();
 
     double totalDistance = 0.0;
@@ -285,7 +289,11 @@ class MapViewModel extends BaseViewModel<MapState> {
       totalDistance += item.distance ?? 0;
     }
 
-    return totalDistance;
+    final hasAchieved = await sharedPreferencesManager.getAchievement();
+    if (!hasAchieved && totalDistance > 100.0) {
+      await sharedPreferencesManager.setAchievement(value: true);
+      showAchievement();
+    }
   }
 
   /// Angle Direction handle
