@@ -114,11 +114,12 @@ class MapViewModel extends BaseViewModel<MapState> {
     state = state.copyWith(isRunning: !state.isRunning);
   }
 
-  static Future<void> _addEventToDatabase() async {
+  Future<void> _addEventToDatabase() async {
     var event = Event(
       createdTime: DateTime.now(),
       distance: state.totalDistance,
-      description: 'You have run ${distance.toStringAsFixed(2)} meters.',
+      description:
+          'You have run ${state.totalDistance.toStringAsFixed(2)} meters.',
     );
 
     final eventsDatabase = EventsDatabase();
