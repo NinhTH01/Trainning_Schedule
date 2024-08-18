@@ -87,18 +87,8 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             ),
             zoom: 18.0,
           ),
-          markers: {
-            Marker(
-              markerId: const MarkerId('Id'),
-              position: LatLng(
-                state.currentPosition?.latitude ?? 0,
-                state.currentPosition?.longitude ?? 0,
-              ),
-              icon: state.mapMarker ?? BitmapDescriptor.defaultMarker,
-              rotation: state.directionAngle - 90,
-              anchor: const Offset(0.5, 0.5),
-            )
-          },
+          onTap: viewModel.getLocation,
+          markers: state.markers,
           polylines: state.polylines,
           myLocationButtonEnabled: false,
         ),

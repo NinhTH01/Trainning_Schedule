@@ -11,6 +11,8 @@ class MapState with _$MapState {
     @Default(null) GoogleMapController? googleMapController,
     @Default([]) List<LatLng> polylineCoordinateList,
     @Default({}) Set<Polyline> polylines,
+    @Default({}) Set<Marker> markers,
+    @Default([]) List<LatLng> markersCoordinateList,
     @Default(false) bool isRunning,
     @Default(false) bool isTakingScreenshot,
     @Default(0.0) double totalDistance,

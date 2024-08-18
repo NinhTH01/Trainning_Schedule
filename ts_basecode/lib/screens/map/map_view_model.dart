@@ -66,6 +66,7 @@ class MapViewModel extends BaseViewModel<MapState> {
               _calculateBearing(state.lastPosition!, state.currentPosition!);
             }
             updateMarker();
+            _createMarkersFromLocations();
           }
         });
       }
@@ -299,8 +300,50 @@ class MapViewModel extends BaseViewModel<MapState> {
         .asUint8List();
   }
 
-  double getDis() {
-    state = state.copyWith(isRunning: !state.isRunning);
-    return state.totalDistance;
+  void _createMarkersFromLocations() {
+    Set<Marker> markers = {};
+
+    for (var location in state.markersCoordinateList) {
+      Marker marker = Marker(
+          markerId: MarkerId(location.longitude.toString()),
+          position: LatLng(location.latitude, location.longitude),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueRed,
+          ),
+          onTap: () {
+            removeLocation(location);
+          });
+      markers.add(marker);
+    }
+
+    Marker currentMarker = Marker(
+      markerId: const MarkerId('Id'),
+      position: LatLng(
+        state.currentPosition?.latitude ?? 0,
+        state.currentPosition?.longitude ?? 0,
+      ),
+      icon: state.mapMarker ?? BitmapDescriptor.defaultMarker,
+      rotation: state.directionAngle - 90,
+      anchor: const Offset(0.5, 0.5),
+    );
+    markers.add(currentMarker);
+
+    state = state.copyWith(markers: markers);
+  }
+
+  void getLocation(LatLng location) {
+    state = state.copyWith(
+      markersCoordinateList: List.from(state.markersCoordinateList)
+        ..add(location),
+    );
+    _createMarkersFromLocations();
+  }
+
+  void removeLocation(LatLng location) {
+    state = state.copyWith(
+      markersCoordinateList: List.from(state.markersCoordinateList)
+        ..remove(location),
+    );
+    _createMarkersFromLocations();
   }
 }
