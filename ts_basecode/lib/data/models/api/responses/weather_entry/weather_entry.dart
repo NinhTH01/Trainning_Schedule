@@ -20,7 +20,7 @@ class WeatherEntry with _$WeatherEntry {
     @JsonKey(name: 'clouds') Clouds? clouds,
     @JsonKey(name: 'dt') int? dt,
     @JsonKey(name: 'sys') Sys? sys,
-    @JsonKey(name: 'pop') dynamic? pop,
+    @JsonKey(name: 'pop') dynamic pop,
     @JsonKey(name: 'dt_txt') String? dtTxt,
   }) = _WeatherEntry;
 
