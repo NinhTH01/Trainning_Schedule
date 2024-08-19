@@ -71,4 +71,13 @@ class TextConstants {
 
   static const retry = 'Retry';
   static const today = 'Today';
+
+  static const trackingLocation = 'Tracking Location...';
+
+  static const alwaysExceptionMessage =
+      'Map need permission to always tracking locations to work in background.';
+  static const deniedExceptionMessage =
+      'Location permissions are permanently denied, we cannot request permissions.';
+  static const serviceDisabledExceptionMessage =
+      'Location services are disabled.';
 }

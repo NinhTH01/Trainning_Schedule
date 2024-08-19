@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class GeolocatorManager {
   Future<void> checkPermission() async {
@@ -14,7 +15,8 @@ class GeolocatorManager {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
-      throw AlwaysPermissionException('Location services are disabled.');
+      throw AlwaysPermissionException(
+          TextConstants.serviceDisabledExceptionMessage);
     }
 
     permission = await Geolocator.checkPermission();
@@ -26,14 +28,13 @@ class GeolocatorManager {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-        throw AlwaysPermissionException('Location permissions are denied');
+        throw AlwaysPermissionException(TextConstants.deniedExceptionMessage);
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
       // Permissions are denied forever, handle appropriately.
-      throw AlwaysPermissionException(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      throw AlwaysPermissionException(TextConstants.deniedExceptionMessage);
     }
   }
 
@@ -41,8 +42,7 @@ class GeolocatorManager {
     await checkPermission();
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission != LocationPermission.always) {
-      throw AlwaysPermissionException(
-          'Map need permission to always tracking locations to work in background');
+      throw AlwaysPermissionException(TextConstants.alwaysExceptionMessage);
     }
     return true;
   }

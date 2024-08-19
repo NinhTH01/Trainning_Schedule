@@ -63,8 +63,6 @@ class MapViewModel extends BaseViewModel<MapState> {
             final updatedLocation =
                 LatLng(position.latitude, position.longitude);
 
-            print(updatedLocation);
-
             state = state.copyWith(
               lastPosition: state.currentPosition,
               currentPosition: updatedLocation,
@@ -82,6 +80,7 @@ class MapViewModel extends BaseViewModel<MapState> {
             if (state.lastPosition != null && state.currentPosition != null) {
               _calculateBearing(state.lastPosition!, state.currentPosition!);
             }
+
             updateCurrentLocationMarker();
             _createMarkersFromLocationsBasedOnAngle();
           }
