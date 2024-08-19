@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:background_location/background_location.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -53,6 +54,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     try {
       if (await geolocatorManager.checkAlwaysPermission() &&
           state.currentPosition == null) {
+        configureBackgroundLocation();
         Stream<Position> activeCurrentLocationStream =
             await geolocatorManager.getActiveCurrentLocationStream();
 
@@ -60,6 +62,8 @@ class MapViewModel extends BaseViewModel<MapState> {
           if (position != null && !state.isTakingScreenshot) {
             final updatedLocation =
                 LatLng(position.latitude, position.longitude);
+
+            print(updatedLocation);
 
             state = state.copyWith(
               lastPosition: state.currentPosition,
@@ -88,6 +92,20 @@ class MapViewModel extends BaseViewModel<MapState> {
     } catch (e) {
       return Future.error(e);
     }
+  }
+
+  Future<void> configureBackgroundLocation() async {
+    await BackgroundLocation.setAndroidNotification(
+      title: TextConstants.appName,
+      message: TextConstants.trackingLocation,
+      icon: "@mipmap/ic_launcher",
+    );
+
+    // Set the location update interval to 5 seconds
+    BackgroundLocation.setAndroidConfiguration(5000);
+    BackgroundLocation.stopLocationService();
+    //To ensure that previously started services have been stopped, if desired
+    BackgroundLocation.startLocationService();
   }
 
   /// Action handle
