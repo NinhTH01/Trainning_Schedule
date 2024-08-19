@@ -1,4 +1,6 @@
 PODS:
+  - background_location (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -28,6 +30,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - background_location (from `.symlinks/plugins/background_location/ios`)
   - Flutter (from `Flutter`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
@@ -43,6 +46,8 @@ SPEC REPOS:
     - GoogleMaps
 
 EXTERNAL SOURCES:
+  background_location:
+    :path: ".symlinks/plugins/background_location/ios"
   Flutter:
     :path: Flutter
   flutter_local_notifications:
@@ -61,6 +66,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/darwin"
 
 SPEC CHECKSUMS:
+  background_location: 1b80c1fe3abd9912bca298618f6e365abf6f588f
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be

@@ -53,6 +53,11 @@ dependencies:
   intl: ^0.19.0
   flutter_local_notifications: ^14.0.0
   sqflite: ^2.3.3+1
+  #https://github.com/Almoullim/background_location/issues/200
+  background_location:
+    git:
+      url: https://github.com/dharmik-dalwadi-seaflux/background_location.git
+      ref: master
 
 
   # The following adds the Cupertino Icons font to your application.
