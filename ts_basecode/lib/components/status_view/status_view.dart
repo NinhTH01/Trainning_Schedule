@@ -55,7 +55,7 @@ class StatusView extends ConsumerWidget {
             width: viewSize,
             // height: viewSize,
             decoration: BoxDecoration(
-              color: ColorName.grayFFFAFAFA,
+              color: ColorName.white50,
               borderRadius: _calculateBorderRadius(
                   position, topInset, viewSize), // Adjust corner radius
               border: Border.all(color: ColorName.black, width: 0.4),

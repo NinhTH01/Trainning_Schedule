@@ -103,27 +103,66 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   @override
   Color? get backgroundColor => ColorName.transparent;
 
+  MapState get mapState => ref.watch(mapProvider);
+
+  MapViewModel get mapViewModel => ref.read(viewModel.mapViewModel.notifier);
+
+  WeatherState get state => ref.watch(_provider);
+
+  @override
+  String get screenName => WeatherRoute.name;
+
+  @override
+  WeatherViewModel get viewModel => ref.read(_provider.notifier);
+
+  Future<void> _onInitData() async {
+    Object? error;
+
+    _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Set final value based on screen height
+      var size = MediaQuery.of(context).size;
+      var height = size.height;
+      _maxContainerHeight = height * 0.3;
+      _maxOffsetDescription = height * 0.07;
+      _maxOffsetMinimize = height * 0.11;
+    });
+
+    try {
+      await viewModel.initData();
+    } catch (e) {
+      viewModel.handleRetryState(true);
+      error = e;
+    }
+
+    if (error != null) {
+      handleError(error);
+    }
+  }
+
+  dynamic _getBackgroundImagePath(String? weatherCondition) {
+    switch (weatherCondition) {
+      case WeatherCondition.clear:
+        return 'assets/images/normal.jpg';
+      case WeatherCondition.cloud:
+        return 'assets/images/cloud.jpg';
+      case WeatherCondition.drizzle:
+        return 'assets/images/drizzle.jpg';
+      case WeatherCondition.rain:
+        return 'assets/images/rain.jpg';
+      case WeatherCondition.thunderstorm:
+        return 'assets/images/lightning.jpg';
+      default:
+        return 'assets/images/clear.jpg';
+    }
+  }
+
   @override
   Widget buildBody(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Stack(
       children: [
-        mapState.isRunning
-            ? StatusView(
-                distance: mapState.totalDistance,
-                onPress: () {
-                  context.tabsRouter.setActiveIndex(1);
-                  mapViewModel.toggleRunning(
-                      onScreenshotCaptured: showFinishDialog,
-                      onFinishAchievement: () {
-                        showAchievementDialog(context: context);
-                      });
-                },
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-              )
-            : const SizedBox(),
         (state.currentWeather != null && state.weatherForecast != null)
             ? DecoratedBox(
                 decoration: BoxDecoration(
@@ -273,63 +312,24 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         },
                         child: const Text(TextConstants.retry),
                       )
-                    : const CircularProgressIndicator()))
+                    : const CircularProgressIndicator())),
+        mapState.isRunning
+            ? StatusView(
+                distance: mapState.totalDistance,
+                onPress: () {
+                  context.tabsRouter.setActiveIndex(1);
+                  mapViewModel.toggleRunning(
+                      onScreenshotCaptured: showFinishDialog,
+                      onFinishAchievement: () {
+                        showAchievementDialog(context: context);
+                      });
+                },
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+              )
+            : const SizedBox(),
       ],
     );
-  }
-
-  MapState get mapState => ref.watch(mapProvider);
-
-  MapViewModel get mapViewModel => ref.read(viewModel.mapViewModel.notifier);
-
-  WeatherState get state => ref.watch(_provider);
-
-  @override
-  String get screenName => WeatherRoute.name;
-
-  @override
-  WeatherViewModel get viewModel => ref.read(_provider.notifier);
-
-  Future<void> _onInitData() async {
-    Object? error;
-
-    _scrollController.addListener(_onScroll);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Set final value based on screen height
-      var size = MediaQuery.of(context).size;
-      var height = size.height;
-      _maxContainerHeight = height * 0.3;
-      _maxOffsetDescription = height * 0.07;
-      _maxOffsetMinimize = height * 0.11;
-    });
-
-    try {
-      await viewModel.initData();
-    } catch (e) {
-      viewModel.handleRetryState(true);
-      error = e;
-    }
-
-    if (error != null) {
-      handleError(error);
-    }
-  }
-
-  dynamic _getBackgroundImagePath(String? weatherCondition) {
-    switch (weatherCondition) {
-      case WeatherCondition.clear:
-        return 'assets/images/normal.jpg';
-      case WeatherCondition.cloud:
-        return 'assets/images/cloud.jpg';
-      case WeatherCondition.drizzle:
-        return 'assets/images/drizzle.jpg';
-      case WeatherCondition.rain:
-        return 'assets/images/rain.jpg';
-      case WeatherCondition.thunderstorm:
-        return 'assets/images/lightning.jpg';
-      default:
-        return 'assets/images/clear.jpg';
-    }
   }
 }
 

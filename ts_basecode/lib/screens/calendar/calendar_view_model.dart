@@ -4,16 +4,21 @@ import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
+import 'package:ts_basecode/screens/map/map_state.dart';
+import 'package:ts_basecode/screens/map/map_view_model.dart';
 
 class CalendarViewModel extends BaseViewModel<CalendarState> {
   CalendarViewModel({
     required this.ref,
     required this.sqfliteManager,
+    required this.mapViewModel,
   }) : super(const CalendarState());
 
   final Ref ref;
 
   final SqfliteManager sqfliteManager;
+
+  final StateNotifierProvider<MapViewModel, MapState> mapViewModel;
 
   Future<void> onInitData() async {
     state = state.copyWith(
