@@ -20,7 +20,22 @@ import GoogleMaps
          }
 
 
+      UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+          if let error = error {
+              // Handle the error here.
+              print("Error requesting notification permissions: \(error.localizedDescription)")
+          }
 
+          if granted {
+              print("Notification permissions granted.")
+              // You can now register for remote notifications if needed.
+              DispatchQueue.main.async {
+                  UIApplication.shared.registerForRemoteNotifications()
+              }
+          } else {
+              print("Notification permissions denied.")
+          }
+      }
 
     GMSServices.provideAPIKey("AIzaSyDsLxsd0qDWOO1ANXC-mSzpzYS7V-PahhA")
 

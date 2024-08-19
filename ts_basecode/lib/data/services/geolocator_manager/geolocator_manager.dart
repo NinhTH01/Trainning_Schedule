@@ -38,7 +38,8 @@ class GeolocatorManager {
   }
 
   Future<bool> checkAlwaysPermission() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+    await checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission != LocationPermission.always) {
       throw AlwaysPermissionException(
           'Map need permission to always tracking locations to work in background');

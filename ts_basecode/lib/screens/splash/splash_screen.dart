@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
+import 'package:ts_basecode/data/providers/local_notification_provider.dart';
 import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
@@ -11,7 +12,9 @@ import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final _provider = StateNotifierProvider.autoDispose(
   (ref) => SplashViewModel(
-      sharedPreferencesManager: ref.watch(sharedPreferenceProvider)),
+    sharedPreferencesManager: ref.watch(sharedPreferenceProvider),
+    localNotificationManager: ref.watch(localNotificationProvider),
+  ),
 );
 
 /// Screen code: A_01
@@ -28,6 +31,7 @@ class _SplashViewState extends BaseViewState<SplashScreen, SplashViewModel> {
   @override
   void initState() {
     super.initState();
+    viewModel.askNotificationPermission();
     viewModel.handleNavigate(context);
   }
 

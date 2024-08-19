@@ -14,6 +14,13 @@ class LocalNotificationManager {
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
+  void askPermission() {
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestPermission();
+  }
+
   Future<void> showNotification({
     required String title,
     required String description,
