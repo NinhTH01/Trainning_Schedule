@@ -117,18 +117,14 @@ class StatusView extends ConsumerWidget {
     bool nearLeft = position.dx <= snapThreshold;
     bool nearRight = position.dx >= screenWidth - viewSize - snapThreshold;
     bool nearTop = position.dy <= snapThreshold + topInset;
-    bool nearBottom =
-        position.dy >= screenHeight - viewSize - snapThreshold - 140;
 
     return BorderRadius.only(
       topLeft:
           nearLeft || nearTop ? Radius.zero : const Radius.circular(radius),
       topRight:
           nearRight || nearTop ? Radius.zero : const Radius.circular(radius),
-      bottomLeft:
-          nearLeft || nearBottom ? Radius.zero : const Radius.circular(radius),
-      bottomRight:
-          nearRight || nearBottom ? Radius.zero : const Radius.circular(radius),
+      bottomLeft: nearLeft ? Radius.zero : const Radius.circular(radius),
+      bottomRight: nearRight ? Radius.zero : const Radius.circular(radius),
     );
   }
 }
