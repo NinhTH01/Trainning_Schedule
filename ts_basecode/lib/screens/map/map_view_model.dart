@@ -357,7 +357,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
     for (LatLng location in state.locationMarkersCoordinateList) {
       Uint8List? byteAssets = await getBytesFromAsset(
-          path: 'assets/images/location_marker.png', size: 40);
+          path: 'assets/images/location_marker.png', size: 30);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
@@ -370,7 +370,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
     for (LatLng location in state.finishMarkersCoordinateList) {
       Uint8List? byteAssets = await getBytesFromAsset(
-          path: 'assets/images/finish_marker.png', size: 40);
+          path: 'assets/images/finish_marker.png', size: 30);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
