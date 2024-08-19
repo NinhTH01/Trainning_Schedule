@@ -93,17 +93,20 @@ class MapViewModel extends BaseViewModel<MapState> {
   /// Action handle
 
   Future<void> toggleRunning(
-    Future<void>? Function({
-      required Uint8List image,
-      required double distance,
-      required void Function() onClose,
-    }) onScreenshotCaptured,
-  ) async {
+      {required Future<void>? Function({
+        required Uint8List image,
+        required double distance,
+        required void Function() onClose,
+      }) onScreenshotCaptured,
+      required Function() onFinishAchievement}) async {
     final isRunning = state.isRunning;
 
     if (isRunning) {
       _addEventToDatabase();
-      await _takeScreenshot(onScreenshotCaptured, state.totalDistance);
+      await _takeScreenshot(
+        onScreenshotCaptured: onScreenshotCaptured,
+        onFinishAchievement: onFinishAchievement,
+      );
 
       state = state.copyWith(
         polylines: {},
@@ -164,14 +167,14 @@ class MapViewModel extends BaseViewModel<MapState> {
     );
   }
 
-  Future<void> _takeScreenshot(
-    Future<void>? Function({
+  Future<void> _takeScreenshot({
+    required Future<void>? Function({
       required Uint8List image,
       required double distance,
       required void Function() onClose,
     }) onScreenshotCaptured,
-    double distance,
-  ) async {
+    required void Function() onFinishAchievement,
+  }) async {
     final controller = state.googleMapController;
     state = state.copyWith(isTakingScreenshot: true);
     if (controller != null) {
@@ -181,11 +184,12 @@ class MapViewModel extends BaseViewModel<MapState> {
       if (image != null) {
         onScreenshotCaptured(
             image: image,
-            distance: distance,
+            distance: state.totalDistance,
             onClose: () {
               state = state.copyWith(isTakingScreenshot: false);
               _moveCamera(state.currentPosition!);
             });
+        getTotalDistanceFromDatabase(onFinishAchievement);
       }
     }
   }

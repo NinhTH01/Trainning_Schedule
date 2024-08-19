@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
@@ -106,7 +105,12 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               padding: const EdgeInsets.all(24),
             ),
             onPressed: () {
-              viewModel.toggleRunning(showFinishDialog);
+              viewModel.toggleRunning(
+                onScreenshotCaptured: showFinishDialog,
+                onFinishAchievement: () {
+                  showAchievementDialog(context: context);
+                },
+              );
             },
             child: Text(
                 state.isRunning
@@ -117,58 +121,5 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
         ),
       ],
     );
-  }
-
-  void _showAchieveDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const SimpleDialog(
-          children: [
-            Center(
-              child: SizedBox(
-                width: 300,
-                height: 300,
-                child: UiKitView(
-                  viewType: 'congratulation_view',
-                  creationParams: {},
-                  creationParamsCodec: StandardMessageCodec(),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showFinishDialog(
-    Uint8List image,
-    double distance,
-  ) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(child: Image.memory(image)),
-              Text('You have run ${distance.toStringAsFixed(2)} meters'),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text(TextConstants.close),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    viewModel.getTotalDistanceFromDatabase(_showAchieveDialog);
   }
 }

@@ -69,6 +69,12 @@ abstract class BaseViewState<View extends BaseView,
         );
   }
 
+  Future<void> showAchievementDialog({required BuildContext context}) async {
+    ref.read(dialogProvider).showAchieveDialog(
+          context,
+        );
+  }
+
   Future<void> handleError(
     Object error, {
     void Function()? onButtonTapped,

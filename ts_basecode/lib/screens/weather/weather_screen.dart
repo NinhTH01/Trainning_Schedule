@@ -114,7 +114,11 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                 distance: mapState.totalDistance,
                 onPress: () {
                   context.tabsRouter.setActiveIndex(1);
-                  mapViewModel.toggleRunning(showFinishDialog);
+                  mapViewModel.toggleRunning(
+                      onScreenshotCaptured: showFinishDialog,
+                      onFinishAchievement: () {
+                        showAchievementDialog(context: context);
+                      });
                 },
                 screenWidth: screenWidth,
                 screenHeight: screenHeight,
