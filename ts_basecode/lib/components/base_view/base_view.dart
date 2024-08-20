@@ -105,7 +105,7 @@ abstract class BaseViewState<View extends BaseView,
           );
     }
 
-    if (error is TimeoutException) {
+    if (error is TimeoutException && mounted) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,
             title: 'Time out',
@@ -113,7 +113,7 @@ abstract class BaseViewState<View extends BaseView,
           );
     }
 
-    if (errorMessage != null) {
+    if (errorMessage != null && mounted) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,
             title: errorMessage,
