@@ -1,16 +1,79 @@
-# ts_basecode
+To run the project, please perform the following steps:
 
-A new Flutter project.
+- Step 1: Verify installations
 
-## Getting Started
+```sh
+$ flutter doctor
+```
 
-This project is a starting point for a Flutter application.
+- Step 2: Pull project dependencies
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+$ flutter pub get
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Step 3: Generate the generated files
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+$ flutter pub run build_runner build --delete-conflicting-outputs
+``` 
+
+- Step 4: Build and test app
+
+- Step 5: Build debug app android : Run script build_app_for_debug.sh
+
+
+File hierachy
+```
+📁 flutter-base-code-template
+    |- 📁 assets
+        |- 📁 colors
+            |- colors.xml
+        |- 📁 fonts
+            |- ....ttf
+        |- 📁 images
+            |- ....png
+    |- 📁 android
+            |- 📁 app
+                |- 📁 src
+                    |- 📁 main
+                        |- 📁 res
+                            |- 📁 values
+                                |- api_key.xml (ignored by the .gitignore file)
+    |- 📁 build
+    |- 📁 ios
+        |- 📁 Runner
+            |- Keys.plist (ignored by the .gitignore file)
+    |- 📁 lib
+        |- 📁 components
+        |- 📁 data
+            |- 📁 models
+            |- 📁 providers
+            |- 📁 repositories
+            |- 📁 services
+        |- 📁 models
+            |- 📁 api
+            |- 📁 storage
+        |- 📁 router
+            |- app_router.dart
+            |- app_router.g.dart
+        |- 📁 screens
+            |- 📁 calendar
+            |- 📁 calendar_date_edit_event
+            |- 📁 main
+            |- 📁 map
+            |- 📁 onboarding
+            |- 📁 splash
+            |- 📁 weather
+        |- 📁 resources
+            |- 📁 gen
+                |- assets.gen.dart
+                |- colors.gen.dart
+                |- fonts.gen.dart
+        |- 📁 utilities
+            |- 📁 constants
+            |- 📁 extensions
+        app.dart      
+    |- 📁 test
+    |- api-keys.json (ignored by the .gitignore file)
+```
