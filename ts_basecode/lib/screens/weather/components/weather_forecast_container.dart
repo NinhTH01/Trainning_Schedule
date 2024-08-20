@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
+import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/weather/models/weather_container.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
@@ -31,7 +32,9 @@ class WeatherForecastContainer extends StatelessWidget {
         children: [
           Text(
             TextConstants.weatherForecastDescription,
-            style: AppTextStyles.whites12,
+            style: AppTextStyles.s12w700.copyWith(
+              color: ColorName.white,
+            ),
             textAlign: TextAlign.start,
           ),
           const Divider(),
@@ -49,9 +52,8 @@ class WeatherForecastContainer extends StatelessWidget {
                             ? WeatherHelper.unixToHH(
                                 weatherForecast.list![index].dt!)
                             : '_',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                        style: AppTextStyles.s12w700.copyWith(
+                          color: ColorName.white,
                         ),
                       ),
                       Padding(
@@ -62,7 +64,9 @@ class WeatherForecastContainer extends StatelessWidget {
                       ),
                       Text(
                         '${weatherForecast.list?[index].main?.temp?.round()}°',
-                        style: AppTextStyles.whitew500,
+                        style: AppTextStyles.s12w700.copyWith(
+                          color: ColorName.white,
+                        ),
                       ),
                     ],
                   ),

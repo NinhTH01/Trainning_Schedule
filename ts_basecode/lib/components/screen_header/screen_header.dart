@@ -26,7 +26,7 @@ class ScreenHeader extends StatelessWidget {
         ),
         Text(
           title,
-          style: AppTextStyles.s16b,
+          style: AppTextStyles.s16w700,
         ),
         rightWidget
       ],

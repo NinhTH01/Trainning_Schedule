@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
+import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/weather/models/weather_container.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
@@ -23,7 +24,9 @@ class WeatherWindContainer extends StatelessWidget {
         children: [
           Text(
             TextConstants.windTitle,
-            style: AppTextStyles.white70s16,
+            style: AppTextStyles.s16w700.copyWith(
+              color: ColorName.white70,
+            ),
           ),
           const SizedBox(height: 4),
           Row(
@@ -62,7 +65,7 @@ class WeatherWindContainer extends StatelessWidget {
       children: [
         Text(
           value == null ? '_' : value.round().toString(),
-          style: const TextStyle(color: Colors.white, fontSize: 32),
+          style: AppTextStyles.s30w500.copyWith(color: ColorName.white),
         ),
         const SizedBox(
           width: 8,
@@ -70,13 +73,15 @@ class WeatherWindContainer extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              unit,
-              style: AppTextStyles.white70s12w500,
-            ),
+            Text(unit,
+                style: AppTextStyles.s12w500.copyWith(
+                  color: ColorName.white70,
+                )),
             Text(
               name,
-              style: AppTextStyles.whites12w500,
+              style: AppTextStyles.s12w500.copyWith(
+                color: ColorName.white,
+              ),
             ),
           ],
         ),

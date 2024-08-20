@@ -16,6 +16,7 @@ import 'package:ts_basecode/screens/calendar/components/event_list_item.dart';
 import 'package:ts_basecode/screens/map/map_screen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
+import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
@@ -141,7 +142,7 @@ class _CalendarViewState
               changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
               changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
             ),
-            calendarWeekBar(),
+            calendarWeekBar(screenWidth: screenWidth),
             const SizedBox(height: 24),
             state.eventDateList.isNotEmpty
                 ? SizedBox(
@@ -173,7 +174,7 @@ class _CalendarViewState
                   child: Text(
                     viewModel.isSameDay(DateTime.now(), state.selectedDate)
                         ? TextConstants.today
-                        : DateFormat('MMMM dd')
+                        : DateFormat(AppConstants.mmmmddFormat)
                             .format(state.selectedDate ?? DateTime.now()),
                     style: AppTextStyles.s16w600,
                   ),
@@ -186,7 +187,6 @@ class _CalendarViewState
                 ),
               ],
             ),
-            // const SizedBox(height: 16),
             state.eventList.isNotEmpty
                 ? Expanded(
                     child: ListView.builder(

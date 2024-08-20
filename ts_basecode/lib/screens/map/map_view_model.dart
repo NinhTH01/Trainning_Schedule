@@ -14,6 +14,7 @@ import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
 import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
+import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/models/marker_type.dart';
@@ -348,10 +349,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     Uint8List? byteAssets;
     if (state.directionAngle > 0 && state.directionAngle < 180) {
       byteAssets = await getBytesFromAsset(
-          path: 'assets/images/marker_right.png', size: markerSize);
+          path: Assets.images.markerRight.path, size: markerSize);
     } else {
       byteAssets = await getBytesFromAsset(
-          path: 'assets/images/marker_left.png', size: markerSize);
+          path: Assets.images.markerLeft.path, size: markerSize);
     }
     state = state.copyWith(mapMarker: BitmapDescriptor.bytes(byteAssets!));
   }
@@ -374,7 +375,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
     for (LatLng location in state.locationMarkersCoordinateList) {
       Uint8List? byteAssets = await getBytesFromAsset(
-          path: 'assets/images/location_marker.png', size: 30);
+          path: Assets.images.locationMarker.path, size: 30);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
@@ -387,7 +388,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
     for (LatLng location in state.finishMarkersCoordinateList) {
       Uint8List? byteAssets = await getBytesFromAsset(
-          path: 'assets/images/finish_marker.png', size: 30);
+          path: Assets.images.finishMarker.path, size: 30);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),

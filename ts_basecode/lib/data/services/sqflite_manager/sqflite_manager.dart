@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/utilities/constants/app_constants.dart';
 
 class SqfliteManager {
   final _databaseName = 'events.db';
@@ -93,8 +94,9 @@ class SqfliteManager {
 
     // Format the date range
     var formattedStartDate =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(startDate);
-    var formattedEndDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(endDate);
+        DateFormat(AppConstants.yyyyMMddHHmmssFormat).format(startDate);
+    var formattedEndDate =
+        DateFormat(AppConstants.yyyyMMddHHmmssFormat).format(endDate);
     // Query the table for all the dogs.
     final result = await db.query(
       tableEvents,

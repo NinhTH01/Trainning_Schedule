@@ -36,7 +36,11 @@ class WeatherRepositoryImpl implements WeatherRepository {
     required double lon,
   }) async {
     final weatherResponse = await _apiWeatherClient.getWeather(
-        lat: '$lat', lon: '$lon', apiKey: apiKey, units: 'metric');
+      lat: '$lat',
+      lon: '$lon',
+      apiKey: apiKey,
+      units: 'metric',
+    );
     saveWeatherForSession(weatherResponse);
     writeWeatherForSecureStorage(weatherResponse);
     return weatherResponse;
@@ -52,7 +56,11 @@ class WeatherRepositoryImpl implements WeatherRepository {
     required double lon,
   }) async {
     final weatherForecastResponse = await _apiWeatherClient.getWeatherForecast(
-        lat: '$lat', lon: '$lon', apiKey: apiKey, units: 'metric');
+      lat: '$lat',
+      lon: '$lon',
+      apiKey: apiKey,
+      units: 'metric',
+    );
     saveWeatherForecastForSession(weatherForecastResponse);
     writeWeatherForecastForSecureStorage(weatherForecastResponse);
     return weatherForecastResponse;

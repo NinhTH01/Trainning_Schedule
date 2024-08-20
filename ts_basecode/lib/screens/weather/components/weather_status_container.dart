@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
 class WeatherStatusContainer extends StatelessWidget {
@@ -28,11 +29,15 @@ class WeatherStatusContainer extends StatelessWidget {
         children: [
           Text(
             title,
-            style: AppTextStyles.white70s16b,
+            style: AppTextStyles.s16w700.copyWith(
+              color: ColorName.white70,
+            ),
           ),
           Text(
             value ?? '_',
-            style: AppTextStyles.whites32n,
+            style: AppTextStyles.s30w500.copyWith(
+              color: ColorName.white,
+            ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

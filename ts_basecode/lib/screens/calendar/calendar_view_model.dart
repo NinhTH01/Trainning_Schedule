@@ -25,7 +25,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
       currentDate: DateTime.now(),
       selectedDate: DateTime.now(),
     );
-    fetchData();
+    await fetchData();
   }
 
   Future<void> fetchData() async {
@@ -75,7 +75,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
 
       state = state.copyWith(defaultDateList: defaultDateInfoList);
 
-      _fetchEventDateList();
+      await _fetchEventDateList();
     }
   }
 

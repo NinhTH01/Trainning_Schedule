@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/screens/calendar/components/hollow.dart';
+import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
 class EventListItem extends StatelessWidget {
-  const EventListItem({super.key, required this.event, required this.onTap});
+  const EventListItem({
+    super.key,
+    required this.event,
+    required this.onTap,
+  });
 
   final Event event;
-  final void Function({required bool isEdit, Event event}) onTap;
+  final void Function({
+    required bool isEdit,
+    Event event,
+  }) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +34,6 @@ class EventListItem extends StatelessWidget {
             ),
             Expanded(
               child: Row(
-                // crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
@@ -39,8 +46,9 @@ class EventListItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    DateFormat('HH:mm').format(event.createdTime!),
-                    style: AppTextStyles.s12b,
+                    DateFormat(AppConstants.hhmmFormat)
+                        .format(event.createdTime!),
+                    style: AppTextStyles.s12w700,
                   ),
                 ],
               ),

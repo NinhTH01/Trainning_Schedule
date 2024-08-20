@@ -55,9 +55,9 @@ class _SplashViewState extends BaseViewState<SplashScreen, SplashViewModel> {
             height: 250,
             fit: BoxFit.contain,
           ),
-          const Text(
+          Text(
             TextConstants.appName,
-            style: AppTextStyles.appNameStyle,
+            style: AppTextStyles.s24w700,
           ),
           const SizedBox(
             height: 200,

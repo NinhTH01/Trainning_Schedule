@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
 Widget calendarHeader({
@@ -13,8 +14,9 @@ Widget calendarHeader({
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          DateFormat('MMMM yyyy').format(currentDate ?? DateTime.now()),
-          style: AppTextStyles.s24b,
+          DateFormat(AppConstants.mmmmyyyyFormat)
+              .format(currentDate ?? DateTime.now()),
+          style: AppTextStyles.s24w700,
         ),
         Row(
           children: [

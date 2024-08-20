@@ -58,7 +58,6 @@ dependencies:
     git:
       url: https://github.com/dharmik-dalwadi-seaflux/background_location.git
       ref: master
-  path_provider: ^2.1.4
 
 
   # The following adds the Cupertino Icons font to your application.

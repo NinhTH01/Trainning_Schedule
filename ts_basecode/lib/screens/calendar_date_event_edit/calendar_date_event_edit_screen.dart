@@ -15,6 +15,7 @@ import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event
 import 'package:ts_basecode/screens/map/map_screen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
+import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
@@ -178,9 +179,9 @@ class _CalendarDateEventEditState extends BaseViewState<
                             }
                           },
                           child: Text(
-                            DateFormat('yyyy-MM-dd')
+                            DateFormat(AppConstants.yyyyMMddFormat)
                                 .format(state.eventDate ?? DateTime.now()),
-                            style: AppTextStyles.blackTextStyle,
+                            style: AppTextStyles.defaultStyle,
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -197,7 +198,7 @@ class _CalendarDateEventEditState extends BaseViewState<
                           },
                           child: Text(
                             state.eventTime.format(context),
-                            style: AppTextStyles.blackTextStyle,
+                            style: AppTextStyles.defaultStyle,
                           ),
                         ),
                       ],
@@ -212,9 +213,11 @@ class _CalendarDateEventEditState extends BaseViewState<
                     onPressed: () {
                       _showActionSheet(context);
                     },
-                    child: const Text(
+                    child: Text(
                       TextConstants.delete,
-                      style: AppTextStyles.redTextStyle,
+                      style: AppTextStyles.defaultStyle.copyWith(
+                        color: ColorName.red,
+                      ),
                     ),
                   )
                 : const SizedBox(),

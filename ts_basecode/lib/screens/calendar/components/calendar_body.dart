@@ -41,7 +41,6 @@ Widget calendarBody({
       } else {
         return buildDayInMonth(
           day: dateList[index],
-          // () => goToEventListView(dateList[index]),
           onPressed: () => changeSelectedDate(dateList[index]),
           inMonth: true,
           selectedDate: selectedDate,
@@ -56,6 +55,41 @@ bool isToday(DateTime date) {
   return date.year == now.year &&
       date.month == now.month &&
       date.day == now.day;
+}
+
+Color getColor({
+  required isToday,
+  required isSelectedDay,
+}) {
+  if (isToday) {
+    return ColorName.red;
+  } else {
+    if (isSelectedDay) {
+      return ColorName.greyFF757575;
+    } else {
+      return ColorName.transparent;
+    }
+  }
+}
+
+TextStyle getDayTextStyles({
+  required isToday,
+  required isSelectedDay,
+  required inMonth,
+}) {
+  if (inMonth) {
+    if (isToday || isSelectedDay) {
+      return AppTextStyles.s14w400.copyWith(
+        color: ColorName.white,
+      );
+    } else {
+      return AppTextStyles.s14w600;
+    }
+  } else {
+    return AppTextStyles.s14w400.copyWith(
+      color: ColorName.greyFF757575,
+    );
+  }
 }
 
 Widget buildDayInMonth({
@@ -86,22 +120,19 @@ Widget buildDayInMonth({
           padding: const EdgeInsets.all(4.0),
           // width: 35,
           decoration: BoxDecoration(
-            color: isToday
-                ? ColorName.red
-                : isSelectedDay
-                    ? ColorName.greyFF757575
-                    : ColorName.transparent,
+            color: getColor(
+              isSelectedDay: isSelectedDay,
+              isToday: isToday,
+            ),
             shape: BoxShape.circle,
           ),
           child: Center(
             child: Text(day.date!.day.toString(),
-                style: inMonth
-                    ? isToday
-                        ? AppTextStyles.whitew500
-                        : isSelectedDay
-                            ? AppTextStyles.whitew500
-                            : AppTextStyles.w600
-                    : AppTextStyles.otherMonthContainerStyle),
+                style: getDayTextStyles(
+                  isToday: isToday,
+                  isSelectedDay: isSelectedDay,
+                  inMonth: inMonth,
+                )),
           ),
         ),
         const SizedBox(height: 12),

@@ -15,14 +15,14 @@ class Hollow extends StatelessWidget {
       width: 12,
       height: 12,
       child: CustomPaint(
-        painter: CirclePainter(isStroke: isStroke),
+        painter: _CirclePainter(isStroke: isStroke),
       ),
     );
   }
 }
 
-class CirclePainter extends CustomPainter {
-  const CirclePainter({
+class _CirclePainter extends CustomPainter {
+  const _CirclePainter({
     required this.isStroke,
   });
 

@@ -6,11 +6,6 @@ import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class StatusView extends ConsumerWidget {
-  final double screenWidth;
-  final double screenHeight;
-  final double distance;
-  final Function() onPress;
-
   const StatusView({
     super.key,
     required this.screenWidth,
@@ -18,6 +13,11 @@ class StatusView extends ConsumerWidget {
     required this.distance,
     required this.onPress,
   });
+
+  final double screenWidth;
+  final double screenHeight;
+  final double distance;
+  final Function() onPress;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,7 +53,6 @@ class StatusView extends ConsumerWidget {
         },
         child: Container(
             width: viewSize,
-            // height: viewSize,
             decoration: BoxDecoration(
               color: ColorName.white50,
               borderRadius: _calculateBorderRadius(
