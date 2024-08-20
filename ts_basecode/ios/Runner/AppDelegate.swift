@@ -37,7 +37,11 @@ import GoogleMaps
           }
       }
 
-    GMSServices.provideAPIKey("AIzaSyDsLxsd0qDWOO1ANXC-mSzpzYS7V-PahhA")
+      if let path = Bundle.main.path(forResource: "Keys", ofType: "plist"),
+         let keys = NSDictionary(contentsOfFile: path),
+         let apiKey = keys["googleMapsApiKey"] as? String {
+          GMSServices.provideAPIKey(apiKey)
+        }
 
       guard let pluginRegisterar = self.registrar(forPlugin: "Runner") else { return false }
 
