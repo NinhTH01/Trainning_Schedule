@@ -56,6 +56,12 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
 
   @override
+  Brightness? get statusBarBrightness => Brightness.dark;
+
+  @override
+  Brightness? get statusBarIconBrightness => Brightness.light;
+
+  @override
   void initState() {
     super.initState();
     _onInitData();

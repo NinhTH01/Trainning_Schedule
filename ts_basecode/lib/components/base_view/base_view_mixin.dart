@@ -19,6 +19,14 @@ mixin BaseViewMixin {
 
   String get screenName;
 
+  Brightness? get statusBarBrightness => Brightness.light;
+
+  /// For iOS status bar
+
+  Brightness? get statusBarIconBrightness => Brightness.dark;
+
+  /// For Android status bar
+
   Widget buildBody(BuildContext context);
 
   PreferredSizeWidget? buildAppBar(BuildContext context);
@@ -31,9 +39,9 @@ mixin BaseViewMixin {
 
   Widget buildView(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
+      value: SystemUiOverlayStyle(
+        statusBarBrightness: statusBarBrightness,
+        statusBarIconBrightness: statusBarIconBrightness,
       ),
       child: _buildContent(context),
     );
