@@ -120,6 +120,36 @@ class Dialog {
           );
         },
       );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            children: [
+              Center(
+                child: SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: AndroidView(
+                      viewType: 'native_view',
+                      creationParams: <String, dynamic>{
+                        'distance': totalDistance.toStringAsFixed(2),
+                      },
+                      creationParamsCodec: const StandardMessageCodec(),
+                      onPlatformViewCreated: (int id) {
+                        final methodChannel = MethodChannel('native_view_$id');
+                        methodChannel.setMethodCallHandler((call) async {
+                          if (call.method == 'buttonTapped') {
+                            Navigator.of(context).pop();
+                          }
+                        });
+                      },
+                    )),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 }
