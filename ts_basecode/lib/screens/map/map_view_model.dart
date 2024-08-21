@@ -314,10 +314,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
 
     final hasAchieved = await sharedPreferencesManager.getAchievement();
-    // if (!hasAchieved && totalDistance > 100.0) {
-    await sharedPreferencesManager.setAchievement(value: true);
-    showAchievement(totalDistance);
-    // }
+    if (!hasAchieved && totalDistance > 100.0) {
+      await sharedPreferencesManager.setAchievement(value: true);
+      showAchievement(totalDistance);
+    }
   }
 
   /// Angle Direction handle

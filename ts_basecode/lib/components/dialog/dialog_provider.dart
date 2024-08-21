@@ -4,16 +4,28 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:native_dialog/native_dialog.dart';
+import 'package:ts_basecode/data/providers/native_dialog_provider.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 import 'error_dialog.dart';
 
-final dialogProvider = Provider<Dialog>((ref) => Dialog(ref));
+final dialogProvider = Provider<Dialog>(
+  (ref) => Dialog(
+    ref: ref,
+    nativeDialog: ref.watch(nativeDialogProvider),
+  ),
+);
 
 class Dialog {
-  Dialog(this.ref);
+  Dialog({
+    required this.ref,
+    required this.nativeDialog,
+  });
 
   final Ref ref;
+
+  final NativeDialog nativeDialog;
 
   int _numberOfShowedAlertDialogs = 0;
 
@@ -89,66 +101,14 @@ class Dialog {
     required double totalDistance,
   }) {
     if (Platform.isIOS) {
-      showDialog(
+      nativeDialog.showAchievementIniOS(
         context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: [
-              Center(
-                child: SizedBox(
-                  width: 300,
-                  height: 300,
-                  child: UiKitView(
-                    viewType: 'congratulation_view',
-                    creationParams: <String, dynamic>{
-                      'distance': totalDistance.toStringAsFixed(2),
-                    },
-                    creationParamsCodec: const StandardMessageCodec(),
-                    onPlatformViewCreated: (int id) {
-                      final methodChannel =
-                          MethodChannel('congratulation_view_$id');
-                      methodChannel.setMethodCallHandler((call) async {
-                        if (call.method == 'buttonTapped') {
-                          Navigator.of(context).pop();
-                        }
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+        totalDistance: totalDistance,
       );
     } else {
-      showDialog(
+      nativeDialog.showAchievementInAndroid(
         context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            children: [
-              Center(
-                child: SizedBox(
-                    width: 300,
-                    height: 300,
-                    child: AndroidView(
-                      viewType: 'native_view',
-                      creationParams: <String, dynamic>{
-                        'distance': totalDistance.toStringAsFixed(2),
-                      },
-                      creationParamsCodec: const StandardMessageCodec(),
-                      onPlatformViewCreated: (int id) {
-                        final methodChannel = MethodChannel('native_view_$id');
-                        methodChannel.setMethodCallHandler((call) async {
-                          if (call.method == 'buttonTapped') {
-                            Navigator.of(context).pop();
-                          }
-                        });
-                      },
-                    )),
-              ),
-            ],
-          );
-        },
+        totalDistance: totalDistance,
       );
     }
   }
