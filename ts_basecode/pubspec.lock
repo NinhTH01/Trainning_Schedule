@@ -732,7 +732,7 @@ packages:
   native_dialog:
     dependency: "direct main"
     description:
-      path: "../native_dialog"
+      path: "packages/native_dialog"
       relative: true
     source: path
     version: "0.0.1"
