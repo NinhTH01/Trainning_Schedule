@@ -107,8 +107,11 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             onPressed: () {
               viewModel.toggleRunning(
                 onScreenshotCaptured: showFinishDialog,
-                onFinishAchievement: () {
-                  showAchievementDialog(context: context);
+                onFinishAchievement: (totalDistance) {
+                  return showAchievementDialog(
+                    context: context,
+                    totalDistance: totalDistance,
+                  );
                 },
               );
             },

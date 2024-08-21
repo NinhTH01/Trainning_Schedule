@@ -84,12 +84,15 @@ class Dialog {
     );
   }
 
-  void showAchieveDialog(BuildContext context) {
+  void showAchieveDialog({
+    required BuildContext context,
+    required double totalDistance,
+  }) {
     if (Platform.isIOS) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const SimpleDialog(
+          return SimpleDialog(
             children: [
               Center(
                 child: SizedBox(
@@ -97,8 +100,19 @@ class Dialog {
                   height: 300,
                   child: UiKitView(
                     viewType: 'congratulation_view',
-                    creationParams: {},
-                    creationParamsCodec: StandardMessageCodec(),
+                    creationParams: <String, dynamic>{
+                      'distance': totalDistance.toStringAsFixed(2),
+                    },
+                    creationParamsCodec: const StandardMessageCodec(),
+                    onPlatformViewCreated: (int id) {
+                      final methodChannel =
+                          MethodChannel('congratulation_view_$id');
+                      methodChannel.setMethodCallHandler((call) async {
+                        if (call.method == 'buttonTapped') {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
                   ),
                 ),
               ),

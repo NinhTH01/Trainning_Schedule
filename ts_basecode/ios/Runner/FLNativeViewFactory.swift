@@ -30,6 +30,10 @@ class FLNativeViewFactory: NSObject, FlutterPlatformViewFactory {
 class FLNativeView: NSObject, FlutterPlatformView {
     private var _view: UIView
 
+    private var channel: FlutterMethodChannel?
+
+    private var messenger: FlutterBinaryMessenger?
+
     init(
         frame: CGRect,
         viewIdentifier viewId: Int64,
@@ -37,16 +41,17 @@ class FLNativeView: NSObject, FlutterPlatformView {
         binaryMessenger messenger: FlutterBinaryMessenger?
     ) {
         _view = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
+        self.messenger = messenger
         super.init()
         // iOS views can be created here
-        createNativeView(view: _view)
+        createNativeView(view: _view, arguments: args, viewId: viewId)
     }
 
     func view() -> UIView {
         return _view
     }
 
-    func createNativeView(view _view: UIView){
+    func createNativeView(view _view: UIView, arguments args: Any?, viewId: Int64){
         let imageView = UIImageView()
 
         // Configure imageView
@@ -62,9 +67,18 @@ class FLNativeView: NSObject, FlutterPlatformView {
         titleLabel.textAlignment = .center
 
         let descriptionLabel = UILabel()
-        descriptionLabel.text = "You have run total 100m."
         descriptionLabel.textColor = UIColor.black
         descriptionLabel.textAlignment = .center
+
+        if let dict = args as? [String: Any], let distance = dict["distance"] as? String {
+            descriptionLabel.text = "You have run total \(distance)m."
+        }
+
+        let button = UIButton(type: .system)
+        button.setTitle("Close", for: .normal)
+        button.frame = CGRect(x: 0, y: _view.bounds.height / 2, width: _view.bounds.width, height: _view.bounds.height / 2)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        _view.addSubview(button)
 
         let stackView = UIStackView()
         stackView.axis = .vertical
@@ -75,7 +89,14 @@ class FLNativeView: NSObject, FlutterPlatformView {
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(descriptionLabel)
+        stackView.addArrangedSubview(button)
         _view.addSubview(stackView)
 
+        channel = FlutterMethodChannel(name: "congratulation_view_\(viewId)", binaryMessenger: messenger!)
     }
+
+    @objc private func buttonTapped() {
+           // Notify Flutter that the button was tapped
+           channel?.invokeMethod("buttonTapped", arguments: nil)
+       }
 }

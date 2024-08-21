@@ -116,7 +116,8 @@ class MapViewModel extends BaseViewModel<MapState> {
         required double distance,
         required void Function() onClose,
       }) onScreenshotCaptured,
-      required Function() onFinishAchievement}) async {
+      required Future<void> Function(double totalDistance)
+          onFinishAchievement}) async {
     final isRunning = state.isRunning;
 
     if (isRunning) {
@@ -191,7 +192,7 @@ class MapViewModel extends BaseViewModel<MapState> {
       required double distance,
       required void Function() onClose,
     }) onScreenshotCaptured,
-    required void Function() onFinishAchievement,
+    required Future<void> Function(double totalDistance) onFinishAchievement,
   }) async {
     final controller = state.googleMapController;
     state = state.copyWith(isTakingScreenshot: true);
@@ -302,7 +303,8 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  Future<void> getTotalDistanceFromDatabase(Function showAchievement) async {
+  Future<void> getTotalDistanceFromDatabase(
+      Future<void> Function(double totalDistance) showAchievement) async {
     List<Event> eventList = await sqfliteManager.getList();
 
     double totalDistance = 0.0;
@@ -312,10 +314,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
 
     final hasAchieved = await sharedPreferencesManager.getAchievement();
-    if (!hasAchieved && totalDistance > 100.0) {
-      await sharedPreferencesManager.setAchievement(value: true);
-      showAchievement();
-    }
+    // if (!hasAchieved && totalDistance > 100.0) {
+    await sharedPreferencesManager.setAchievement(value: true);
+    showAchievement(totalDistance);
+    // }
   }
 
   /// Angle Direction handle

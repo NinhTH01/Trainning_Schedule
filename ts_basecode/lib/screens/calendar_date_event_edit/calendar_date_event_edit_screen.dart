@@ -230,8 +230,11 @@ class _CalendarDateEventEditState extends BaseViewState<
                   context.tabsRouter.setActiveIndex(1);
                   mapViewModel.toggleRunning(
                       onScreenshotCaptured: showFinishDialog,
-                      onFinishAchievement: () {
-                        showAchievementDialog(context: context);
+                      onFinishAchievement: (totalDistance) {
+                        return showAchievementDialog(
+                          context: context,
+                          totalDistance: totalDistance,
+                        );
                       });
                 },
                 screenWidth: screenWidth,

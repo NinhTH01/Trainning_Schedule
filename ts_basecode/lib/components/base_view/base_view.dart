@@ -69,9 +69,13 @@ abstract class BaseViewState<View extends BaseView,
         );
   }
 
-  Future<void> showAchievementDialog({required BuildContext context}) async {
+  Future<void> showAchievementDialog({
+    required BuildContext context,
+    required double totalDistance,
+  }) async {
     ref.read(dialogProvider).showAchieveDialog(
-          context,
+          context: context,
+          totalDistance: totalDistance,
         );
   }
 
