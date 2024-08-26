@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
-import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
 import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
@@ -27,6 +27,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     required this.localNotificationManager,
     required this.sqfliteManager,
     required this.sharedPreferencesManager,
+    required this.globalMapManager,
   }) : super(const MapState());
 
   final Ref ref;
@@ -39,6 +40,8 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final SharedPreferencesManager sharedPreferencesManager;
 
+  final GlobalMapManager globalMapManager;
+
   final double distanceThreshold = 100.0;
 
   final double distanceMarkerThreshold = 10.0;
@@ -47,50 +50,47 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final double defaultCameraZoom = 18.0;
 
+  void setupRunningStatusInGlobal(bool runningStatus) {
+    globalMapManager.handleUpdateState(isRunning: runningStatus);
+  }
+
   void setupGoogleMapController(GoogleMapController mapController) {
     state = state.copyWith(googleMapController: mapController);
   }
 
   Future<void> getLocationUpdate() async {
-    try {
-      if (await geolocatorManager.checkAlwaysPermission() &&
-          state.currentPosition == null) {
-        configureBackgroundLocation();
-        Stream<Position> activeCurrentLocationStream =
-            await geolocatorManager.getActiveCurrentLocationStream();
+    if (await geolocatorManager.checkAlwaysPermission() &&
+        state.currentPosition == null) {
+      configureBackgroundLocation();
+      Stream<Position> activeCurrentLocationStream =
+          await geolocatorManager.getActiveCurrentLocationStream();
 
-        activeCurrentLocationStream.listen((Position? position) async {
-          if (position != null && !state.isTakingScreenshot) {
-            final updatedLocation =
-                LatLng(position.latitude, position.longitude);
+      activeCurrentLocationStream.listen((Position? position) async {
+        if (position != null && !state.isTakingScreenshot) {
+          final updatedLocation = LatLng(position.latitude, position.longitude);
 
-            state = state.copyWith(
-              lastPosition: state.currentPosition,
-              currentPosition: updatedLocation,
-            );
+          state = state.copyWith(
+            lastPosition: state.currentPosition,
+            currentPosition: updatedLocation,
+          );
 
-            if (await _checkIfCameraIsOutsideMarker() == false) {
-              _moveCamera(updatedLocation);
-            }
-
-            if (state.isRunning) {
-              _drawPolyline(updatedLocation);
-              updateMarkerToFinish();
-            }
-
-            if (state.lastPosition != null && state.currentPosition != null) {
-              _calculateBearing(state.lastPosition!, state.currentPosition!);
-            }
-
-            updateCurrentLocationMarker();
-            _createMarkersFromLocationsBasedOnAngle();
+          if (await _checkIfCameraIsOutsideMarker() == false) {
+            _moveCamera(updatedLocation);
           }
-        });
-      }
-    } on AlwaysPermissionException {
-      rethrow;
-    } catch (e) {
-      return Future.error(e);
+
+          if (state.isRunning) {
+            _drawPolyline(updatedLocation);
+            updateMarkerToFinish();
+          }
+
+          if (state.lastPosition != null && state.currentPosition != null) {
+            _calculateBearing(state.lastPosition!, state.currentPosition!);
+          }
+
+          updateCurrentLocationMarker();
+          _createMarkersFromLocationsBasedOnAngle();
+        }
+      });
     }
   }
 
@@ -110,22 +110,11 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   /// Action handle
 
-  Future<void> toggleRunning(
-      {required Future<void>? Function({
-        required Uint8List image,
-        required double distance,
-        required void Function() onClose,
-      }) onScreenshotCaptured,
-      required Future<void> Function(double totalDistance)
-          onFinishAchievement}) async {
+  Future<void> toggleRunning() async {
     final isRunning = state.isRunning;
 
     if (isRunning) {
       _addEventToDatabase();
-      await _takeScreenshot(
-        onScreenshotCaptured: onScreenshotCaptured,
-        onFinishAchievement: onFinishAchievement,
-      );
 
       state = state.copyWith(
         polylines: {},
@@ -135,6 +124,10 @@ class MapViewModel extends BaseViewModel<MapState> {
         distanceThresholdPassCounter: 1,
       );
     } else {
+      globalMapManager.handleUpdateState(
+        isRunning: true,
+      );
+
       final currentLocation = await geolocatorManager.getCurrentLocation();
 
       _drawPolyline(
@@ -186,7 +179,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     );
   }
 
-  Future<void> _takeScreenshot({
+  Future<void> takeScreenshot({
     required Future<void>? Function({
       required Uint8List image,
       required double distance,
@@ -299,6 +292,9 @@ class MapViewModel extends BaseViewModel<MapState> {
         totalDistance: state.totalDistance + distance,
         distanceCoveredSinceLastNotification:
             state.distanceCoveredSinceLastNotification + distance,
+      );
+      globalMapManager.handleUpdateState(
+        totalDistance: state.totalDistance + distance,
       );
     }
   }

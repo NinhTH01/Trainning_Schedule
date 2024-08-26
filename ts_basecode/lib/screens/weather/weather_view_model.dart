@@ -8,6 +8,7 @@ import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_f
 import 'package:ts_basecode/data/repositories/api/session/session_repository.dart';
 import 'package:ts_basecode/data/repositories/api/weather/weather_repository.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
 import 'package:ts_basecode/data/services/secure_storage_manager/secure_storage_manager.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
@@ -22,6 +23,7 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
     required this.sessionRepository,
     required this.secureStorageManager,
     required this.mapViewModel,
+    required this.globalMapManager,
   }) : super(const WeatherState());
 
   final Ref ref;
@@ -31,6 +33,8 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   MapViewModel get viewModel => ref.read(mapViewModel.notifier);
 
   final WeatherRepository weatherRepository;
+
+  final GlobalMapManager globalMapManager;
 
   final GeolocatorManager geolocatorManager;
 

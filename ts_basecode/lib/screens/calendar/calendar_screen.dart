@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
@@ -13,9 +15,6 @@ import 'package:ts_basecode/screens/calendar/calendar_view_model.dart';
 import 'package:ts_basecode/screens/calendar/components/calendar_header.dart';
 import 'package:ts_basecode/screens/calendar/components/calendar_week_bar.dart';
 import 'package:ts_basecode/screens/calendar/components/event_list_item.dart';
-import 'package:ts_basecode/screens/map/map_screen.dart';
-import 'package:ts_basecode/screens/map/map_state.dart';
-import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
@@ -27,7 +26,7 @@ final _provider =
   (ref) => CalendarViewModel(
     ref: ref,
     sqfliteManager: ref.watch(sqfliteProvider),
-    mapViewModel: mapProvider,
+    globalMapManager: ref.watch(globalMapManagerProvider.notifier),
   ),
 );
 
@@ -75,21 +74,14 @@ class _CalendarViewState
   @override
   CalendarViewModel get viewModel => ref.read(_provider.notifier);
 
-  MapState get mapState => ref.watch(mapProvider);
-
-  MapViewModel get mapViewModel => ref.read(viewModel.mapViewModel.notifier);
+  GlobalMapManagerState get globalMapState =>
+      ref.watch(globalMapManagerProvider);
 
   Future<void> _onInitState() async {
-    Object? error;
-
     try {
       await viewModel.onInitData();
     } catch (e) {
-      error = e;
-    }
-
-    if (error != null) {
-      handleError(error);
+      handleError(e);
     }
   }
 
@@ -206,24 +198,16 @@ class _CalendarViewState
                   ),
           ],
         ),
-        mapState.isRunning
-            ? StatusView(
-                distance: mapState.totalDistance,
-                onPress: () {
-                  context.tabsRouter.setActiveIndex(1);
-                  mapViewModel.toggleRunning(
-                      onScreenshotCaptured: showFinishDialog,
-                      onFinishAchievement: (totalDistance) {
-                        return showAchievementDialog(
-                          context: context,
-                          totalDistance: totalDistance,
-                        );
-                      });
-                },
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-              )
-            : const SizedBox(),
+        StatusView(
+          isVisible: globalMapState.isRunning,
+          distance: globalMapState.totalDistance,
+          onPress: () async {
+            context.tabsRouter.setActiveIndex(1);
+            viewModel.globalMapManager.toggleRunning();
+          },
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+        )
       ],
     );
   }

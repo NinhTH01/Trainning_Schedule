@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
+import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
 import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
@@ -20,6 +21,7 @@ final mapProvider =
           localNotificationManager: ref.watch(localNotificationProvider),
           sqfliteManager: ref.watch(sqfliteProvider),
           sharedPreferencesManager: ref.watch(sharedPreferenceProvider),
+          globalMapManager: ref.watch(globalMapManagerProvider.notifier),
         ));
 
 @RoutePage()
@@ -33,8 +35,8 @@ class MapScreen extends BaseView {
 class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     with WidgetsBindingObserver {
   @override
-  void initState() {
-    super.initState();
+  void onInitState() {
+    super.onInitState();
     WidgetsBinding.instance.addObserver(this);
     viewModel.updateCurrentLocationMarker();
     _onInitState();
@@ -65,16 +67,26 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   MapViewModel get viewModel => ref.read(mapProvider.notifier);
 
   Future<void> _onInitState() async {
-    Object? error;
-
+    ref.listenManual(
+        globalMapManagerProvider.select((state) => state.isRunning),
+        (prev, next) async {
+      if (next == false) {
+        await viewModel.takeScreenshot(
+          onScreenshotCaptured: showFinishDialog,
+          onFinishAchievement: (totalDistance) {
+            return showAchievementDialog(
+              context: context,
+              totalDistance: totalDistance,
+            );
+          },
+        );
+        viewModel.toggleRunning();
+      }
+    });
     try {
       await viewModel.getLocationUpdate();
     } catch (e) {
-      error = e;
-    }
-
-    if (error != null) {
-      handleError(error);
+      handleError(e);
     }
   }
 
@@ -104,16 +116,19 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(24),
             ),
-            onPressed: () {
-              viewModel.toggleRunning(
-                onScreenshotCaptured: showFinishDialog,
-                onFinishAchievement: (totalDistance) {
-                  return showAchievementDialog(
-                    context: context,
-                    totalDistance: totalDistance,
-                  );
-                },
-              );
+            onPressed: () async {
+              if (state.isRunning) {
+                await viewModel.takeScreenshot(
+                  onScreenshotCaptured: showFinishDialog,
+                  onFinishAchievement: (totalDistance) {
+                    return showAchievementDialog(
+                      context: context,
+                      totalDistance: totalDistance,
+                    );
+                  },
+                );
+              }
+              viewModel.toggleRunning();
             },
             child: Text(
                 state.isRunning

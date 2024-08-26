@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_state.dart';
-import 'package:ts_basecode/screens/map/map_state.dart';
-import 'package:ts_basecode/screens/map/map_view_model.dart';
 
 class CalendarDateEventEditViewModel
     extends BaseViewModel<CalendarDateEventEditState> {
   CalendarDateEventEditViewModel({
     required this.ref,
     required this.sqfliteManager,
-    required this.mapViewModel,
+    required this.globalMapManager,
   }) : super(const CalendarDateEventEditState());
 
   final Ref ref;
 
   final SqfliteManager sqfliteManager;
 
-  final StateNotifierProvider<MapViewModel, MapState> mapViewModel;
+  final GlobalMapManager globalMapManager;
 
   void initData(Event? event) {
     state = state.copyWith(

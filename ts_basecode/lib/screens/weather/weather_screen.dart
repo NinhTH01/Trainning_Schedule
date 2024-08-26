@@ -6,14 +6,15 @@ import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
+import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
 import 'package:ts_basecode/data/providers/secure_storage_provider.dart';
 import 'package:ts_basecode/data/providers/session_repository_provider.dart';
 import 'package:ts_basecode/data/providers/weather_repository.provider.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_state.dart';
+import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_screen.dart';
-import 'package:ts_basecode/screens/map/map_state.dart';
-import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/screens/weather/components/weather_forecast_container.dart';
 import 'package:ts_basecode/screens/weather/components/weather_status_container.dart';
 import 'package:ts_basecode/screens/weather/components/weather_wind_container.dart';
@@ -34,6 +35,7 @@ final _provider =
               sessionRepository: ref.watch(sessionRepositoryProvider),
               secureStorageManager: ref.watch(secureStorageProvider),
               mapViewModel: mapProvider,
+              globalMapManager: ref.watch(globalMapManagerProvider.notifier),
             ));
 
 @RoutePage()
@@ -62,8 +64,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   Brightness? get statusBarIconBrightness => Brightness.light;
 
   @override
-  void initState() {
-    super.initState();
+  void onInitState() {
+    super.onInitState();
     _onInitData();
   }
 
@@ -109,9 +111,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   @override
   Color? get backgroundColor => ColorName.transparent;
 
-  MapState get mapState => ref.watch(mapProvider);
-
-  MapViewModel get mapViewModel => ref.read(viewModel.mapViewModel.notifier);
+  GlobalMapManagerState get globalMapState =>
+      ref.watch(globalMapManagerProvider);
 
   WeatherState get state => ref.watch(_provider);
 
@@ -122,8 +123,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   WeatherViewModel get viewModel => ref.read(_provider.notifier);
 
   Future<void> _onInitData() async {
-    Object? error;
-
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Set final value based on screen height
@@ -138,28 +137,24 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
       await viewModel.initData();
     } catch (e) {
       viewModel.handleRetryState(true);
-      error = e;
-    }
-
-    if (error != null) {
-      handleError(error);
+      handleError(e);
     }
   }
 
   dynamic _getBackgroundImagePath(String? weatherCondition) {
     switch (weatherCondition) {
       case WeatherCondition.clear:
-        return 'assets/images/normal.jpg';
+        return Assets.images.normal.path;
       case WeatherCondition.cloud:
-        return 'assets/images/cloud.jpg';
+        return Assets.images.cloud.path;
       case WeatherCondition.drizzle:
-        return 'assets/images/drizzle.jpg';
+        return Assets.images.drizzle.path;
       case WeatherCondition.rain:
-        return 'assets/images/rain.jpg';
+        return Assets.images.rain.path;
       case WeatherCondition.thunderstorm:
-        return 'assets/images/lightning.jpg';
+        return Assets.images.lightning.path;
       default:
-        return 'assets/images/clear.jpg';
+        return Assets.images.clear.path;
     }
   }
 
@@ -325,25 +320,16 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         child: const Text(TextConstants.retry),
                       )
                     : const CircularProgressIndicator())),
-        mapState.isRunning
-            ? StatusView(
-                distance: mapState.totalDistance,
-                onPress: () {
-                  context.tabsRouter.setActiveIndex(1);
-                  mapViewModel.toggleRunning(
-                    onScreenshotCaptured: showFinishDialog,
-                    onFinishAchievement: (totalDistance) {
-                      return showAchievementDialog(
-                        context: context,
-                        totalDistance: totalDistance,
-                      );
-                    },
-                  );
-                },
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-              )
-            : const SizedBox(),
+        StatusView(
+          isVisible: globalMapState.isRunning,
+          distance: globalMapState.totalDistance,
+          onPress: () {
+            context.tabsRouter.setActiveIndex(1);
+            viewModel.globalMapManager.toggleRunning();
+          },
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+        )
       ],
     );
   }

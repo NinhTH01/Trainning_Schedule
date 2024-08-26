@@ -7,14 +7,13 @@ import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_state.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_view_model.dart';
-import 'package:ts_basecode/screens/map/map_screen.dart';
-import 'package:ts_basecode/screens/map/map_state.dart';
-import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
@@ -24,7 +23,7 @@ final _provider = StateNotifierProvider.autoDispose<
   (ref) => CalendarDateEventEditViewModel(
     ref: ref,
     sqfliteManager: ref.watch(sqfliteProvider),
-    mapViewModel: mapProvider,
+    globalMapManager: ref.watch(globalMapManagerProvider.notifier),
   ),
 );
 
@@ -51,8 +50,8 @@ class CalendarDateEventEditScreen extends BaseView {
 class _CalendarDateEventEditState extends BaseViewState<
     CalendarDateEventEditScreen, CalendarDateEventEditViewModel> {
   @override
-  void initState() {
-    super.initState();
+  void onInitState() {
+    super.onInitState();
     WidgetsBinding.instance.addPostFrameCallback((_) => viewModel.initData(
           widget.event,
         ));
@@ -63,9 +62,8 @@ class _CalendarDateEventEditState extends BaseViewState<
 
   CalendarDateEventEditState get state => ref.watch(_provider);
 
-  MapState get mapState => ref.watch(mapProvider);
-
-  MapViewModel get mapViewModel => ref.read(viewModel.mapViewModel.notifier);
+  GlobalMapManagerState get globalMapState =>
+      ref.watch(globalMapManagerProvider);
 
   @override
   bool get ignoreSafeAreaTop => true;
@@ -223,24 +221,16 @@ class _CalendarDateEventEditState extends BaseViewState<
                 : const SizedBox(),
           ],
         ),
-        mapState.isRunning
-            ? StatusView(
-                distance: mapState.totalDistance,
-                onPress: () {
-                  context.tabsRouter.setActiveIndex(1);
-                  mapViewModel.toggleRunning(
-                      onScreenshotCaptured: showFinishDialog,
-                      onFinishAchievement: (totalDistance) {
-                        return showAchievementDialog(
-                          context: context,
-                          totalDistance: totalDistance,
-                        );
-                      });
-                },
-                screenWidth: screenWidth,
-                screenHeight: screenHeight,
-              )
-            : const SizedBox(),
+        StatusView(
+          isVisible: globalMapState.isRunning,
+          distance: globalMapState.totalDistance,
+          onPress: () async {
+            context.tabsRouter.setActiveIndex(1);
+            viewModel.globalMapManager.toggleRunning();
+          },
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+        ),
       ],
     );
   }
