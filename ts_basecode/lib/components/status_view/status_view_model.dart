@@ -6,8 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DraggablePositionNotifier extends StateNotifier<Offset> {
   DraggablePositionNotifier() : super(Offset.zero);
 
-  void updatePosition(Offset newPosition, double screenWidth,
-      double screenHeight, double viewSize, double topInset) {
+  void updatePosition({
+    required Offset newPosition,
+    required double screenWidth,
+    required double screenHeight,
+    required double viewSize,
+    required double topInset,
+  }) {
     double x = newPosition.dx;
     double y = newPosition.dy;
 
@@ -18,8 +23,13 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
     state = Offset(x, y);
   }
 
-  void snapToEdge(Offset position, double screenWidth, double screenHeight,
-      double viewSize, double topInset) {
+  void snapToEdge({
+    required Offset position,
+    required double screenWidth,
+    required double screenHeight,
+    required double viewSize,
+    required double topInset,
+  }) {
     const double snapThreshold = 20.0;
 
     double x = position.dx;

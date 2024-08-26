@@ -19,13 +19,11 @@ mixin BaseViewMixin {
 
   String get screenName;
 
+  /// For iOS status bar
   Brightness? get statusBarBrightness => Brightness.light;
 
-  /// For iOS status bar
-
-  Brightness? get statusBarIconBrightness => Brightness.dark;
-
   /// For Android status bar
+  Brightness? get statusBarIconBrightness => Brightness.dark;
 
   Widget buildBody(BuildContext context);
 

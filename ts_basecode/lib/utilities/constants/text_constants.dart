@@ -80,4 +80,8 @@ class TextConstants {
       'Location permissions are permanently denied, we cannot request permissions.';
   static const serviceDisabledExceptionMessage =
       'Location services are disabled.';
+
+  static const goToSetting = 'Go to Settings';
+
+  static const timeOut = 'Time out';
 }

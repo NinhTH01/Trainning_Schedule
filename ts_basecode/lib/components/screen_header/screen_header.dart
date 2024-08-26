@@ -10,23 +10,28 @@ class ScreenHeader extends StatelessWidget {
   });
 
   final String title;
-  final void Function() onBack;
+  final VoidCallback onBack;
   final Widget rightWidget;
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         IconButton(
-          onPressed: () {
-            onBack();
-          },
+          onPressed: onBack,
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        Text(
-          title,
-          style: AppTextStyles.s16w700,
+        SizedBox(
+          width: screenWidth * 0.7,
+          child: Text(
+            style: AppTextStyles.s16w700,
+            overflow: TextOverflow.clip,
+            maxLines: 1,
+            textAlign: TextAlign.center,
+            title,
+          ),
         ),
         rightWidget
       ],

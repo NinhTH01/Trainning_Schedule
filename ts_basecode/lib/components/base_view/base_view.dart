@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:ts_basecode/components/dialog/dialog_provider.dart';
 import 'package:ts_basecode/data/models/api/responses/base_response_error/base_response_error.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
+import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 import 'base_view_mixin.dart';
 import 'base_view_model.dart';
@@ -96,6 +97,14 @@ abstract class BaseViewState<View extends BaseView,
             final errorJson = jsonDecode(response.data);
             errorMessage = BaseResponseError.fromJson(errorJson).message;
           }
+
+          if (errorMessage != null && mounted) {
+            await ref.read(dialogProvider).showAlertDialog(
+                  context: context,
+                  title: errorMessage,
+                  onClosed: onButtonTapped,
+                );
+          }
         } catch (_) {
           errorMessage = error.response?.statusMessage;
         }
@@ -103,24 +112,14 @@ abstract class BaseViewState<View extends BaseView,
     } else if (error is AlwaysPermissionException) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,
-            buttonTitle: 'Go to Setting',
+            buttonTitle: TextConstants.goToSetting,
             title: error.message,
             onClosed: Geolocator.openLocationSettings,
           );
-    }
-
-    if (error is TimeoutException && mounted) {
+    } else if (error is TimeoutException && mounted) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,
-            title: 'Time out',
-            onClosed: onButtonTapped,
-          );
-    }
-
-    if (errorMessage != null && mounted) {
-      await ref.read(dialogProvider).showAlertDialog(
-            context: context,
-            title: errorMessage,
+            title: TextConstants.timeOut,
             onClosed: onButtonTapped,
           );
     }

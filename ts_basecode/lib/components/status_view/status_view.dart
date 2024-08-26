@@ -35,20 +35,20 @@ class StatusView extends ConsumerWidget {
       child: GestureDetector(
         onPanUpdate: (details) {
           ref.read(draggablePositionProvider.notifier).updatePosition(
-                position + details.delta,
-                screenWidth,
-                screenHeight,
-                viewSize,
-                topInset,
+                newPosition: position + details.delta,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+                viewSize: viewSize,
+                topInset: topInset,
               );
         },
         onPanEnd: (details) {
           ref.read(draggablePositionProvider.notifier).snapToEdge(
-                position,
-                screenWidth,
-                screenHeight,
-                viewSize,
-                topInset,
+                position: position,
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+                viewSize: viewSize,
+                topInset: topInset,
               );
         },
         child: Container(
