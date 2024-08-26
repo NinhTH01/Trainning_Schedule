@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 

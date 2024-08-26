@@ -6,7 +6,7 @@ part 'rain.g.dart';
 @freezed
 class Rain with _$Rain {
   const factory Rain({
-    @JsonKey(name: 'oneHour') num? oneHour,
+    @JsonKey() num? oneHour,
   }) = _Rain;
 
   factory Rain.fromJson(Map<String, dynamic> json) => _$RainFromJson(json);

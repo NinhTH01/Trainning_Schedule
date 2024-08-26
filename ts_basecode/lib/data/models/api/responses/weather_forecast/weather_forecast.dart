@@ -8,11 +8,11 @@ part 'weather_forecast.g.dart';
 @freezed
 class WeatherForecast with _$WeatherForecast {
   const factory WeatherForecast({
-    @JsonKey(name: 'sys') String? cod,
-    @JsonKey(name: 'timezone') int? message,
-    @JsonKey(name: 'id') int? cnt,
-    @JsonKey(name: 'list') List<WeatherEntry>? list,
-    @JsonKey(name: 'city') City? city,
+    @JsonKey() String? cod,
+    @JsonKey() int? message,
+    @JsonKey() int? cnt,
+    @JsonKey() List<WeatherEntry>? list,
+    @JsonKey() City? city,
   }) = _WeatherForecast;
 
   factory WeatherForecast.fromJson(Map<String, dynamic> json) =>
