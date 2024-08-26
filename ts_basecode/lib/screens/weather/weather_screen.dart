@@ -14,7 +14,6 @@ import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
-import 'package:ts_basecode/screens/map/map_screen.dart';
 import 'package:ts_basecode/screens/weather/components/weather_forecast_container.dart';
 import 'package:ts_basecode/screens/weather/components/weather_status_container.dart';
 import 'package:ts_basecode/screens/weather/components/weather_wind_container.dart';
@@ -34,7 +33,6 @@ final _provider =
               geolocatorManager: ref.watch(geolocatorProvider),
               sessionRepository: ref.watch(sessionRepositoryProvider),
               secureStorageManager: ref.watch(secureStorageProvider),
-              mapViewModel: mapProvider,
               globalMapManager: ref.watch(globalMapManagerProvider.notifier),
             ));
 

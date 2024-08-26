@@ -14,7 +14,7 @@ import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
-final mapProvider =
+final _provider =
     StateNotifierProvider<MapViewModel, MapState>((ref) => MapViewModel(
           ref: ref,
           geolocatorManager: ref.watch(geolocatorProvider),
@@ -58,13 +58,13 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
 
-  MapState get state => ref.watch(mapProvider);
+  MapState get state => ref.watch(_provider);
 
   @override
   String get screenName => MapRoute.name;
 
   @override
-  MapViewModel get viewModel => ref.read(mapProvider.notifier);
+  MapViewModel get viewModel => ref.read(_provider.notifier);
 
   Future<void> _onInitState() async {
     ref.listenManual(

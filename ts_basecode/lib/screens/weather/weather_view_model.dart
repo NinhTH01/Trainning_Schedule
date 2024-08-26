@@ -10,8 +10,6 @@ import 'package:ts_basecode/data/repositories/api/weather/weather_repository.dar
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
 import 'package:ts_basecode/data/services/secure_storage_manager/secure_storage_manager.dart';
-import 'package:ts_basecode/screens/map/map_state.dart';
-import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/screens/weather/models/weather_container.dart';
 import 'package:ts_basecode/screens/weather/weather_state.dart';
 
@@ -22,15 +20,10 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
     required this.geolocatorManager,
     required this.sessionRepository,
     required this.secureStorageManager,
-    required this.mapViewModel,
     required this.globalMapManager,
   }) : super(const WeatherState());
 
   final Ref ref;
-
-  final StateNotifierProvider<MapViewModel, MapState> mapViewModel;
-
-  MapViewModel get viewModel => ref.read(mapViewModel.notifier);
 
   final WeatherRepository weatherRepository;
 
@@ -43,15 +36,11 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   final SecureStorageManager secureStorageManager;
 
   Future<void> initData() async {
-    try {
-      Position currentLocation = await geolocatorManager.getCurrentLocation();
-      await Future.wait([
-        _getWeather(currentLocation),
-        _getWeatherForecast(currentLocation),
-      ]);
-    } catch (e) {
-      return Future.error(e);
-    }
+    Position currentLocation = await geolocatorManager.getCurrentLocation();
+    await Future.wait([
+      _getWeather(currentLocation),
+      _getWeatherForecast(currentLocation),
+    ]);
   }
 
   Future<void> _getWeather(Position currentLocation) async {
