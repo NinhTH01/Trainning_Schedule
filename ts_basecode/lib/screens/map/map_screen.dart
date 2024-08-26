@@ -67,22 +67,6 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   MapViewModel get viewModel => ref.read(_provider.notifier);
 
   Future<void> _onInitState() async {
-    ref.listenManual(
-        globalMapManagerProvider.select((state) => state.isRunning),
-        (prev, next) async {
-      if (next == false) {
-        await viewModel.takeScreenshot(
-          onScreenshotCaptured: showFinishDialog,
-          onFinishAchievement: (totalDistance) {
-            return showAchievementDialog(
-              context: context,
-              totalDistance: totalDistance,
-            );
-          },
-        );
-        viewModel.toggleRunning();
-      }
-    });
     try {
       await viewModel.getLocationUpdate();
     } catch (e) {
@@ -92,6 +76,23 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   @override
   Widget buildBody(BuildContext context) {
+    ref.listen(globalMapManagerProvider.select((state) => state.isRunning),
+        (prev, next) async {
+      if (next == false) {
+        if (state.isRunning) {
+          await viewModel.takeScreenshot(
+            onScreenshotCaptured: showFinishDialog,
+            onFinishAchievement: (totalDistance) {
+              return showAchievementDialog(
+                context: context,
+                totalDistance: totalDistance,
+              );
+            },
+          );
+        }
+        viewModel.toggleRunning();
+      }
+    });
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -118,17 +119,10 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             ),
             onPressed: () async {
               if (state.isRunning) {
-                await viewModel.takeScreenshot(
-                  onScreenshotCaptured: showFinishDialog,
-                  onFinishAchievement: (totalDistance) {
-                    return showAchievementDialog(
-                      context: context,
-                      totalDistance: totalDistance,
-                    );
-                  },
-                );
+                viewModel.setupRunningStatusInGlobal(false);
+              } else {
+                viewModel.toggleRunning();
               }
-              viewModel.toggleRunning();
             },
             child: Text(
                 state.isRunning
