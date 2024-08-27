@@ -53,7 +53,6 @@ class GeolocatorManager {
       const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
         timeLimit: Duration(seconds: 5),
-        distanceFilter: 4,
       );
       final location = await Geolocator.getCurrentPosition(
           locationSettings: locationSettings);

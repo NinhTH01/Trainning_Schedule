@@ -18,7 +18,7 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
 
     // Clamp position within screen boundaries, considering the top inset
     x = x.clamp(0.0, screenWidth - viewSize);
-    y = y.clamp(topInset, screenHeight - viewSize - 50);
+    y = y.clamp(0, screenHeight - viewSize - 50);
 
     state = Offset(x, y);
   }
@@ -42,7 +42,7 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
     }
 
     if (y <= snapThreshold + topInset) {
-      y = topInset;
+      y = 0;
     } else if (y >= screenHeight - viewSize - snapThreshold - topInset) {
       y = screenHeight - viewSize - topInset;
     }

@@ -162,10 +162,12 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
       height: state.containerHeight,
       child: Column(
         children: [
-          Text(state.currentWeather!.name!,
-              style: AppTextStyles.s30w700.copyWith(
-                color: ColorName.white,
-              )),
+          Text(
+            state.currentWeather!.name!,
+            style: AppTextStyles.s30w700.copyWith(
+              color: ColorName.white,
+            ),
+          ),
           state.containerHeight > _maxContainerHeight - _maxOffsetDescription
               ? Opacity(
                   opacity: state.descriptionOpacity,
@@ -224,34 +226,34 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
           value: state.currentWeather?.main?.humidity == null
               ? null
               : '${state.currentWeather?.main?.humidity}%',
-          backgroundColor: state.backgroundColor!,
+          backgroundColor: state.backgroundColor,
         ),
         WeatherStatusContainer(
           title: TextConstants.feelslikeTitle,
           value: '${state.currentWeather?.main?.feelsLike?.round()}°',
-          backgroundColor: state.backgroundColor!,
+          backgroundColor: state.backgroundColor,
         ),
         WeatherStatusContainer(
           title: TextConstants.sunsetTitle,
           value: WeatherHelper.unixToHHmm(state.currentWeather!.sys!.sunset!),
-          backgroundColor: state.backgroundColor!,
+          backgroundColor: state.backgroundColor,
         ),
         WeatherStatusContainer(
           title: TextConstants.sunriseTitle,
           value: WeatherHelper.unixToHHmm(state.currentWeather!.sys!.sunrise!),
-          backgroundColor: state.backgroundColor!,
+          backgroundColor: state.backgroundColor,
         ),
         WeatherStatusContainer(
           title: TextConstants.pressureTitle,
           value: '${state.currentWeather?.main?.pressure}\nhPa',
-          backgroundColor: state.backgroundColor!,
+          backgroundColor: state.backgroundColor,
         ),
         WeatherStatusContainer(
           title: TextConstants.visibilityTitle,
           value: state.currentWeather?.visibility == null
               ? null
               : '${state.currentWeather!.visibility! / 1000} km',
-          backgroundColor: state.backgroundColor!,
+          backgroundColor: state.backgroundColor,
         ),
       ],
     );
@@ -259,6 +261,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
 
   @override
   Widget buildBody(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
     return Stack(
       children: [
         (state.currentWeather != null && state.weatherForecast != null)
@@ -317,6 +320,22 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         child: const Text(TextConstants.retry),
                       )
                     : const CircularProgressIndicator())),
+        Positioned(
+          right: 0,
+          top: topInset,
+          child: IconButton(
+            icon: const Icon(
+              Icons.refresh,
+              color: ColorName.white,
+            ),
+            onPressed: () {
+              if (mounted) {
+                ref.invalidate(_provider);
+                viewModel.initData();
+              }
+            },
+          ),
+        ),
         StatusView(
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,
@@ -324,7 +343,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
             context.tabsRouter.setActiveIndex(1);
             viewModel.globalMapManager.toggleRunning();
           },
-        )
+        ),
       ],
     );
   }
