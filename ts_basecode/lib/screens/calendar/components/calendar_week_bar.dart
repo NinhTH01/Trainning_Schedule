@@ -32,7 +32,7 @@ Widget _buildWeekDay(String day, double screenWidth) {
       child: Text(
         day,
         style:
-            screenWidth < 800 ? AppTextStyles.s12w700 : AppTextStyles.s16w600,
+            screenWidth < 400 ? AppTextStyles.s12w700 : AppTextStyles.s16w600,
       ),
     ),
   );
