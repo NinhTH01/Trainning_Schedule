@@ -92,7 +92,7 @@ class CalendarDateEventEditViewModel
     required Function() goBack,
   }) async {
     if (eventInfo != null) {
-      await sqfliteManager.delete(eventInfo.id);
+      await sqfliteManager.delete(eventInfo);
       goBack();
     }
   }

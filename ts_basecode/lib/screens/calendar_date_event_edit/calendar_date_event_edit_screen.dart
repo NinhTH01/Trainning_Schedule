@@ -31,12 +31,9 @@ final _provider = StateNotifierProvider.autoDispose<
 class CalendarDateEventEditScreen extends BaseView {
   const CalendarDateEventEditScreen({
     super.key,
-    required this.calendarDate,
     required this.isEdit,
     this.event,
   });
-
-  final DateTime calendarDate;
 
   final Event? event;
 
@@ -74,16 +71,19 @@ class _CalendarDateEventEditState extends BaseViewState<
   @override
   CalendarDateEventEditViewModel get viewModel => ref.read(_provider.notifier);
 
-  void _handleSaveOrUpdateEvent() {
+  void _handleSaveOrUpdateEvent() async {
     if (widget.isEdit) {
-      viewModel.updateEvent(
+      await viewModel.updateEvent(
         isEdit: widget.isEdit,
         eventInfo: widget.event,
       );
     } else {
-      viewModel.addEvent();
+      await viewModel.addEvent();
     }
-    Navigator.pop(context);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   void _showActionSheet(BuildContext context) {

@@ -45,12 +45,6 @@ class _CalendarViewState
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Set final value based on screen height
-      var size = MediaQuery.of(context).size;
-      var width = size.width;
-      calendarHeight = width * 6 / 7;
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _onInitState());
 
     context.tabsRouter.addListener(() async {
@@ -78,8 +72,11 @@ class _CalendarViewState
       ref.watch(globalRunningStatusManagerProvider);
 
   Future<void> _onInitState() async {
+    var size = MediaQuery.of(context).size;
+    var width = size.width;
     try {
       await viewModel.onInitData();
+      calendarHeight = width * state.columnNum / 7;
     } catch (e) {
       handleError(e);
     }
@@ -91,7 +88,6 @@ class _CalendarViewState
       await AutoRouter.of(context)
           .push(
         CalendarDateEventEditRoute(
-          calendarDate: state.selectedDate!,
           isEdit: isEdit,
           event: event,
         ),
@@ -114,46 +110,26 @@ class _CalendarViewState
 
   @override
   Widget? buildFloatingActionButton(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: ColorName.red,
-          ),
-          child: IconButton(
-            onPressed: () {
-              // _handleGoToEditEventScreen(isEdit: false).then((_) async {
-              //   await viewModel.fetchData();
-              // });
-            },
-            icon: const Icon(Icons.star),
-            color: ColorName.white,
-          ),
-        ),
-        const SizedBox(height: 15),
-        Container(
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: ColorName.red,
-          ),
-          child: IconButton(
-            onPressed: () {
-              _handleGoToEditEventScreen(isEdit: false).then((_) async {
-                await viewModel.fetchData();
-              });
-            },
-            icon: const Icon(Icons.add),
-            color: ColorName.white,
-          ),
-        ),
-      ],
+    return Container(
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: ColorName.red,
+      ),
+      child: IconButton(
+        onPressed: () {
+          _handleGoToEditEventScreen(isEdit: false).then((_) async {
+            await viewModel.fetchData();
+          });
+        },
+        icon: const Icon(Icons.add),
+        color: ColorName.white,
+      ),
     );
   }
 
   @override
   Widget buildBody(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
         Column(
@@ -168,8 +144,9 @@ class _CalendarViewState
             const SizedBox(height: 24),
             state.eventDateList.isNotEmpty
                 ? SizedBox(
-                    height: calendarHeight,
+                    height: width * state.columnNum / 7,
                     child: calendarBody(
+                        numOfCalendarColumn: state.columnNum,
                         dateList: state.eventDateList,
                         selectedDate: state.selectedDate ?? DateTime.now(),
                         currentDate: state.currentDate ?? DateTime.now(),

@@ -2,9 +2,10 @@ class TextConstants {
   TextConstants._();
 
   /// Tab bar
-  static const calendar = "calendar";
-  static const map = "map";
-  static const weather = "weather";
+  static const calendar = "Calendar";
+  static const map = "Map";
+  static const weather = "Weather";
+  static const special = "Special";
 
   /// Splash Screen
   static const appName = "Training Schedule";
@@ -84,6 +85,8 @@ class TextConstants {
   static const goToSetting = 'Go to Settings';
 
   static const timeOut = 'Time out';
+
+  static const specialEvent = 'Special Event';
 
   static const noWeatherData =
       "Can't get the weather forecast data, please try again!";

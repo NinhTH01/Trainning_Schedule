@@ -10,6 +10,7 @@ Widget calendarBody({
   required void Function() changeToNextMonth,
   required void Function() changeToLastMonth,
   required void Function(EventDateInfo) changeSelectedDate,
+  required int numOfCalendarColumn,
 }) {
   var daysInMonth = DateTime(currentDate.year, currentDate.month + 1, 0).day;
   var firstDayOfTheMonth = DateTime(currentDate.year, currentDate.month, 1);
@@ -17,34 +18,39 @@ Widget calendarBody({
   var weekDayOfFirstDay = firstDayOfTheMonth.weekday;
 
   return GridView.builder(
+    physics: const NeverScrollableScrollPhysics(),
     padding: const EdgeInsets.symmetric(horizontal: 8.0),
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 7,
       childAspectRatio: 1,
     ),
-    itemCount: 42,
+    itemCount: numOfCalendarColumn * 7,
     itemBuilder: (context, index) {
-      if (index < weekDayOfFirstDay - 1) {
-        return buildDayInMonth(
-          day: dateList[index],
-          onPressed: changeToLastMonth,
-          inMonth: false,
-          selectedDate: selectedDate,
-        );
-      } else if (index > weekDayOfFirstDay + daysInMonth - 2) {
-        return buildDayInMonth(
-          day: dateList[index],
-          onPressed: changeToNextMonth,
-          inMonth: false,
-          selectedDate: selectedDate,
-        );
+      if (index < dateList.length) {
+        if (index < weekDayOfFirstDay - 1) {
+          return buildDayInMonth(
+            day: dateList[index],
+            onPressed: changeToLastMonth,
+            inMonth: false,
+            selectedDate: selectedDate,
+          );
+        } else if (index > weekDayOfFirstDay + daysInMonth - 2) {
+          return buildDayInMonth(
+            day: dateList[index],
+            onPressed: changeToNextMonth,
+            inMonth: false,
+            selectedDate: selectedDate,
+          );
+        } else {
+          return buildDayInMonth(
+            day: dateList[index],
+            onPressed: () => changeSelectedDate(dateList[index]),
+            inMonth: true,
+            selectedDate: selectedDate,
+          );
+        }
       } else {
-        return buildDayInMonth(
-          day: dateList[index],
-          onPressed: () => changeSelectedDate(dateList[index]),
-          inMonth: true,
-          selectedDate: selectedDate,
-        );
+        return const SizedBox();
       }
     },
   );

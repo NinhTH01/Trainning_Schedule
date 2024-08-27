@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/special_event/special_event.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 
 class SqfliteManager {
@@ -25,6 +26,7 @@ class SqfliteManager {
 
   Future _createDB(Database db, int version) async {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL';
+    const notIncIdType = 'INTEGER PRIMARY KEY';
     const textType = 'TEXT NOT NULL';
     const doubleType = 'REAL NOT NULL';
     const notNullTextType = 'TEXT NOT NULL';
@@ -39,16 +41,30 @@ class SqfliteManager {
         ${EventFields.isSpecial} $intType
       )
  ''');
+
+    await db.execute('''
+      CREATE TABLE $tableSpecialEvents ( 
+        ${SpecialEventFields.id} $notIncIdType, 
+        ${SpecialEventFields.description} $textType,
+        ${SpecialEventFields.distance} $doubleType,
+        ${SpecialEventFields.time} $notNullTextType,
+        ${SpecialEventFields.orderIndex} $intType
+      )
+ ''');
   }
 
   Future<void> insert(Event event) async {
     final db = await database;
 
-    await db.insert(
+    int id = await db.insert(
       tableEvents,
       event.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    if (event.isSpecial == 1) {
+      await insertSpecial(event, id);
+    }
   }
 
   Future<void> update(Event event) async {
@@ -60,16 +76,22 @@ class SqfliteManager {
       where: '${EventFields.id} = ?',
       whereArgs: [event.id],
     );
+
+    await _updateSpecial(event);
   }
 
-  Future<void> delete(int? eventId) async {
+  Future<void> delete(Event event) async {
     final db = await database;
 
     await db.delete(
       tableEvents,
       where: '${EventFields.id} = ?',
-      whereArgs: [eventId],
+      whereArgs: [event.id],
     );
+
+    if (event.isSpecial == 1) {
+      await deleteSpecial(event);
+    }
   }
 
   Future<List<Event>> getList() async {
@@ -109,5 +131,111 @@ class SqfliteManager {
 
     // Convert the list of each dog's fields into a list of `Dog` objects.
     return result.map(Event.fromJson).toList();
+  }
+
+  Future<List<SpecialEvent>> getSpecialEvents() async {
+    final db = await database;
+
+    // Query the database for all rows where is_active = 1
+    final List<Map<String, dynamic>> result = await db.query(
+      tableSpecialEvents,
+      orderBy: '${SpecialEventFields.orderIndex} DESC',
+    );
+
+    return result.map(SpecialEvent.fromJson).toList();
+  }
+
+  Future<void> insertSpecial(Event event, int id) async {
+    final db = await database;
+
+    final list = await getSpecialEvents();
+
+    SpecialEvent insertEvent = SpecialEvent(
+      id: id,
+      createdTime: event.createdTime,
+      orderIndex: list[0].orderIndex! + 1,
+      distance: event.distance,
+      description: event.description,
+    );
+
+    await db.insert(
+      tableSpecialEvents,
+      insertEvent.toJson(),
+    );
+  }
+
+  Future<void> deleteSpecial(Event event) async {
+    final db = await database;
+
+    await db.delete(
+      tableSpecialEvents,
+      where: '${SpecialEventFields.id} = ?',
+      whereArgs: [event.id],
+    );
+  }
+
+  Future<void> _updateSpecial(Event event) async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> result = await db.query(
+      tableSpecialEvents,
+      where: '${SpecialEventFields.id} = ?',
+      whereArgs: [event.id],
+    );
+
+    if (event.isSpecial == 1) {
+      if (result.isEmpty) {
+        insertSpecial(event, event.id!);
+      } else {
+        SpecialEvent insertEvent = SpecialEvent(
+          id: event.id,
+          createdTime: event.createdTime,
+          distance: event.distance,
+          description: event.description,
+          orderIndex: result.map(SpecialEvent.fromJson).toList()[0].orderIndex,
+        );
+
+        await db.update(
+          tableSpecialEvents,
+          insertEvent.toJson(),
+          where: '${SpecialEventFields.id} = ?',
+          whereArgs: [event.id],
+        );
+      }
+    } else {
+      if (result.isNotEmpty) {
+        deleteSpecial(event);
+      }
+    }
+  }
+
+  Future<void> updateSpecialEventListOrder({
+    required int id,
+    required int newOrderIndex,
+  }) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      tableSpecialEvents,
+      where: '${SpecialEventFields.id} = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      SpecialEvent item = result.map(SpecialEvent.fromJson).toList()[0];
+      SpecialEvent insertEvent = SpecialEvent(
+        id: item.id,
+        createdTime: item.createdTime,
+        distance: item.distance,
+        description: item.description,
+        orderIndex: newOrderIndex,
+      );
+
+      await db.update(
+        tableSpecialEvents,
+        insertEvent.toJson(),
+        where: '${SpecialEventFields.id} = ?',
+        whereArgs: [item.id],
+      );
+    }
   }
 }

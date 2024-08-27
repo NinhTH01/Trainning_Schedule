@@ -21,7 +21,6 @@ abstract class _$AppRouter extends RootStackRouter {
         routeData: routeData,
         child: CalendarDateEventEditScreen(
           key: args.key,
-          calendarDate: args.calendarDate,
           isEdit: args.isEdit,
           event: args.event,
         ),
@@ -31,6 +30,12 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const CalendarScreen(),
+      );
+    },
+    CalendarSpecialEventListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const CalendarSpecialEventListScreen(),
       );
     },
     CalendarTabRoute.name: (routeData) {
@@ -63,6 +68,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const OnboardingScreen(),
       );
     },
+    SpecialTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const SpecialTabPage(),
+      );
+    },
     SplashRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -90,7 +101,6 @@ class CalendarDateEventEditRoute
     extends PageRouteInfo<CalendarDateEventEditRouteArgs> {
   CalendarDateEventEditRoute({
     Key? key,
-    required DateTime calendarDate,
     required bool isEdit,
     Event? event,
     List<PageRouteInfo>? children,
@@ -98,7 +108,6 @@ class CalendarDateEventEditRoute
           CalendarDateEventEditRoute.name,
           args: CalendarDateEventEditRouteArgs(
             key: key,
-            calendarDate: calendarDate,
             isEdit: isEdit,
             event: event,
           ),
@@ -114,14 +123,11 @@ class CalendarDateEventEditRoute
 class CalendarDateEventEditRouteArgs {
   const CalendarDateEventEditRouteArgs({
     this.key,
-    required this.calendarDate,
     required this.isEdit,
     this.event,
   });
 
   final Key? key;
-
-  final DateTime calendarDate;
 
   final bool isEdit;
 
@@ -129,7 +135,7 @@ class CalendarDateEventEditRouteArgs {
 
   @override
   String toString() {
-    return 'CalendarDateEventEditRouteArgs{key: $key, calendarDate: $calendarDate, isEdit: $isEdit, event: $event}';
+    return 'CalendarDateEventEditRouteArgs{key: $key, isEdit: $isEdit, event: $event}';
   }
 }
 
@@ -143,6 +149,20 @@ class CalendarRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'CalendarRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [CalendarSpecialEventListScreen]
+class CalendarSpecialEventListRoute extends PageRouteInfo<void> {
+  const CalendarSpecialEventListRoute({List<PageRouteInfo>? children})
+      : super(
+          CalendarSpecialEventListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CalendarSpecialEventListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -213,6 +233,20 @@ class OnboardingRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'OnboardingRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SpecialTabPage]
+class SpecialTabRoute extends PageRouteInfo<void> {
+  const SpecialTabRoute({List<PageRouteInfo>? children})
+      : super(
+          SpecialTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'SpecialTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

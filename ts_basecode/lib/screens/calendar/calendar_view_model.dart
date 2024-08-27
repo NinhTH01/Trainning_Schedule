@@ -67,14 +67,32 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
 
   Future<void> getDefaultDateList() async {
     if (state.currentDate != null) {
+      var calendarColumn = 6;
       var firstDayOfMonth =
           DateTime(state.currentDate!.year, state.currentDate!.month, 1);
       var weekday = firstDayOfMonth.weekday;
       var previousSunday =
           firstDayOfMonth.subtract(Duration(days: weekday - 1));
 
+      DateTime firstDayNextMonth;
+      if (state.currentDate!.month == 12) {
+        firstDayNextMonth = DateTime(state.currentDate!.year + 1, 1, 1);
+      } else {
+        firstDayNextMonth =
+            DateTime(state.currentDate!.year, state.currentDate!.month + 1, 1);
+      }
+
+      if (weekday + firstDayNextMonth.subtract(const Duration(days: 1)).day >
+          36) {
+        calendarColumn = 6;
+        state = state.copyWith(columnNum: 6);
+      } else {
+        calendarColumn = 5;
+        state = state.copyWith(columnNum: 5);
+      }
+
       var defaultDateInfoList = <EventDateInfo>[];
-      for (var i = 0; i < 42; i++) {
+      for (var i = 0; i < calendarColumn * 7; i++) {
         defaultDateInfoList.add(
           EventDateInfo(
             date: previousSunday.add(Duration(days: i)),

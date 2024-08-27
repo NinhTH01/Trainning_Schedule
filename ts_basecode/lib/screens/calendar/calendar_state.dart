@@ -12,6 +12,7 @@ class CalendarState with _$CalendarState {
     @Default([]) List<EventDateInfo> eventDateList,
     @Default([]) List<EventDateInfo> defaultDateList,
     @Default([]) List<Event> eventList,
+    @Default(0) int columnNum,
   }) = _CalendarState;
 
   const CalendarState._();
