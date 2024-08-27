@@ -6,7 +6,7 @@ part 'base_response_error.g.dart';
 @freezed
 class BaseResponseError with _$BaseResponseError {
   factory BaseResponseError({
-    @JsonKey() String? message,
+    String? message,
   }) = _BaseResponseError;
 
   const BaseResponseError._();

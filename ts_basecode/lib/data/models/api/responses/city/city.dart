@@ -7,14 +7,14 @@ part 'city.g.dart';
 @freezed
 class City with _$City {
   const factory City({
-    @JsonKey() int? id,
-    @JsonKey() String? name,
-    @JsonKey() Coord? coord,
-    @JsonKey() String? country,
-    @JsonKey() int? population,
-    @JsonKey() int? timezone,
-    @JsonKey() int? sunrise,
-    @JsonKey() int? sunset,
+    int? id,
+    String? name,
+    Coord? coord,
+    String? country,
+    int? population,
+    int? timezone,
+    int? sunrise,
+    int? sunset,
   }) = _City;
 
   factory City.fromJson(Map<String, dynamic> json) => _$CityFromJson(json);

@@ -6,7 +6,7 @@ part 'clouds.g.dart';
 @freezed
 class Clouds with _$Clouds {
   const factory Clouds({
-    @JsonKey() int? all,
+    int? all,
   }) = _Clouds;
 
   factory Clouds.fromJson(Map<String, dynamic> json) => _$CloudsFromJson(json);

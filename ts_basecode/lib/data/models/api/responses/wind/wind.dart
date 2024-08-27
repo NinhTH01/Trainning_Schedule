@@ -6,9 +6,9 @@ part 'wind.g.dart';
 @freezed
 class Wind with _$Wind {
   const factory Wind({
-    @JsonKey() num? speed,
-    @JsonKey() int? deg,
-    @JsonKey() num? gust,
+    num? speed,
+    int? deg,
+    num? gust,
   }) = _Wind;
 
   factory Wind.fromJson(Map<String, dynamic> json) => _$WindFromJson(json);
