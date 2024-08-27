@@ -74,6 +74,9 @@ class MapViewModel extends BaseViewModel<MapState> {
             currentPosition: updatedLocation,
           );
 
+          await updateCurrentLocationMarker();
+          await _createMarkersFromLocationsBasedOnAngle();
+
           if (await _checkIfCameraIsOutsideMarker() == false) {
             _moveCamera(updatedLocation);
           }
@@ -86,9 +89,6 @@ class MapViewModel extends BaseViewModel<MapState> {
           if (state.lastPosition != null && state.currentPosition != null) {
             _calculateBearing(state.lastPosition!, state.currentPosition!);
           }
-
-          updateCurrentLocationMarker();
-          _createMarkersFromLocationsBasedOnAngle();
         }
       });
     }
