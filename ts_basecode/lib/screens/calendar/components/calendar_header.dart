@@ -7,16 +7,20 @@ Widget calendarHeader({
   DateTime? currentDate,
   required void Function() changeToNextMonth,
   required void Function() changeToLastMonth,
+  required void Function() handleChangeHeaderMonth,
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 20.0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          DateFormat(AppConstants.mmmmyyyyFormat)
-              .format(currentDate ?? DateTime.now()),
-          style: AppTextStyles.s24w700,
+        TextButton(
+          onPressed: handleChangeHeaderMonth,
+          child: Text(
+            DateFormat(AppConstants.mmmmyyyyFormat)
+                .format(currentDate ?? DateTime.now()),
+            style: AppTextStyles.s24w700,
+          ),
         ),
         Row(
           children: [

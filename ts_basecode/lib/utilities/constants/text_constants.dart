@@ -84,4 +84,7 @@ class TextConstants {
   static const goToSetting = 'Go to Settings';
 
   static const timeOut = 'Time out';
+
+  static const noWeatherData =
+      "Can't get the weather forecast data, please try again!";
 }

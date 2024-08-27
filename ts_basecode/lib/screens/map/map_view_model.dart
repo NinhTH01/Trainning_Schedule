@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:background_location/background_location.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -345,40 +345,27 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   /// Marker handle
   Future<void> updateCurrentLocationMarker() async {
-    Uint8List? byteAssets;
+    String path;
     if (state.directionAngle > 0 && state.directionAngle < 180) {
-      byteAssets = await getBytesFromAsset(
-          path: Assets.images.markerRight.path, size: markerSize);
+      path = Assets.images.markerRight.path;
     } else {
-      byteAssets = await getBytesFromAsset(
-          path: Assets.images.markerLeft.path, size: markerSize);
+      path = Assets.images.markerLeft.path;
     }
-    state = state.copyWith(mapMarker: BitmapDescriptor.bytes(byteAssets!));
-  }
-
-  Future<Uint8List?> getBytesFromAsset({
-    required String path,
-    required int size,
-  }) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: size);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
-        ?.buffer
-        .asUint8List();
+    state = state.copyWith(
+        mapMarker: await BitmapDescriptor.asset(
+            const ImageConfiguration(size: Size(24, 24)), path));
   }
 
   Future<void> _createMarkersFromLocationsBasedOnAngle() async {
     Set<Marker> markers = {};
 
     for (LatLng location in state.locationMarkersCoordinateList) {
-      Uint8List? byteAssets = await getBytesFromAsset(
-          path: Assets.images.locationMarker.path, size: 30);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
-          icon: BitmapDescriptor.bytes(byteAssets!),
+          icon: await BitmapDescriptor.asset(
+              const ImageConfiguration(size: Size(30, 30)),
+              Assets.images.locationMarker.path),
           onTap: () {
             removeMarker(location: location, markerType: MarkerType.schedule);
           });
@@ -386,12 +373,12 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
 
     for (LatLng location in state.finishMarkersCoordinateList) {
-      Uint8List? byteAssets = await getBytesFromAsset(
-          path: Assets.images.finishMarker.path, size: 30);
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
-          icon: BitmapDescriptor.bytes(byteAssets!),
+          icon: await BitmapDescriptor.asset(
+              const ImageConfiguration(size: Size(30, 30)),
+              Assets.images.finishMarker.path),
           onTap: () {
             removeMarker(location: location, markerType: MarkerType.finish);
           });

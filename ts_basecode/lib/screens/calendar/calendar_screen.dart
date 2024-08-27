@@ -49,7 +49,7 @@ class _CalendarViewState
       // Set final value based on screen height
       var size = MediaQuery.of(context).size;
       var width = size.width;
-      calendarHeight = width * 5 / 7;
+      calendarHeight = width * 6 / 7;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) => _onInitState());
 
@@ -102,6 +102,16 @@ class _CalendarViewState
     }
   }
 
+  void handleChangeHeaderMonth() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: state.currentDate,
+      firstDate: DateTime(DateTime.now().year - 10),
+      lastDate: DateTime(DateTime.now().year + 10),
+    );
+    viewModel.changeCurrentDateToPicker(date);
+  }
+
   @override
   Widget? buildFloatingActionButton(BuildContext context) {
     return Column(
@@ -149,11 +159,12 @@ class _CalendarViewState
         Column(
           children: [
             calendarHeader(
+              handleChangeHeaderMonth: handleChangeHeaderMonth,
               currentDate: state.currentDate,
               changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
               changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
             ),
-            calendarWeekBar(),
+            calendarWeekBar(context),
             const SizedBox(height: 24),
             state.eventDateList.isNotEmpty
                 ? SizedBox(

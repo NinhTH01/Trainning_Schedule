@@ -54,6 +54,17 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
     }
   }
 
+  void changeCurrentDateToPicker(DateTime? date) async {
+    if (state.currentDate != null && date != null) {
+      state = state.copyWith(
+          currentDate: DateTime(
+        date.year,
+        date.month,
+      ));
+      await getDefaultDateList();
+    }
+  }
+
   Future<void> getDefaultDateList() async {
     if (state.currentDate != null) {
       var firstDayOfMonth =
@@ -63,7 +74,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
           firstDayOfMonth.subtract(Duration(days: weekday - 1));
 
       var defaultDateInfoList = <EventDateInfo>[];
-      for (var i = 0; i < 35; i++) {
+      for (var i = 0; i < 42; i++) {
         defaultDateInfoList.add(
           EventDateInfo(
             date: previousSunday.add(Duration(days: i)),

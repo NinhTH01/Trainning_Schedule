@@ -22,7 +22,7 @@ Widget calendarBody({
       crossAxisCount: 7,
       childAspectRatio: 1,
     ),
-    itemCount: 35,
+    itemCount: 42,
     itemBuilder: (context, index) {
       if (index < weekDayOfFirstDay - 1) {
         return buildDayInMonth(
@@ -58,18 +58,19 @@ bool isToday(DateTime date) {
 }
 
 Color getColor({
+  required inMonth,
   required isToday,
   required isSelectedDay,
 }) {
-  if (isToday) {
-    return ColorName.red;
-  } else {
+  if (inMonth) {
+    if (isToday) {
+      return ColorName.red;
+    }
     if (isSelectedDay) {
       return ColorName.greyFF757575;
-    } else {
-      return ColorName.transparent;
     }
   }
+  return ColorName.transparent;
 }
 
 TextStyle getDayTextStyles({
@@ -121,6 +122,7 @@ Widget buildDayInMonth({
           // width: 35,
           decoration: BoxDecoration(
             color: getColor(
+              inMonth: inMonth,
               isSelectedDay: isSelectedDay,
               isToday: isToday,
             ),

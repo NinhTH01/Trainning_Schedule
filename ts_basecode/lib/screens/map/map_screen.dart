@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
+import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
 import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
@@ -63,6 +65,9 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   @override
   String get screenName => MapRoute.name;
+
+  GlobalRunningStatusState get globalMapState =>
+      ref.watch(globalRunningStatusManagerProvider);
 
   @override
   MapViewModel get viewModel => ref.read(_provider.notifier);
@@ -133,6 +138,13 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
                 style: AppTextStyles.defaultStyle),
           ),
         ),
+        StatusView(
+          isVisible: globalMapState.isRunning,
+          distance: globalMapState.totalDistance,
+          onPress: () async {
+            viewModel.globalMapManager.toggleRunning();
+          },
+        )
       ],
     );
   }

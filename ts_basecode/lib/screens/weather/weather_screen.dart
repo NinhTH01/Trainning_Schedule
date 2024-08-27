@@ -308,34 +308,72 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                 ))
             : (Center(
                 child: state.needRetry
-                    ? TextButton(
-                        onPressed: () async {
-                          viewModel.handleRetryState(false);
-                          try {
-                            await viewModel.initData();
-                          } catch (e) {
-                            viewModel.handleRetryState(true);
-                          }
-                        },
-                        child: const Text(TextConstants.retry),
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 300,
+                            child: Text(
+                              TextConstants.noWeatherData,
+                              style: AppTextStyles.s16w600,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          TextButton(
+                              onPressed: () async {
+                                viewModel.handleRetryState(false);
+                                try {
+                                  await viewModel.initData();
+                                } catch (e) {
+                                  viewModel.handleRetryState(true);
+                                }
+                              },
+                              child: SizedBox(
+                                width: 200,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(TextConstants.retry,
+                                        style: AppTextStyles.s16w500),
+                                    const SizedBox(
+                                      width: 12,
+                                    ),
+                                    Icon(
+                                      size: 20,
+                                      Icons.refresh,
+                                      color: (state.currentWeather != null &&
+                                              state.weatherForecast != null)
+                                          ? ColorName.white
+                                          : ColorName.black,
+                                    )
+                                  ],
+                                ),
+                              )),
+                        ],
                       )
                     : const CircularProgressIndicator())),
-        Positioned(
-          right: 0,
-          top: topInset,
-          child: IconButton(
-            icon: const Icon(
-              Icons.refresh,
-              color: ColorName.white,
-            ),
-            onPressed: () {
-              if (mounted) {
-                ref.invalidate(_provider);
-                viewModel.initData();
-              }
-            },
-          ),
-        ),
+        (state.currentWeather != null && state.weatherForecast != null)
+            ? Positioned(
+                right: 0,
+                top: topInset,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    color: (state.currentWeather != null &&
+                            state.weatherForecast != null)
+                        ? ColorName.white
+                        : ColorName.black,
+                  ),
+                  onPressed: () {
+                    if (mounted) {
+                      ref.invalidate(_provider);
+                      viewModel.initData();
+                    }
+                  },
+                ),
+              )
+            : const SizedBox(),
         StatusView(
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,

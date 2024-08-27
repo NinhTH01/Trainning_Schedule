@@ -55,7 +55,7 @@ class StatusView extends ConsumerWidget {
           child: Container(
               width: viewSize,
               decoration: BoxDecoration(
-                color: ColorName.white50,
+                color: ColorName.white,
                 borderRadius: _calculateBorderRadius(
                   position: position,
                   topInset: topInset,
