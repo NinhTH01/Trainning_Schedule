@@ -140,6 +140,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     var event = Event(
       createdTime: DateTime.now(),
       distance: state.totalDistance,
+      isSpecial: 0,
       description:
           'You have run ${state.totalDistance.toStringAsFixed(2)} meters.',
     );

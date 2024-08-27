@@ -12,6 +12,7 @@ class EventFields {
   static const String distance = 'distance';
   static const String description = 'description';
   static const String time = 'time';
+  static const String isSpecial = 'isSpecial';
 }
 
 @freezed
@@ -21,6 +22,7 @@ class Event with _$Event {
     @JsonKey(name: EventFields.distance) double? distance,
     @JsonKey(name: EventFields.description) String? description,
     @JsonKey(name: EventFields.time) DateTime? createdTime,
+    @JsonKey(name: EventFields.isSpecial) int? isSpecial,
   }) = _Event;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);

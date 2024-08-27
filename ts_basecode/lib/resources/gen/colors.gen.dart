@@ -75,4 +75,7 @@ class ColorName {
 
   /// Color: #B3FFFFFF
   static const Color white70 = Color(0xB3FFFFFF);
+
+  /// Color: #FFFF00
+  static const Color yellow = Color(0xFFFFFF00);
 }

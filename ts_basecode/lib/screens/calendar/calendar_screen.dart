@@ -104,20 +104,41 @@ class _CalendarViewState
 
   @override
   Widget? buildFloatingActionButton(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: ColorName.red,
-      ),
-      child: IconButton(
-        onPressed: () {
-          _handleGoToEditEventScreen(isEdit: false).then((_) async {
-            await viewModel.fetchData();
-          });
-        },
-        icon: const Icon(Icons.add),
-        color: ColorName.white,
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: ColorName.red,
+          ),
+          child: IconButton(
+            onPressed: () {
+              // _handleGoToEditEventScreen(isEdit: false).then((_) async {
+              //   await viewModel.fetchData();
+              // });
+            },
+            icon: const Icon(Icons.star),
+            color: ColorName.white,
+          ),
+        ),
+        const SizedBox(height: 15),
+        Container(
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: ColorName.red,
+          ),
+          child: IconButton(
+            onPressed: () {
+              _handleGoToEditEventScreen(isEdit: false).then((_) async {
+                await viewModel.fetchData();
+              });
+            },
+            icon: const Icon(Icons.add),
+            color: ColorName.white,
+          ),
+        ),
+      ],
     );
   }
 

@@ -9,6 +9,7 @@ class CalendarDateEventEditState with _$CalendarDateEventEditState {
     @Default(TimeOfDay(hour: 0, minute: 0)) TimeOfDay eventTime,
     @Default(null) DateTime? eventDate,
     @Default(null) TextEditingController? textEditController,
+    @Default(0) int isSpecialEvent,
   }) = _CalendarDateEventEditState;
 
   const CalendarDateEventEditState._();

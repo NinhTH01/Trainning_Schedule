@@ -28,13 +28,15 @@ class SqfliteManager {
     const textType = 'TEXT NOT NULL';
     const doubleType = 'REAL NOT NULL';
     const notNullTextType = 'TEXT NOT NULL';
+    const intType = 'INTEGER NOT NULL';
 
     await db.execute('''
       CREATE TABLE $tableEvents ( 
         ${EventFields.id} $idType, 
         ${EventFields.description} $textType,
         ${EventFields.distance} $doubleType,
-        ${EventFields.time} $notNullTextType
+        ${EventFields.time} $notNullTextType,
+        ${EventFields.isSpecial} $intType
       )
  ''');
   }
