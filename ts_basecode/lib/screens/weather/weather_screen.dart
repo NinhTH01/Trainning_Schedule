@@ -261,7 +261,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
 
   @override
   Widget buildBody(BuildContext context) {
-    final topInset = MediaQuery.of(context).padding.top;
     return Stack(
       children: [
         (state.currentWeather != null && state.weatherForecast != null)
@@ -281,25 +280,31 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                     children: [
                       _buildWeatherDetail(),
                       Expanded(
-                        child: SingleChildScrollView(
-                          physics: const _NoBounceScrollPhysics(),
-                          padding: EdgeInsets.only(top: state.scrollPadding),
-                          controller: _scrollController,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // First item
-                              WeatherForecastContainer(
-                                weather:
-                                    state.currentWeather ?? const Weather(),
-                                weatherForecast: state.weatherForecast ??
-                                    const WeatherForecast(),
-                              ),
-                              WeatherWindContainer(
-                                  weather: state.currentWeather!),
-                              // Grid
-                              _buildGridViewWeatherStatus()
-                            ],
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            ref.invalidate(_provider);
+                            await viewModel.initData();
+                          },
+                          child: SingleChildScrollView(
+                            physics: const _NoBounceScrollPhysics(),
+                            padding: EdgeInsets.only(top: state.scrollPadding),
+                            controller: _scrollController,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                // First item
+                                WeatherForecastContainer(
+                                  weather:
+                                      state.currentWeather ?? const Weather(),
+                                  weatherForecast: state.weatherForecast ??
+                                      const WeatherForecast(),
+                                ),
+                                WeatherWindContainer(
+                                    weather: state.currentWeather!),
+                                // Grid
+                                _buildGridViewWeatherStatus()
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -353,27 +358,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         ],
                       )
                     : const CircularProgressIndicator())),
-        (state.currentWeather != null && state.weatherForecast != null)
-            ? Positioned(
-                right: 0,
-                top: topInset,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.refresh,
-                    color: (state.currentWeather != null &&
-                            state.weatherForecast != null)
-                        ? ColorName.white
-                        : ColorName.black,
-                  ),
-                  onPressed: () {
-                    if (mounted) {
-                      ref.invalidate(_provider);
-                      viewModel.initData();
-                    }
-                  },
-                ),
-              )
-            : const SizedBox(),
         StatusView(
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,
