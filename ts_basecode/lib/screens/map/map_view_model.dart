@@ -10,7 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
-import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
 import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
@@ -40,7 +40,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final SharedPreferencesManager sharedPreferencesManager;
 
-  final GlobalMapManager globalMapManager;
+  final GlobalRunningStatusManager globalMapManager;
 
   final double distanceThreshold = 100.0;
 

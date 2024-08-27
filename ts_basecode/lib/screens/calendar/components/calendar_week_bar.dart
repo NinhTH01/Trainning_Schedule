@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
-Widget calendarWeekBar({
-  required double screenWidth,
-}) {
+Widget calendarWeekBar() {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 8.0),
     child: Row(

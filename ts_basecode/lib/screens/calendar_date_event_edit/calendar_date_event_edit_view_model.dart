@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
-import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_state.dart';
 
@@ -18,7 +18,7 @@ class CalendarDateEventEditViewModel
 
   final SqfliteManager sqfliteManager;
 
-  final GlobalMapManager globalMapManager;
+  final GlobalRunningStatusManager globalMapManager;
 
   void initData(Event? event) {
     state = state.copyWith(

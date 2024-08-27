@@ -6,11 +6,11 @@ import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
-import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
+import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/secure_storage_provider.dart';
 import 'package:ts_basecode/data/providers/session_repository_provider.dart';
 import 'package:ts_basecode/data/providers/weather_repository.provider.dart';
-import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_state.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
@@ -33,7 +33,8 @@ final _provider =
               geolocatorManager: ref.watch(geolocatorProvider),
               sessionRepository: ref.watch(sessionRepositoryProvider),
               secureStorageManager: ref.watch(secureStorageProvider),
-              globalMapManager: ref.watch(globalMapManagerProvider.notifier),
+              globalMapManager:
+                  ref.watch(globalRunningStatusManagerProvider.notifier),
             ));
 
 @RoutePage()
@@ -109,8 +110,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   @override
   Color? get backgroundColor => ColorName.transparent;
 
-  GlobalMapManagerState get globalMapState =>
-      ref.watch(globalMapManagerProvider);
+  GlobalRunningStatusState get globalMapState =>
+      ref.watch(globalRunningStatusManagerProvider);
 
   WeatherState get state => ref.watch(_provider);
 
@@ -258,8 +259,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
 
   @override
   Widget buildBody(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return Stack(
       children: [
         (state.currentWeather != null && state.weatherForecast != null)
@@ -325,8 +324,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
             context.tabsRouter.setActiveIndex(1);
             viewModel.globalMapManager.toggleRunning();
           },
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
         )
       ],
     );

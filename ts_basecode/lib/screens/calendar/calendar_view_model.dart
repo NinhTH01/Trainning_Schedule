@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
-import 'package:ts_basecode/data/services/global_map_manager/global_map_manager.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
 import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
 
@@ -17,7 +17,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
 
   final SqfliteManager sqfliteManager;
 
-  final GlobalMapManager globalMapManager;
+  final GlobalRunningStatusManager globalMapManager;
 
   Future<void> onInitData() async {
     state = state.copyWith(

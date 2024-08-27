@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
-import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
+import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
-import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_state.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
@@ -26,7 +26,7 @@ final _provider =
   (ref) => CalendarViewModel(
     ref: ref,
     sqfliteManager: ref.watch(sqfliteProvider),
-    globalMapManager: ref.watch(globalMapManagerProvider.notifier),
+    globalMapManager: ref.watch(globalRunningStatusManagerProvider.notifier),
   ),
 );
 
@@ -74,8 +74,8 @@ class _CalendarViewState
   @override
   CalendarViewModel get viewModel => ref.read(_provider.notifier);
 
-  GlobalMapManagerState get globalMapState =>
-      ref.watch(globalMapManagerProvider);
+  GlobalRunningStatusState get globalMapState =>
+      ref.watch(globalRunningStatusManagerProvider);
 
   Future<void> _onInitState() async {
     try {
@@ -123,8 +123,6 @@ class _CalendarViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return Stack(
       children: [
         Column(
@@ -134,7 +132,7 @@ class _CalendarViewState
               changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
               changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
             ),
-            calendarWeekBar(screenWidth: screenWidth),
+            calendarWeekBar(),
             const SizedBox(height: 24),
             state.eventDateList.isNotEmpty
                 ? SizedBox(
@@ -205,8 +203,6 @@ class _CalendarViewState
             context.tabsRouter.setActiveIndex(1);
             viewModel.globalMapManager.toggleRunning();
           },
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
         )
       ],
     );

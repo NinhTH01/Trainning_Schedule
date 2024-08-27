@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
-import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
+import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
 import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
@@ -21,7 +21,8 @@ final _provider =
           localNotificationManager: ref.watch(localNotificationProvider),
           sqfliteManager: ref.watch(sqfliteProvider),
           sharedPreferencesManager: ref.watch(sharedPreferenceProvider),
-          globalMapManager: ref.watch(globalMapManagerProvider.notifier),
+          globalMapManager:
+              ref.watch(globalRunningStatusManagerProvider.notifier),
         ));
 
 @RoutePage()
@@ -76,7 +77,8 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   @override
   Widget buildBody(BuildContext context) {
-    ref.listen(globalMapManagerProvider.select((state) => state.isRunning),
+    ref.listen(
+        globalRunningStatusManagerProvider.select((state) => state.isRunning),
         (prev, next) async {
       if (next == false) {
         if (state.isRunning) {

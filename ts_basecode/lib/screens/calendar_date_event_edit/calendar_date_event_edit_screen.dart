@@ -7,9 +7,9 @@ import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
-import 'package:ts_basecode/data/providers/global_map_manager_provider.dart';
+import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
-import 'package:ts_basecode/data/services/global_map_manager/global_map_manager_state.dart';
+import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_state.dart';
@@ -23,7 +23,7 @@ final _provider = StateNotifierProvider.autoDispose<
   (ref) => CalendarDateEventEditViewModel(
     ref: ref,
     sqfliteManager: ref.watch(sqfliteProvider),
-    globalMapManager: ref.watch(globalMapManagerProvider.notifier),
+    globalMapManager: ref.watch(globalRunningStatusManagerProvider.notifier),
   ),
 );
 
@@ -62,8 +62,8 @@ class _CalendarDateEventEditState extends BaseViewState<
 
   CalendarDateEventEditState get state => ref.watch(_provider);
 
-  GlobalMapManagerState get globalMapState =>
-      ref.watch(globalMapManagerProvider);
+  GlobalRunningStatusState get globalMapState =>
+      ref.watch(globalRunningStatusManagerProvider);
 
   @override
   bool get ignoreSafeAreaTop => true;
@@ -119,8 +119,6 @@ class _CalendarDateEventEditState extends BaseViewState<
 
   @override
   Widget buildBody(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return Stack(
       children: [
         Column(
@@ -228,8 +226,6 @@ class _CalendarDateEventEditState extends BaseViewState<
             context.tabsRouter.setActiveIndex(1);
             viewModel.globalMapManager.toggleRunning();
           },
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
         ),
       ],
     );

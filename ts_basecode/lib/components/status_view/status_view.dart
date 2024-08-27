@@ -8,99 +8,101 @@ import 'package:ts_basecode/utilities/constants/text_constants.dart';
 class StatusView extends ConsumerWidget {
   const StatusView({
     super.key,
-    required this.screenWidth,
-    required this.screenHeight,
     required this.distance,
     required this.isVisible,
     required this.onPress,
   });
 
-  final double screenWidth;
-  final double screenHeight;
   final double distance;
   final bool isVisible;
   final Function() onPress;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Get the top inset
     final topInset = MediaQuery.of(context).padding.top;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     const double viewSize = 140;
 
-    // Watch the position state
     final position = ref.watch(draggablePositionProvider);
 
-    return isVisible
-        ? Positioned(
-            left: position.dx,
-            top: position.dy + topInset, // Adjust position by top inset
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                ref.read(draggablePositionProvider.notifier).updatePosition(
-                      newPosition: position + details.delta,
-                      screenWidth: screenWidth,
-                      screenHeight: screenHeight,
-                      viewSize: viewSize,
-                      topInset: topInset,
-                    );
-              },
-              onPanEnd: (details) {
-                ref.read(draggablePositionProvider.notifier).snapToEdge(
-                      position: position,
-                      screenWidth: screenWidth,
-                      screenHeight: screenHeight,
-                      viewSize: viewSize,
-                      topInset: topInset,
-                    );
-              },
-              child: Container(
-                  width: viewSize,
-                  decoration: BoxDecoration(
-                    color: ColorName.white50,
-                    borderRadius: _calculateBorderRadius(
-                        position, topInset, viewSize), // Adjust corner radius
-                    border: Border.all(color: ColorName.black, width: 0.4),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      right: 8.0,
-                      top: 8.0,
-                      bottom: 8.0,
+    if (isVisible == false) {
+      return const SizedBox();
+    } else {
+      return Positioned(
+        left: position.dx,
+        top: position.dy + topInset, // Adjust position by top inset
+        child: GestureDetector(
+          onPanUpdate: (details) {
+            ref.read(draggablePositionProvider.notifier).updatePosition(
+                  newPosition: position + details.delta,
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                  viewSize: viewSize,
+                  topInset: topInset,
+                );
+          },
+          onPanEnd: (details) {
+            ref.read(draggablePositionProvider.notifier).snapToEdge(
+                  position: position,
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                  viewSize: viewSize,
+                  topInset: topInset,
+                );
+          },
+          child: Container(
+              width: viewSize,
+              decoration: BoxDecoration(
+                color: ColorName.white50,
+                borderRadius: _calculateBorderRadius(
+                  position: position,
+                  topInset: topInset,
+                  viewSize: viewSize,
+                  screenWidth: screenWidth,
+                ), // Adjust corner radius
+                border: Border.all(color: ColorName.black, width: 0.4),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 8.0,
+                  top: 8.0,
+                  bottom: 8.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      onPressed: onPress,
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(2.0),
+                      ),
+                      child: Text(
+                        TextConstants.mapStop,
+                        style: AppTextStyles.s12w500,
+                      ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ElevatedButton(
-                          onPressed: onPress,
-                          style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            padding: const EdgeInsets.all(2.0),
-                          ),
-                          child: Text(
-                            TextConstants.mapStop,
-                            style: AppTextStyles.s12w500,
-                          ),
+                        const Icon(
+                          Icons.run_circle_outlined,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.run_circle_outlined,
-                            ),
-                            Text(
-                              '~${formatDistance(distance)}',
-                              style: AppTextStyles.s12w500,
-                            ),
-                          ],
+                        Text(
+                          '~${formatDistance(distance)}',
+                          style: AppTextStyles.s12w500,
                         ),
                       ],
                     ),
-                  )),
-            ),
-          )
-        : const SizedBox();
+                  ],
+                ),
+              )),
+        ),
+      );
+    }
   }
 
   String formatDistance(double distanceInMeters) {
@@ -112,8 +114,12 @@ class StatusView extends ConsumerWidget {
     }
   }
 
-  BorderRadius _calculateBorderRadius(
-      Offset position, double topInset, double viewSize) {
+  BorderRadius _calculateBorderRadius({
+    required Offset position,
+    required double topInset,
+    required double viewSize,
+    required double screenWidth,
+  }) {
     const double radius = 20.0;
     const double snapThreshold = 20.0;
 
