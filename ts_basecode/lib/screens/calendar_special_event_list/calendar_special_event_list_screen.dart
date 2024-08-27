@@ -129,7 +129,6 @@ class _CalendarSpecialEventListState extends BaseViewState<
 
   @override
   Widget buildBody(BuildContext context) {
-    print(state.eventList);
     return Stack(
       children: [
         Column(

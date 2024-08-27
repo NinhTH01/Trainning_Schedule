@@ -70,11 +70,4 @@ class CalendarSpecialEventListViewModel
       }
     }
   }
-
-  Future<void> deleteFromDatabase(int index) async {
-    final List<SpecialEvent> specialEventList = [...state.eventList];
-    final item = specialEventList.removeAt(index);
-    print(specialEventList);
-    state = state.copyWith(eventList: specialEventList);
-  }
 }
