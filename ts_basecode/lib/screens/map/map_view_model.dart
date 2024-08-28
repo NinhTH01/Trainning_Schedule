@@ -90,7 +90,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
         await _handleIconLogic();
 
-        await _checkIfCameraIsOutsideMarker();
+        await _handleMarkerOutsideCamera();
 
         if (state.isRunning) {
           _handleRunningLogic(updatedLocation);
@@ -159,7 +159,12 @@ class MapViewModel extends BaseViewModel<MapState> {
 
       final currentLocation = await geolocatorManager.getCurrentLocation();
 
-      _handleRunningLogic(currentLocation);
+      _handleRunningLogic(
+        LatLng(
+          currentLocation.latitude,
+          currentLocation.longitude,
+        ),
+      );
     }
     state = state.copyWith(isRunning: !state.isRunning);
   }
@@ -272,22 +277,6 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  Future<void> _checkIfCameraIsOutsideMarker() async {
-    if (googleMapController == null) {
-      await Future.delayed(const Duration(seconds: 1));
-      _checkIfCameraIsOutsideMarker();
-    }
-    final bounds = await googleMapController!.getVisibleRegion();
-    final isInside =
-        bounds.northeast.latitude >= state.currentPosition!.latitude &&
-            bounds.southwest.latitude <= state.currentPosition!.latitude &&
-            bounds.northeast.longitude >= state.currentPosition!.longitude &&
-            bounds.southwest.longitude <= state.currentPosition!.longitude;
-    if (isInside == false) {
-      _moveCamera();
-    }
-  }
-
   void _moveCamera() {
     if (googleMapController != null) {
       googleMapController!.animateCamera(
@@ -300,6 +289,22 @@ class MapViewModel extends BaseViewModel<MapState> {
       );
     } else {
       throw GeneralException('Controller is null in camera move.');
+    }
+  }
+
+  Future<void> _handleMarkerOutsideCamera() async {
+    if (googleMapController == null) {
+      await Future.delayed(const Duration(seconds: 1));
+      _handleMarkerOutsideCamera();
+    }
+    final bounds = await googleMapController!.getVisibleRegion();
+    final isInside =
+        bounds.northeast.latitude >= state.currentPosition!.latitude &&
+            bounds.southwest.latitude <= state.currentPosition!.latitude &&
+            bounds.northeast.longitude >= state.currentPosition!.longitude &&
+            bounds.southwest.longitude <= state.currentPosition!.longitude;
+    if (isInside == false) {
+      _moveCamera();
     }
   }
 

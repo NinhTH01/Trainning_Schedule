@@ -84,7 +84,10 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
       if (state.isRunning) {
         var (image, totalDistance, onClose) = await viewModel.takeScreenshot();
         await showFinishDialog(
-            image: image, distance: totalDistance, onClose: onClose);
+          image: image,
+          distance: totalDistance,
+          onClose: onClose,
+        );
 
         var (achieved, totalDistanceFromDatabase) =
             await viewModel.checkAndCalculateToShowAchievement();
@@ -141,10 +144,9 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               }
             },
             child: Text(
-                state.isRunning
-                    ? TextConstants.mapStop
-                    : TextConstants.mapStart,
-                style: AppTextStyles.defaultStyle),
+              state.isRunning ? TextConstants.mapStop : TextConstants.mapStart,
+              style: AppTextStyles.defaultStyle,
+            ),
           ),
         ),
         StatusView(
