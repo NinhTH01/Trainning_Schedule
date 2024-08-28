@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/main/models/main_tab.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
 class TabBarItem extends StatelessWidget {
   const TabBarItem({
@@ -34,13 +35,14 @@ class TabBarItem extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            mainTab.icon,
+            isActive ? mainTab.activeIcon : mainTab.icon,
             const SizedBox(height: 5),
-            Text(
-              mainTab.label,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+            Text(mainTab.label,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: isActive
+                    ? AppTextStyles.s12w500.copyWith(color: ColorName.blue)
+                    : AppTextStyles.s12w500),
           ],
         ),
       ),
