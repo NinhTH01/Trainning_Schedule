@@ -153,7 +153,7 @@ class SqfliteManager {
     SpecialEvent insertEvent = SpecialEvent(
       id: id,
       createdTime: event.createdTime,
-      orderIndex: list[0].orderIndex! + 1,
+      orderIndex: list.isNotEmpty ? list[0].orderIndex! + 1 : list.length,
       distance: event.distance,
       description: event.description,
     );

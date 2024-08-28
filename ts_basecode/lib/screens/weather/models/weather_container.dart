@@ -16,11 +16,11 @@ class WeatherHelper {
       case WeatherCondition.cloud:
         return ColorName.cloudColor;
       case WeatherCondition.thunderstorm:
-        return ColorName.thunderColor;
+        return ColorName.cloudColor;
       case WeatherCondition.rain:
         return ColorName.rainColor;
       case WeatherCondition.drizzle:
-        return ColorName.drizzleColor;
+        return ColorName.rainColor;
       case WeatherCondition.clear:
         return ColorName.clearColor;
       default:
