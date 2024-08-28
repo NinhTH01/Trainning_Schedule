@@ -80,7 +80,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     }
   }
 
-  Future<void> handleListenProvider() async {
+  Future<void> _handleListenProvider() async {
     try {
       if (state.isRunning) {
         var (image, totalDistance, onClose) = await viewModel.takeScreenshot();
@@ -106,9 +106,10 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
         globalRunningStatusManagerProvider.select((state) => state.isRunning),
         (prev, next) async {
       if (next == false) {
-        handleListenProvider();
+        _handleListenProvider();
       }
     });
+
     return Stack(
       alignment: Alignment.center,
       children: [
