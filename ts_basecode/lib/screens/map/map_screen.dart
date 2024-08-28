@@ -41,7 +41,6 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   void onInitState() {
     super.onInitState();
     WidgetsBinding.instance.addObserver(this);
-    viewModel.updateCurrentLocationMarker();
     _onInitState();
   }
 
@@ -88,7 +87,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             image: image, distance: totalDistance, onClose: onClose);
 
         var (achieved, totalDistanceFromDatabase) =
-            await viewModel.checkConditionToShowAchievement();
+            await viewModel.checkAndCalculateToShowAchievement();
         if (achieved && mounted) {
           await showAchievementDialog(
               context: context, totalDistance: totalDistanceFromDatabase);
@@ -122,8 +121,8 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             ),
             zoom: 18.0,
           ),
-          onTap: viewModel.createScheduleMarker,
-          markers: state.markers,
+          onTap: viewModel.createUnfinishedMarker,
+          markers: state.locationMarkers,
           polylines: state.polylines,
           myLocationButtonEnabled: false,
         ),

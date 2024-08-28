@@ -47,55 +47,84 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final double distanceMarkerThreshold = 10.0;
 
-  final int markerSize = 20;
+  final Size locationMarkersSize = const Size(32, 40);
+
+  final Size currentLocationMarkerSize = const Size(24, 24);
 
   final double defaultCameraZoom = 18.0;
+
+  final double cameraPadding = 50.0;
+
+  GoogleMapController? googleMapController;
 
   void setupRunningStatusInGlobal(bool runningStatus) {
     globalMapManager.handleUpdateState(isRunning: runningStatus);
   }
 
   void setupGoogleMapController(GoogleMapController mapController) {
-    state = state.copyWith(googleMapController: mapController);
+    googleMapController = mapController;
   }
 
   Future<void> getLocationUpdate() async {
     if (await geolocatorManager.checkAlwaysPermission() &&
         state.currentPosition == null) {
-      configureBackgroundLocation();
+      _configureBackgroundLocation();
+
       Stream<Position> activeCurrentLocationStream =
           await geolocatorManager.getActiveCurrentLocationStream();
 
       activeCurrentLocationStream.listen((Position? position) async {
-        if (position != null && !state.isTakingScreenshot) {
-          final updatedLocation = LatLng(position.latitude, position.longitude);
+        if (position == null || state.isTakingScreenshot) {
+          return;
+        }
 
-          state = state.copyWith(
-            lastPosition: state.currentPosition,
-            currentPosition: updatedLocation,
-          );
+        final updatedLocation = LatLng(
+          position.latitude,
+          position.longitude,
+        );
 
-          await updateCurrentLocationMarker();
-          await _createMarkersFromLocationsBasedOnAngle();
+        state = state.copyWith(
+          lastCurrentPosition: state.currentPosition,
+          currentPosition: updatedLocation,
+        );
 
-          if (await _checkIfCameraIsOutsideMarker() == false) {
-            _moveCamera(updatedLocation);
-          }
+        await _handleIconLogic();
 
-          if (state.isRunning) {
-            _drawPolyline(updatedLocation);
-            _updateMarkerToFinish();
-          }
+        await _checkIfCameraIsOutsideMarker();
 
-          if (state.lastPosition != null && state.currentPosition != null) {
-            _calculateBearing(state.lastPosition!, state.currentPosition!);
-          }
+        if (state.isRunning) {
+          _handleRunningLogic(updatedLocation);
         }
       });
     }
   }
 
-  Future<void> configureBackgroundLocation() async {
+  Future<void> _handleIconLogic() async {
+    _calculateBearing(
+      state.lastCurrentPosition,
+      state.currentPosition,
+    );
+
+    await _updateCurrentLocationMarkerIcon();
+
+    var (finishMarkerList, unfinishedMarkerList) =
+        await _updateMarkerToFinish();
+
+    await _updateMarkersForMap(
+      finishMarkersCoordinateList: finishMarkerList,
+      unfinishedMarkersCoordinateList: unfinishedMarkerList,
+    );
+  }
+
+  Future<void> _handleRunningLogic(updatedLocation) async {
+    _addLocationToPolyline(updatedLocation);
+
+    _calculateNewDistance(updatedLocation);
+
+    _showNotification();
+  }
+
+  Future<void> _configureBackgroundLocation() async {
     await BackgroundLocation.setAndroidNotification(
       title: TextConstants.appName,
       message: TextConstants.trackingLocation,
@@ -110,12 +139,11 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   /// Action handle
-
   Future<void> toggleRunning() async {
     final isRunning = state.isRunning;
 
     if (isRunning) {
-      _addEventToDatabase();
+      await _addEventToDatabase();
 
       state = state.copyWith(
         polylines: {},
@@ -131,8 +159,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
       final currentLocation = await geolocatorManager.getCurrentLocation();
 
-      _drawPolyline(
-          LatLng(currentLocation.latitude, currentLocation.longitude));
+      _handleRunningLogic(currentLocation);
     }
     state = state.copyWith(isRunning: !state.isRunning);
   }
@@ -163,9 +190,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  void _drawPolyline(LatLng updatedLocation) {
-    _calculateNewDistance(updatedLocation);
-    _showNotification();
+  void _addLocationToPolyline(LatLng updatedLocation) {
     state = state.copyWith(
       polylineCoordinateList: List.from(state.polylineCoordinateList)
         ..add(updatedLocation),
@@ -183,19 +208,18 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   Future<(Uint8List image, double distance, void Function() onClose)>
       takeScreenshot() async {
-    final controller = state.googleMapController;
     state = state.copyWith(isTakingScreenshot: true);
-    if (controller != null) {
+    if (googleMapController != null) {
       await _setCameraToPolylineBounds();
       await Future.delayed(const Duration(seconds: 1));
-      final image = await controller.takeSnapshot();
+      final image = await googleMapController!.takeSnapshot();
       if (image != null) {
         return (
           image,
           state.totalDistance,
           () {
             state = state.copyWith(isTakingScreenshot: false);
-            _moveCamera(state.currentPosition!);
+            _moveCamera();
           }
         );
       }
@@ -236,55 +260,57 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> _setCameraToPolylineBounds() async {
-    final controller = state.googleMapController;
-    if (controller != null) {
+    if (googleMapController != null) {
       var bounds = _calculateBoundsForPolylines(state.polylineCoordinateList);
 
       if (bounds != null) {
-        var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 50);
-        await controller.animateCamera(cameraUpdate);
+        var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, cameraPadding);
+        await googleMapController!.animateCamera(cameraUpdate);
       }
+    } else {
+      throw GeneralException('Controller is null in set camera to polyline.');
     }
   }
 
-  Future<bool> _checkIfCameraIsOutsideMarker() async {
-    if (state.googleMapController == null) {
+  Future<void> _checkIfCameraIsOutsideMarker() async {
+    if (googleMapController == null) {
       await Future.delayed(const Duration(seconds: 1));
-      return _checkIfCameraIsOutsideMarker();
+      _checkIfCameraIsOutsideMarker();
     }
-    final bounds = await state.googleMapController!.getVisibleRegion();
+    final bounds = await googleMapController!.getVisibleRegion();
     final isInside =
         bounds.northeast.latitude >= state.currentPosition!.latitude &&
             bounds.southwest.latitude <= state.currentPosition!.latitude &&
             bounds.northeast.longitude >= state.currentPosition!.longitude &&
             bounds.southwest.longitude <= state.currentPosition!.longitude;
-    return isInside;
+    if (isInside == false) {
+      _moveCamera();
+    }
   }
 
-  void _moveCamera(LatLng updatedLocation) {
-    final controller = state.googleMapController;
-    if (controller != null) {
-      controller.animateCamera(
+  void _moveCamera() {
+    if (googleMapController != null) {
+      googleMapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: updatedLocation,
+            target: state.currentPosition!,
             zoom: defaultCameraZoom,
           ),
         ),
       );
+    } else {
+      throw GeneralException('Controller is null in camera move.');
     }
   }
 
   /// Distance handle
   void _calculateNewDistance(newCoordinate) {
-    LatLng? lastCoordinate = state.polylineCoordinateList.lastOrNull;
-
-    if (lastCoordinate != null) {
+    if (state.lastCurrentPosition != null) {
       var distance = Geolocator.distanceBetween(
         newCoordinate!.latitude,
         newCoordinate.longitude,
-        lastCoordinate.latitude,
-        lastCoordinate.longitude,
+        state.lastCurrentPosition!.latitude,
+        state.lastCurrentPosition!.longitude,
       );
       state = state.copyWith(
         totalDistance: state.totalDistance + distance,
@@ -298,7 +324,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<(bool achieved, double totalDistance)>
-      checkConditionToShowAchievement() async {
+      checkAndCalculateToShowAchievement() async {
     List<Event> eventList = await sqfliteManager.getList();
 
     double totalDistance = 0.0;
@@ -316,7 +342,11 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   /// Angle Direction handle
-  void _calculateBearing(LatLng startPoint, LatLng endPoint) {
+  void _calculateBearing(LatLng? startPoint, LatLng? endPoint) {
+    if (startPoint == null || endPoint == null) {
+      return;
+    }
+
     final double startLat = toRadians(startPoint.latitude);
     final double startLng = toRadians(startPoint.longitude);
     final double endLat = toRadians(endPoint.latitude);
@@ -331,6 +361,8 @@ class MapViewModel extends BaseViewModel<MapState> {
     final double bearing = math.atan2(y, x);
 
     state = state.copyWith(directionAngle: (toDegrees(bearing) + 360) % 360);
+
+    return;
   }
 
   double toRadians(double degrees) {
@@ -342,7 +374,8 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   /// Marker handle
-  Future<void> updateCurrentLocationMarker() async {
+
+  Future<void> _updateCurrentLocationMarkerIcon() async {
     String path;
     if (state.directionAngle > 0 && state.directionAngle < 180) {
       path = Assets.images.markerRight.path;
@@ -350,97 +383,123 @@ class MapViewModel extends BaseViewModel<MapState> {
       path = Assets.images.markerLeft.path;
     }
     state = state.copyWith(
-        mapMarker: await BitmapDescriptor.asset(
-            const ImageConfiguration(size: Size(24, 24)), path));
+        iconCurrentLocationMarker: await BitmapDescriptor.asset(
+      ImageConfiguration(size: currentLocationMarkerSize),
+      path,
+    ));
   }
 
-  Future<void> _createMarkersFromLocationsBasedOnAngle() async {
+  Future<void> _updateMarkersForMap({
+    required List<LatLng> unfinishedMarkersCoordinateList,
+    required List<LatLng> finishMarkersCoordinateList,
+  }) async {
     Set<Marker> markers = {};
 
-    for (LatLng location in state.locationMarkersCoordinateList) {
+    /// Unfinished Markers
+    for (LatLng location in unfinishedMarkersCoordinateList) {
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
           icon: await BitmapDescriptor.asset(
-              const ImageConfiguration(size: Size(30, 30)),
+              ImageConfiguration(size: locationMarkersSize),
               Assets.images.locationMarker.path),
           onTap: () {
-            removeMarker(location: location, markerType: MarkerType.schedule);
+            _removeMarker(
+              location: location,
+              markerType: MarkerType.schedule,
+            );
           });
       markers.add(marker);
     }
 
-    for (LatLng location in state.finishMarkersCoordinateList) {
+    /// Finish Markers
+    for (LatLng location in finishMarkersCoordinateList) {
       Marker marker = Marker(
           markerId: MarkerId(location.longitude.toString()),
           position: LatLng(location.latitude, location.longitude),
           icon: await BitmapDescriptor.asset(
-              const ImageConfiguration(size: Size(30, 30)),
+              ImageConfiguration(size: locationMarkersSize),
               Assets.images.finishMarker.path),
           onTap: () {
-            removeMarker(location: location, markerType: MarkerType.finish);
+            _removeMarker(
+              location: location,
+              markerType: MarkerType.finish,
+            );
           });
       markers.add(marker);
     }
 
+    /// Current Location Marker
     Marker currentMarker = Marker(
       markerId: const MarkerId('Id'),
       position: LatLng(
         state.currentPosition?.latitude ?? 0,
         state.currentPosition?.longitude ?? 0,
       ),
-      icon: state.mapMarker ?? BitmapDescriptor.defaultMarker,
+      icon: state.iconCurrentLocationMarker ?? BitmapDescriptor.defaultMarker,
       rotation: state.directionAngle - 90,
       anchor: const Offset(0.5, 0.5),
     );
     markers.add(currentMarker);
 
-    state = state.copyWith(markers: markers);
-  }
-
-  void createScheduleMarker(LatLng location) {
     state = state.copyWith(
-      locationMarkersCoordinateList:
-          List.from(state.locationMarkersCoordinateList)..add(location),
-    );
-    _createMarkersFromLocationsBasedOnAngle();
+        locationMarkers: markers,
+        finishMarkersCoordinateList: finishMarkersCoordinateList,
+        unfinishedMarkersCoordinateList: unfinishedMarkersCoordinateList);
   }
 
-  void _updateMarkerToFinish() {
-    for (LatLng location in state.locationMarkersCoordinateList) {
-      double distanceInMeters = Geolocator.distanceBetween(
-        state.currentPosition!.latitude,
-        state.currentPosition!.longitude,
-        location.latitude,
-        location.longitude,
-      );
-      if (distanceInMeters < distanceMarkerThreshold) {
-        state = state.copyWith(
-          finishMarkersCoordinateList:
-              List.from(state.finishMarkersCoordinateList)..add(location),
-          locationMarkersCoordinateList:
-              List.from(state.locationMarkersCoordinateList)..remove(location),
+  Future<(List<LatLng>, List<LatLng>)> _updateMarkerToFinish() async {
+    List<LatLng> finishMarkerList =
+        List.from(state.finishMarkersCoordinateList);
+    List<LatLng> unfinishedMarkerList =
+        List.from(state.unfinishedMarkersCoordinateList);
+
+    if (state.isRunning) {
+      for (LatLng location in state.unfinishedMarkersCoordinateList) {
+        double distanceInMeters = Geolocator.distanceBetween(
+          state.currentPosition!.latitude,
+          state.currentPosition!.longitude,
+          location.latitude,
+          location.longitude,
         );
-        _createMarkersFromLocationsBasedOnAngle();
+        if (distanceInMeters < distanceMarkerThreshold) {
+          finishMarkerList.add(location);
+          unfinishedMarkerList.remove(location);
+        }
       }
     }
+
+    return (finishMarkerList, unfinishedMarkerList);
   }
 
-  void removeMarker({
+  void createUnfinishedMarker(LatLng location) {
+    var unfinishedMarkerList = List.from(state.unfinishedMarkersCoordinateList);
+
+    _updateMarkersForMap(
+        unfinishedMarkersCoordinateList: [...unfinishedMarkerList, location],
+        finishMarkersCoordinateList: state.finishMarkersCoordinateList);
+  }
+
+  void _removeMarker({
     required LatLng location,
     required MarkerType markerType,
   }) {
+    List<LatLng> finishMarkerList =
+        List.from(state.finishMarkersCoordinateList);
+    List<LatLng> unfinishedMarkerList =
+        List.from(state.unfinishedMarkersCoordinateList);
+
     if (markerType == MarkerType.schedule) {
-      state = state.copyWith(
-        locationMarkersCoordinateList:
-            List.from(state.locationMarkersCoordinateList)..remove(location),
-      );
-    } else if (markerType == MarkerType.finish) {
-      state = state.copyWith(
-        finishMarkersCoordinateList:
-            List.from(state.finishMarkersCoordinateList)..remove(location),
-      );
+      unfinishedMarkerList.remove(location);
     }
-    _createMarkersFromLocationsBasedOnAngle();
+
+    if (markerType == MarkerType.finish) {
+      finishMarkerList.remove(location);
+    }
+
+    _updateMarkersForMap(
+      unfinishedMarkersCoordinateList: unfinishedMarkerList,
+      finishMarkersCoordinateList: finishMarkerList,
+    );
   }
 }
