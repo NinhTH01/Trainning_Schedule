@@ -15,7 +15,6 @@ class ScreenHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -23,11 +22,9 @@ class ScreenHeader extends StatelessWidget {
           onPressed: onBack,
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        SizedBox(
-          width: screenWidth * 0.7,
+        Expanded(
           child: Text(
             style: AppTextStyles.s16w700,
-            overflow: TextOverflow.clip,
             maxLines: 1,
             textAlign: TextAlign.center,
             title,

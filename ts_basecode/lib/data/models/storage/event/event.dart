@@ -6,8 +6,6 @@ part 'event.g.dart';
 const String tableEvents = 'events';
 
 class EventFields {
-  static final List<String> values = [id, description, distance, time];
-
   static const String id = '_id';
   static const String distance = 'distance';
   static const String description = 'description';
@@ -19,10 +17,10 @@ class EventFields {
 class Event with _$Event {
   const factory Event({
     @JsonKey(name: EventFields.id) int? id,
-    @JsonKey(name: EventFields.distance) double? distance,
-    @JsonKey(name: EventFields.description) String? description,
     @JsonKey(name: EventFields.time) DateTime? createdTime,
-    @JsonKey(name: EventFields.isSpecial) int? isSpecial,
+    double? distance,
+    String? description,
+    int? isSpecial,
   }) = _Event;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);

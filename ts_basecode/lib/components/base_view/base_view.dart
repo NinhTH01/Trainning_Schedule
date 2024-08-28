@@ -84,9 +84,8 @@ abstract class BaseViewState<View extends BaseView,
     Object error, {
     void Function()? onButtonTapped,
   }) async {
-    String? errorMessage;
-
     if (error is DioException) {
+      String? errorMessage;
       final response = error.response;
 
       if (response != null) {
@@ -97,31 +96,37 @@ abstract class BaseViewState<View extends BaseView,
             final errorJson = jsonDecode(response.data);
             errorMessage = BaseResponseError.fromJson(errorJson).message;
           }
-
-          if (errorMessage != null && mounted) {
-            await ref.read(dialogProvider).showAlertDialog(
-                  context: context,
-                  title: errorMessage,
-                  onClosed: onButtonTapped,
-                );
-          }
         } catch (_) {
           errorMessage = error.response?.statusMessage;
         }
+        if (errorMessage != null && mounted) {
+          await ref.read(dialogProvider).showAlertDialog(
+                context: context,
+                title: errorMessage,
+                onClosed: onButtonTapped,
+              );
+        }
       }
-    } else if (error is AlwaysPermissionException) {
+      return;
+    }
+
+    if (error is AlwaysPermissionException) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,
             buttonTitle: TextConstants.goToSetting,
             title: error.message,
             onClosed: Geolocator.openLocationSettings,
           );
-    } else if (error is TimeoutException && mounted) {
+      return;
+    }
+
+    if (error is TimeoutException && mounted) {
       await ref.read(dialogProvider).showAlertDialog(
             context: context,
             title: TextConstants.timeOut,
             onClosed: onButtonTapped,
           );
+      return;
     }
   }
 }

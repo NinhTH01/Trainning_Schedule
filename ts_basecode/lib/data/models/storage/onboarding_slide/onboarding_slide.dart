@@ -6,9 +6,9 @@ part 'onboarding_slide.g.dart';
 @freezed
 class OnboardingSlide with _$OnboardingSlide {
   const factory OnboardingSlide({
-    @JsonKey(name: 'description') String? description,
-    @JsonKey(name: 'imageUrl') String? imageUrl,
-    @JsonKey(name: 'title') String? title,
+    String? description,
+    String? imageUrl,
+    String? title,
   }) = _OnboardingSlide;
 
   factory OnboardingSlide.fromJson(Map<String, dynamic> json) =>
