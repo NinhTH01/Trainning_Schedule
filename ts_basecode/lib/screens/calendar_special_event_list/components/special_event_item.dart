@@ -37,8 +37,7 @@ class _SpecialEventItemState extends State<SpecialEventItem> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
+                  Expanded(
                     child: Text(
                       widget.event.description!,
                       style: AppTextStyles.s14w400,

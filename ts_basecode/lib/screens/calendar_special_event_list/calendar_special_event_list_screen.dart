@@ -44,7 +44,6 @@ class _CalendarSpecialEventListState extends BaseViewState<
     _onInitState();
     context.tabsRouter.addListener(() async {
       if (context.tabsRouter.activeIndex == 3) {
-        // ref.invalidate(_provider);
         await viewModel.fetchData();
       }
     });

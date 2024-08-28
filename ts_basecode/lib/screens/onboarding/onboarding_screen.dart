@@ -7,6 +7,7 @@ import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_view_model.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final _provider =
@@ -129,6 +130,7 @@ class _OnboardingViewState
                 state.currentPageIndex == state.onboardingSlideList.length - 1
                     ? TextConstants.started
                     : TextConstants.next,
+                style: AppTextStyles.s14w400,
               ),
             ),
           ),
