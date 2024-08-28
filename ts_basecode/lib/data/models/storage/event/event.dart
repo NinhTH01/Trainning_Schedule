@@ -18,9 +18,11 @@ class Event with _$Event {
   const factory Event({
     @JsonKey(name: EventFields.id) int? id,
     @JsonKey(name: EventFields.time) DateTime? createdTime,
+
+    /// Need Json name or else DB tables get exception is_Special
+    @JsonKey(name: EventFields.isSpecial) int? isSpecial,
     double? distance,
     String? description,
-    int? isSpecial,
   }) = _Event;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
