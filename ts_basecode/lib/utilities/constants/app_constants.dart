@@ -10,4 +10,6 @@ class AppConstants {
   static const hhmmFormat = 'HH:mm';
 
   static const yyyyMMddFormat = 'yyyy-MM-dd';
+
+  static const yyyyMMddhhmmFormat = 'HH:mm  dd-MM-yyyy';
 }

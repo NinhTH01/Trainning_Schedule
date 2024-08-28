@@ -38,7 +38,7 @@ class _SpecialEventItemState extends State<SpecialEventItem> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
+                    width: MediaQuery.of(context).size.width * 0.5,
                     child: Text(
                       widget.event.description!,
                       style: AppTextStyles.s14w400,
@@ -49,7 +49,7 @@ class _SpecialEventItemState extends State<SpecialEventItem> {
                   Row(
                     children: [
                       Text(
-                        DateFormat(AppConstants.hhmmFormat)
+                        DateFormat(AppConstants.yyyyMMddhhmmFormat)
                             .format(widget.event.createdTime!),
                         style: AppTextStyles.s12w700,
                       ),
