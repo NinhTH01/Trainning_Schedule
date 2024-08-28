@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
+import 'package:ts_basecode/data/models/exception/general_exception/general_exception.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
@@ -83,7 +84,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
           if (state.isRunning) {
             _drawPolyline(updatedLocation);
-            updateMarkerToFinish();
+            _updateMarkerToFinish();
           }
 
           if (state.lastPosition != null && state.currentPosition != null) {
@@ -180,14 +181,8 @@ class MapViewModel extends BaseViewModel<MapState> {
     );
   }
 
-  Future<void> takeScreenshot({
-    required Future<void>? Function({
-      required Uint8List image,
-      required double distance,
-      required void Function() onClose,
-    }) onScreenshotCaptured,
-    required Future<void> Function(double totalDistance) onFinishAchievement,
-  }) async {
+  Future<(Uint8List image, double distance, void Function() onClose)>
+      takeScreenshot() async {
     final controller = state.googleMapController;
     state = state.copyWith(isTakingScreenshot: true);
     if (controller != null) {
@@ -195,16 +190,18 @@ class MapViewModel extends BaseViewModel<MapState> {
       await Future.delayed(const Duration(seconds: 1));
       final image = await controller.takeSnapshot();
       if (image != null) {
-        onScreenshotCaptured(
-            image: image,
-            distance: state.totalDistance,
-            onClose: () {
-              state = state.copyWith(isTakingScreenshot: false);
-              _moveCamera(state.currentPosition!);
-            });
-        getTotalDistanceFromDatabase(onFinishAchievement);
+        return (
+          image,
+          state.totalDistance,
+          () {
+            state = state.copyWith(isTakingScreenshot: false);
+            _moveCamera(state.currentPosition!);
+          }
+        );
       }
+      throw GeneralException("Can't get the image.");
     }
+    throw GeneralException("Can't get map controller.");
   }
 
   /// Camera handle
@@ -300,8 +297,8 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  Future<void> getTotalDistanceFromDatabase(
-      Future<void> Function(double totalDistance) showAchievement) async {
+  Future<(bool achieved, double totalDistance)>
+      checkConditionToShowAchievement() async {
     List<Event> eventList = await sqfliteManager.getList();
 
     double totalDistance = 0.0;
@@ -313,8 +310,9 @@ class MapViewModel extends BaseViewModel<MapState> {
     final hasAchieved = await sharedPreferencesManager.getAchievement();
     if (!hasAchieved && totalDistance > 100.0) {
       await sharedPreferencesManager.setAchievement(value: true);
-      showAchievement(totalDistance);
+      return (true, totalDistance);
     }
+    return (false, 0.0);
   }
 
   /// Angle Direction handle
@@ -408,7 +406,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     _createMarkersFromLocationsBasedOnAngle();
   }
 
-  void updateMarkerToFinish() {
+  void _updateMarkerToFinish() {
     for (LatLng location in state.locationMarkersCoordinateList) {
       double distanceInMeters = Geolocator.distanceBetween(
         state.currentPosition!.latitude,

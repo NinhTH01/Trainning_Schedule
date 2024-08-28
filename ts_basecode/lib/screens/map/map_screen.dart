@@ -80,24 +80,33 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     }
   }
 
+  Future<void> handleListenProvider() async {
+    try {
+      if (state.isRunning) {
+        var (image, totalDistance, onClose) = await viewModel.takeScreenshot();
+        await showFinishDialog(
+            image: image, distance: totalDistance, onClose: onClose);
+
+        var (achieved, totalDistanceFromDatabase) =
+            await viewModel.checkConditionToShowAchievement();
+        if (achieved && mounted) {
+          await showAchievementDialog(
+              context: context, totalDistance: totalDistanceFromDatabase);
+        }
+      }
+      viewModel.toggleRunning();
+    } catch (e) {
+      handleError(e);
+    }
+  }
+
   @override
   Widget buildBody(BuildContext context) {
     ref.listen(
         globalRunningStatusManagerProvider.select((state) => state.isRunning),
         (prev, next) async {
       if (next == false) {
-        if (state.isRunning) {
-          await viewModel.takeScreenshot(
-            onScreenshotCaptured: showFinishDialog,
-            onFinishAchievement: (totalDistance) {
-              return showAchievementDialog(
-                context: context,
-                totalDistance: totalDistance,
-              );
-            },
-          );
-        }
-        viewModel.toggleRunning();
+        handleListenProvider();
       }
     });
     return Stack(

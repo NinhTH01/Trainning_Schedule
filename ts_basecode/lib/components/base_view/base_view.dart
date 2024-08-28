@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:ts_basecode/components/dialog/dialog_provider.dart';
 import 'package:ts_basecode/data/models/api/responses/base_response_error/base_response_error.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
+import 'package:ts_basecode/data/models/exception/general_exception/general_exception.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 import 'base_view_mixin.dart';
@@ -128,5 +129,16 @@ abstract class BaseViewState<View extends BaseView,
           );
       return;
     }
+
+    if (error is GeneralException && mounted) {
+      await ref.read(dialogProvider).showAlertDialog(
+            context: context,
+            title: error.message,
+            onClosed: onButtonTapped,
+          );
+      return;
+    }
+
+    return;
   }
 }
