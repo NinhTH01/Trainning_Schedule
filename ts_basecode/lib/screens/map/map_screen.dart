@@ -51,8 +51,8 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+  void didChangeAppLifecycleState(AppLifecycleState appState) {
+    if (appState == AppLifecycleState.resumed) {
       _onInitState();
     }
   }
@@ -82,8 +82,10 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   Future<void> _handleListenProvider() async {
     try {
       if (state.isRunning) {
+        await viewModel.addEventToDatabase();
+
         var (image, totalDistance, onClose) = await viewModel.takeScreenshot();
-        await showFinishDialog(
+        showFinishDialog(
           image: image,
           distance: totalDistance,
           onClose: onClose,
@@ -91,9 +93,12 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
         var (achieved, totalDistanceFromDatabase) =
             await viewModel.checkAndCalculateToShowAchievement();
-        if (achieved && mounted) {
-          await showAchievementDialog(
-              context: context, totalDistance: totalDistanceFromDatabase);
+
+        if (mounted && achieved) {
+          showAchievementDialog(
+            context: context,
+            totalDistance: totalDistanceFromDatabase,
+          );
         }
       }
       viewModel.toggleRunning();

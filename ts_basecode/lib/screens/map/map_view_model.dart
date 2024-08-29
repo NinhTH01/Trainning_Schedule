@@ -55,14 +55,22 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final double cameraPadding = 50.0;
 
-  GoogleMapController? googleMapController;
+  GoogleMapController? _googleMapController;
+
+  StreamSubscription<Position>? _positionStreamSubscription;
+
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    super.dispose();
+  }
 
   void setupRunningStatusInGlobal(bool runningStatus) {
     globalMapManager.handleUpdateState(isRunning: runningStatus);
   }
 
   void setupGoogleMapController(GoogleMapController mapController) {
-    googleMapController = mapController;
+    _googleMapController = mapController;
   }
 
   Future<void> getLocationUpdate() async {
@@ -73,7 +81,8 @@ class MapViewModel extends BaseViewModel<MapState> {
       Stream<Position> activeCurrentLocationStream =
           await geolocatorManager.getActiveCurrentLocationStream();
 
-      activeCurrentLocationStream.listen((Position? position) async {
+      _positionStreamSubscription =
+          activeCurrentLocationStream.listen((Position? position) async {
         if (position == null || state.isTakingScreenshot) {
           return;
         }
@@ -117,11 +126,11 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> _handleRunningLogic(updatedLocation) async {
-    _addLocationToPolyline(updatedLocation);
-
     _calculateNewDistance(updatedLocation);
 
     _showNotification();
+
+    _addLocationToPolyline(updatedLocation);
   }
 
   Future<void> _configureBackgroundLocation() async {
@@ -143,14 +152,16 @@ class MapViewModel extends BaseViewModel<MapState> {
     final isRunning = state.isRunning;
 
     if (isRunning) {
-      await _addEventToDatabase();
-
       state = state.copyWith(
         polylines: {},
         polylineCoordinateList: [],
         totalDistance: 0.0,
         distanceCoveredSinceLastNotification: 0.0,
         distanceThresholdPassCounter: 1,
+      );
+
+      globalMapManager.handleUpdateState(
+        totalDistance: 0,
       );
     } else {
       globalMapManager.handleUpdateState(
@@ -169,7 +180,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     state = state.copyWith(isRunning: !state.isRunning);
   }
 
-  Future<void> _addEventToDatabase() async {
+  Future<void> addEventToDatabase() async {
     var event = Event(
       createdTime: DateTime.now(),
       distance: state.totalDistance,
@@ -214,10 +225,10 @@ class MapViewModel extends BaseViewModel<MapState> {
   Future<(Uint8List image, double distance, void Function() onClose)>
       takeScreenshot() async {
     state = state.copyWith(isTakingScreenshot: true);
-    if (googleMapController != null) {
+    if (_googleMapController != null) {
       await _setCameraToPolylineBounds();
       await Future.delayed(const Duration(seconds: 1));
-      final image = await googleMapController!.takeSnapshot();
+      final image = await _googleMapController!.takeSnapshot();
       if (image != null) {
         return (
           image,
@@ -265,12 +276,12 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> _setCameraToPolylineBounds() async {
-    if (googleMapController != null) {
+    if (_googleMapController != null) {
       var bounds = _calculateBoundsForPolylines(state.polylineCoordinateList);
 
       if (bounds != null) {
         var cameraUpdate = CameraUpdate.newLatLngBounds(bounds, cameraPadding);
-        await googleMapController!.animateCamera(cameraUpdate);
+        await _googleMapController!.animateCamera(cameraUpdate);
       }
     } else {
       throw GeneralException('Controller is null in set camera to polyline.');
@@ -278,8 +289,8 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   void _moveCamera() {
-    if (googleMapController != null) {
-      googleMapController!.animateCamera(
+    if (_googleMapController != null) {
+      _googleMapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: state.currentPosition!,
@@ -293,11 +304,11 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> _handleMarkerOutsideCamera() async {
-    if (googleMapController == null) {
+    if (_googleMapController == null) {
       await Future.delayed(const Duration(seconds: 1));
       _handleMarkerOutsideCamera();
     }
-    final bounds = await googleMapController!.getVisibleRegion();
+    final bounds = await _googleMapController!.getVisibleRegion();
     final isInside =
         bounds.northeast.latitude >= state.currentPosition!.latitude &&
             bounds.southwest.latitude <= state.currentPosition!.latitude &&
@@ -310,12 +321,14 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   /// Distance handle
   void _calculateNewDistance(newCoordinate) {
-    if (state.lastCurrentPosition != null) {
+    LatLng? lastCoordinate = state.polylineCoordinateList.lastOrNull;
+
+    if (lastCoordinate != null) {
       var distance = Geolocator.distanceBetween(
         newCoordinate!.latitude,
         newCoordinate.longitude,
-        state.lastCurrentPosition!.latitude,
-        state.lastCurrentPosition!.longitude,
+        lastCoordinate.latitude,
+        lastCoordinate.longitude,
       );
       state = state.copyWith(
         totalDistance: state.totalDistance + distance,
@@ -323,7 +336,7 @@ class MapViewModel extends BaseViewModel<MapState> {
             state.distanceCoveredSinceLastNotification + distance,
       );
       globalMapManager.handleUpdateState(
-        totalDistance: state.totalDistance + distance,
+        totalDistance: state.totalDistance,
       );
     }
   }
