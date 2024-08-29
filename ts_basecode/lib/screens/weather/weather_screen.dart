@@ -125,8 +125,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
     _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Set final value based on screen height
-      var size = MediaQuery.of(context).size;
-      var height = size.height;
+      var height = MediaQuery.of(context).size.height;
       _maxContainerHeight = height * 0.3;
       _maxOffsetDescription = height * 0.07;
       _maxOffsetMinimize = height * 0.11;
@@ -283,7 +282,12 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         child: RefreshIndicator(
                           onRefresh: () async {
                             ref.invalidate(_provider);
-                            await viewModel.initData();
+                            try {
+                              await viewModel.initData();
+                            } catch (e) {
+                              viewModel.handleRetryState(true);
+                              handleError(e);
+                            }
                           },
                           child: SingleChildScrollView(
                             physics: const _NoBounceScrollPhysics(),

@@ -29,7 +29,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
 
   Future<void> fetchData() async {
     await getDefaultDateList();
-    await getDateEventList(state.selectedDate ?? DateTime.now());
+    await _getDateEventList(state.selectedDate ?? DateTime.now());
   }
 
   void changeCurrentDateToNextMonth() async {
@@ -57,11 +57,13 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   void changeCurrentDateToPicker(DateTime? date) async {
     if (state.currentDate != null && date != null) {
       state = state.copyWith(
-          currentDate: DateTime(
-        date.year,
-        date.month,
-      ));
+        currentDate: DateTime(
+          date.year,
+          date.month,
+        ),
+      );
       await getDefaultDateList();
+      updateSelectedDate(date);
     }
   }
 
@@ -85,10 +87,8 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
       if (weekday + firstDayNextMonth.subtract(const Duration(days: 1)).day >
           36) {
         calendarColumn = 6;
-        state = state.copyWith(columnNum: 6);
       } else {
         calendarColumn = 5;
-        state = state.copyWith(columnNum: 5);
       }
 
       var defaultDateInfoList = <EventDateInfo>[];
@@ -101,19 +101,23 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
         );
       }
 
-      state = state.copyWith(defaultDateList: defaultDateInfoList);
-
-      await _fetchEventDateList();
+      await _fetchEventDateList(
+        defaultDateList: defaultDateInfoList,
+        columnNum: calendarColumn,
+      );
     }
   }
 
-  Future<void> _fetchEventDateList() async {
-    if (state.defaultDateList.isNotEmpty) {
+  Future<void> _fetchEventDateList({
+    required List<EventDateInfo> defaultDateList,
+    required int columnNum,
+  }) async {
+    if (defaultDateList.isNotEmpty) {
       final eventList = await sqfliteManager.getList();
 
       final eventDateInfoList = <EventDateInfo>[];
 
-      for (EventDateInfo date in state.defaultDateList) {
+      for (EventDateInfo date in defaultDateList) {
         bool hasEvent = false;
         for (Event event in eventList) {
           if (isSameDay(date.date, event.createdTime)) {
@@ -125,7 +129,10 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
             .add(EventDateInfo(hasEvent: hasEvent, date: date.date));
       }
 
-      state = state.copyWith(eventDateList: eventDateInfoList);
+      state = state.copyWith(
+        eventDateList: eventDateInfoList,
+        columnNum: columnNum,
+      );
     }
   }
 
@@ -140,12 +147,14 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   }
 
   void updateSelectedDate(DateTime date) async {
-    state = state.copyWith(selectedDate: date);
-    await getDateEventList(date);
+    await _getDateEventList(date);
   }
 
-  Future<void> getDateEventList(DateTime date) async {
+  Future<void> _getDateEventList(DateTime date) async {
     List<Event> eventList = await sqfliteManager.getListOnDate(date);
-    state = state.copyWith(eventList: eventList);
+    state = state.copyWith(
+      eventList: eventList,
+      selectedDate: date,
+    );
   }
 }

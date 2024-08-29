@@ -365,10 +365,10 @@ class MapViewModel extends BaseViewModel<MapState> {
       return;
     }
 
-    final double startLat = toRadians(startPoint.latitude);
-    final double startLng = toRadians(startPoint.longitude);
-    final double endLat = toRadians(endPoint.latitude);
-    final double endLng = toRadians(endPoint.longitude);
+    final double startLat = _toRadians(startPoint.latitude);
+    final double startLng = _toRadians(startPoint.longitude);
+    final double endLat = _toRadians(endPoint.latitude);
+    final double endLng = _toRadians(endPoint.longitude);
 
     final double deltaLng = endLng - startLng;
 
@@ -378,16 +378,16 @@ class MapViewModel extends BaseViewModel<MapState> {
 
     final double bearing = math.atan2(y, x);
 
-    state = state.copyWith(directionAngle: (toDegrees(bearing) + 360) % 360);
+    state = state.copyWith(directionAngle: (_toDegrees(bearing) + 360) % 360);
 
     return;
   }
 
-  double toRadians(double degrees) {
+  double _toRadians(double degrees) {
     return degrees * (math.pi / 180.0);
   }
 
-  double toDegrees(double radians) {
+  double _toDegrees(double radians) {
     return radians * (180.0 / math.pi);
   }
 

@@ -53,10 +53,8 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   }
 
   Future<bool> _getCachedWeather() async {
-    /// Get info from session
     Weather? weatherResponse = sessionRepository.weather();
 
-    /// If storyResponse == null, get info from secure storage
     weatherResponse ??= await secureStorageManager.readWeather();
     state = state.copyWith(
       currentWeather: weatherResponse,
@@ -93,11 +91,9 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   }
 
   Future<bool> _getCachedWeatherForecast() async {
-    /// Get info from session
     WeatherForecast? weatherForecastResponse =
         sessionRepository.weatherForecast();
 
-    /// If postResponse == null, get info from secure storage
     weatherForecastResponse ??=
         await secureStorageManager.readWeatherForecast();
     state = state.copyWith(

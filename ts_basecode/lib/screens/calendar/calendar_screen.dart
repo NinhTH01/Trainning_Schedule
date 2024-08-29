@@ -98,7 +98,7 @@ class _CalendarViewState
     }
   }
 
-  void handleChangeHeaderMonth() async {
+  void _handleChangeHeaderMonth() async {
     final date = await showDatePicker(
       context: context,
       initialDate: state.currentDate,
@@ -135,7 +135,7 @@ class _CalendarViewState
         Column(
           children: [
             calendarHeader(
-              handleChangeHeaderMonth: handleChangeHeaderMonth,
+              handleChangeHeaderMonth: _handleChangeHeaderMonth,
               currentDate: state.currentDate,
               changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
               changeToNextMonth: viewModel.changeCurrentDateToNextMonth,

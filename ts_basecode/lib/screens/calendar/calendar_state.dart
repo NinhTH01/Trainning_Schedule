@@ -10,7 +10,6 @@ class CalendarState with _$CalendarState {
     @Default(null) DateTime? currentDate,
     @Default(null) DateTime? selectedDate,
     @Default([]) List<EventDateInfo> eventDateList,
-    @Default([]) List<EventDateInfo> defaultDateList,
     @Default([]) List<Event> eventList,
     @Default(0) int columnNum,
   }) = _CalendarState;

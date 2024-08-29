@@ -57,7 +57,9 @@ class CalendarSpecialEventListViewModel
     final List<SpecialEvent> specialEventList = [...state.eventList];
     final item = specialEventList.removeAt(oldIndex);
     specialEventList.insert(newIndex, item);
-    state = state.copyWith(eventList: specialEventList);
+    state = state.copyWith(
+      eventList: specialEventList,
+    );
   }
 
   Future<void> _updateDatabaseOrder() async {
@@ -66,7 +68,9 @@ class CalendarSpecialEventListViewModel
 
       if (orderedItem.id != null) {
         await sqfliteManager.updateSpecialEventListOrder(
-            newOrderIndex: state.eventList.length - i - 1, id: orderedItem.id!);
+          newOrderIndex: state.eventList.length - i - 1,
+          id: orderedItem.id!,
+        );
       }
     }
   }
