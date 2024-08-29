@@ -152,6 +152,7 @@ class _CalendarSpecialEventListState extends BaseViewState<
                   await viewModel.fetchData();
                 },
                 child: ReorderableListView.builder(
+                  padding: const EdgeInsets.only(bottom: 80),
                   itemBuilder: (BuildContext context, int index) {
                     return SpecialEventItem(
                       key: Key('$index'),
