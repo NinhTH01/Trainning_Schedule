@@ -189,6 +189,7 @@ class _CalendarViewState
             state.eventList.isNotEmpty
                 ? Expanded(
                     child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 80),
                     itemBuilder: (BuildContext context, int index) {
                       return EventListItem(
                         event: state.eventList[index],

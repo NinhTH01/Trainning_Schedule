@@ -7,21 +7,25 @@ class ScreenHeader extends StatelessWidget {
     required this.title,
     required this.onBack,
     required this.rightWidget,
+    this.hasBackIcon = true,
   });
 
   final String title;
   final VoidCallback onBack;
   final Widget rightWidget;
+  final bool hasBackIcon;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        IconButton(
-          onPressed: onBack,
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
+        hasBackIcon
+            ? IconButton(
+                onPressed: onBack,
+                icon: const Icon(Icons.arrow_back_ios),
+              )
+            : const SizedBox(width: 32),
         Expanded(
           child: Text(
             style: AppTextStyles.s16w700,

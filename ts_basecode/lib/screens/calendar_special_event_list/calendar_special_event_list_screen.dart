@@ -133,6 +133,7 @@ class _CalendarSpecialEventListState extends BaseViewState<
         Column(
           children: [
             ScreenHeader(
+              hasBackIcon: false,
               title: TextConstants.specialEvent,
               onBack: () {
                 Navigator.pop(context);
