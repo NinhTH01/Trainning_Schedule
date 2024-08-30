@@ -36,6 +36,7 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   final SecureStorageManager secureStorageManager;
 
   Future<void> initData() async {
+    await geolocatorManager.checkPermissionForWeather();
     Position currentLocation = await geolocatorManager.getCurrentLocation();
     await Future.wait([
       _getWeather(currentLocation),
@@ -58,6 +59,9 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
     weatherResponse ??= await secureStorageManager.readWeather();
     state = state.copyWith(
       currentWeather: weatherResponse,
+      needRetry: false,
+      backgroundColor:
+          WeatherHelper.getBackgroundColor(weatherResponse?.weather?[0].main),
     );
     return weatherResponse != null;
   }
@@ -76,6 +80,7 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
 
     state = state.copyWith(
       currentWeather: weatherResponse,
+      needRetry: false,
       backgroundColor:
           WeatherHelper.getBackgroundColor(weatherResponse.weather?[0].main),
     );
@@ -98,6 +103,7 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
         await secureStorageManager.readWeatherForecast();
     state = state.copyWith(
       weatherForecast: weatherForecastResponse,
+      needRetry: false,
     );
     return weatherForecastResponse != null;
   }
@@ -115,6 +121,7 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
     );
     state = state.copyWith(
       weatherForecast: weatherForecastResponse,
+      needRetry: false,
     );
   }
 

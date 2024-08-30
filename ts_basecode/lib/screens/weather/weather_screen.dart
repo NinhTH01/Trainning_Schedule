@@ -259,61 +259,89 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
 
   @override
   Widget buildBody(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
     return Stack(
       children: [
         (state.currentWeather != null && state.weatherForecast != null)
-            ? DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                      _getBackgroundImagePath(
-                          state.currentWeather?.weather?[0].main),
-                    ),
-                    fit: BoxFit
-                        .cover, // Adjust the fit property to control how the image is resized to cover the container
-                  ),
-                ),
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      _buildWeatherDetail(),
-                      Expanded(
-                        child: RefreshIndicator(
-                          onRefresh: () async {
-                            ref.invalidate(_provider);
-                            try {
-                              await viewModel.initData();
-                            } catch (e) {
-                              viewModel.handleRetryState(true);
-                              handleError(e);
-                            }
-                          },
-                          child: SingleChildScrollView(
-                            physics: const _NoBounceScrollPhysics(),
-                            padding: EdgeInsets.only(top: state.scrollPadding),
-                            controller: _scrollController,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                // First item
-                                WeatherForecastContainer(
-                                  weather:
-                                      state.currentWeather ?? const Weather(),
-                                  weatherForecast: state.weatherForecast ??
-                                      const WeatherForecast(),
-                                ),
-                                WeatherWindContainer(
-                                    weather: state.currentWeather!),
-                                // Grid
-                                _buildGridViewWeatherStatus()
-                              ],
-                            ),
+            ? Stack(
+                children: [
+                  DecoratedBox(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            _getBackgroundImagePath(
+                                state.currentWeather?.weather?[0].main),
                           ),
+                          fit: BoxFit
+                              .cover, // Adjust the fit property to control how the image is resized to cover the container
                         ),
                       ),
-                    ],
+                      child: SafeArea(
+                        child: Column(
+                          children: [
+                            _buildWeatherDetail(),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                physics: const _NoBounceScrollPhysics(),
+                                padding:
+                                    EdgeInsets.only(top: state.scrollPadding),
+                                controller: _scrollController,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // First item
+                                    WeatherForecastContainer(
+                                      weather: state.currentWeather ??
+                                          const Weather(),
+                                      weatherForecast: state.weatherForecast ??
+                                          const WeatherForecast(),
+                                    ),
+                                    WeatherWindContainer(
+                                        weather: state.currentWeather!),
+                                    // Grid
+                                    _buildGridViewWeatherStatus()
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  Positioned(
+                    right: 0,
+                    top: topInset,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.refresh,
+                        color: ColorName.white,
+                      ),
+                      onPressed: () {
+                        // ref.invalidate(_provider);
+                        viewModel.handleRetryState(true);
+                        viewModel.initData();
+                      },
+                    ),
                   ),
-                ))
+                  state.needRetry
+                      ? const Stack(
+                          children: [
+                            Opacity(
+                              opacity: 0.6,
+                              child: ModalBarrier(
+                                color: Colors.black,
+                                dismissible: false,
+                              ),
+                            ),
+                            Center(
+                                child: CircularProgressIndicator(
+                              color: ColorName.white70,
+                            ))
+                          ],
+                        )
+                      : const SizedBox(),
+                ],
+              )
             : (Center(
                 child: state.needRetry
                     ? Column(
