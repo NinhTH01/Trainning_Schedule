@@ -73,10 +73,15 @@ class MapViewModel extends BaseViewModel<MapState> {
     _googleMapController = mapController;
   }
 
+  Future<void> checkAlwaysPermission() async {
+    await geolocatorManager.checkAlwaysPermission();
+  }
+
   Future<void> getLocationUpdate() async {
-    if (await geolocatorManager.checkAlwaysPermission() &&
-        state.currentPosition == null) {
+    if (state.currentPosition == null) {
       _configureBackgroundLocation();
+
+      await geolocatorManager.checkPermissionForMap();
 
       Stream<Position> activeCurrentLocationStream =
           await geolocatorManager.getActiveCurrentLocationStream();
@@ -290,7 +295,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   void _moveCamera() {
     if (_googleMapController != null) {
-      _googleMapController!.animateCamera(
+      _googleMapController!.moveCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: state.currentPosition!,
@@ -451,8 +456,8 @@ class MapViewModel extends BaseViewModel<MapState> {
     Marker currentMarker = Marker(
       markerId: const MarkerId('Id'),
       position: LatLng(
-        state.currentPosition?.latitude ?? 0,
-        state.currentPosition?.longitude ?? 0,
+        state.currentPosition!.latitude,
+        state.currentPosition!.longitude,
       ),
       icon: state.iconCurrentLocationMarker ?? BitmapDescriptor.defaultMarker,
       rotation: state.directionAngle - 90,

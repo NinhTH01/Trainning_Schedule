@@ -1,55 +1,42 @@
 import 'dart:async';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
+import 'package:ts_basecode/data/models/exception/general_exception/general_exception.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class GeolocatorManager {
-  Future<void> checkPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      throw AlwaysPermissionException(
-          TextConstants.serviceDisabledExceptionMessage);
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        throw AlwaysPermissionException(TextConstants.deniedExceptionMessage);
+  Future<void> checkPermissionForMap() async {
+    PermissionStatus status = await Permission.locationWhenInUse.request();
+    if (status == PermissionStatus.granted) {
+      PermissionStatus status = await Permission.locationAlways.request();
+      if (status == PermissionStatus.permanentlyDenied) {
+        throw (AlwaysPermissionException(TextConstants.alwaysExceptionMessage));
       }
     }
+    return;
+  }
 
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      throw AlwaysPermissionException(TextConstants.deniedExceptionMessage);
+  Future<void> checkAlwaysPermission() async {
+    PermissionStatus status = await Permission.locationAlways.request();
+    if (status == PermissionStatus.permanentlyDenied) {
+      throw (AlwaysPermissionException(TextConstants.alwaysExceptionMessage));
     }
   }
 
-  Future<bool> checkAlwaysPermission() async {
-    await checkPermission();
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission != LocationPermission.always) {
-      throw AlwaysPermissionException(TextConstants.alwaysExceptionMessage);
+  Future<void> checkPermissionForWeather() async {
+    PermissionStatus status = await Permission.locationWhenInUse.request();
+
+    if (status.isGranted) {
+      return;
+    } else {
+      throw (GeneralException(TextConstants.deniedExceptionMessage));
     }
-    return true;
   }
 
   Future<Position> getCurrentLocation() async {
     try {
-      await checkPermission();
       const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
         timeLimit: Duration(seconds: 5),
@@ -64,7 +51,6 @@ class GeolocatorManager {
 
   Future<Stream<Position>> getActiveCurrentLocationStream() async {
     try {
-      await checkPermission();
       const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.high,
       );

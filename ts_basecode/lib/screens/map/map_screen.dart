@@ -41,6 +41,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   void onInitState() {
     super.onInitState();
     WidgetsBinding.instance.addObserver(this);
+
     _onInitState();
   }
 
@@ -52,9 +53,16 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState appState) {
-    if (appState == AppLifecycleState.resumed) {
-      _onInitState();
-    }
+    Future.delayed(Duration.zero, () async {
+      if (appState == AppLifecycleState.resumed) {
+        _onInitState();
+        try {
+          await viewModel.checkAlwaysPermission();
+        } catch (e) {
+          handleError(e);
+        }
+      }
+    });
   }
 
   @override
@@ -116,7 +124,8 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
         _handleListenProvider();
       }
     });
-
+    print(state.locationMarkers);
+    print(state.currentPosition);
     return Stack(
       alignment: Alignment.center,
       children: [
