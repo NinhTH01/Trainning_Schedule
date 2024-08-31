@@ -124,8 +124,6 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
         _handleListenProvider();
       }
     });
-    print(state.locationMarkers);
-    print(state.currentPosition);
     return Stack(
       alignment: Alignment.center,
       children: [
