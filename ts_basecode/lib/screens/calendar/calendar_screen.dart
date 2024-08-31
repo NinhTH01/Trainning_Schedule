@@ -201,7 +201,7 @@ class _CalendarViewState
                 : Center(
                     child: Text(
                       TextConstants.noEvent,
-                      style: AppTextStyles.s16w400,
+                      style: AppTextStyles.s16w700,
                     ),
                   ),
           ],

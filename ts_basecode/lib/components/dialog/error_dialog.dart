@@ -56,7 +56,7 @@ class ErrorDialog extends StatelessWidget {
                 child: Text(
                   buttonTitle ?? TextConstants.close,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.s16w400,
+                  style: AppTextStyles.s16w700,
                 ),
               ),
             ),

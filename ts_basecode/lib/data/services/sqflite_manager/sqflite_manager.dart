@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:ts_basecode/data/models/storage/coordinate/coordinate.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/models/storage/special_event/special_event.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 
@@ -49,6 +53,15 @@ class SqfliteManager {
         ${SpecialEventFields.distance} $doubleType,
         ${SpecialEventFields.time} $notNullTextType,
         ${SpecialEventFields.orderIndex} $intType
+      )
+ ''');
+
+    await db.execute('''
+      CREATE TABLE $tableMapRoute ( 
+        ${MapRouteFields.id} $idType, 
+        ${MapRouteFields.name} $textType,
+        ${MapRouteFields.description} $textType,
+        ${MapRouteFields.markers} $textType
       )
  ''');
   }
@@ -237,5 +250,80 @@ class SqfliteManager {
         whereArgs: [item.id],
       );
     }
+  }
+
+  Future<void> insertRoute({
+    required MapRouteModel mapRoute,
+    required List<Coordinate> coordinates,
+  }) async {
+    final db = await database;
+
+    String serializedCoordinates =
+        jsonEncode(coordinates.map((e) => e.toJson()).toList());
+
+    await db.insert(
+      tableMapRoute,
+      {
+        ...mapRoute.toJson(),
+        MapRouteFields.markers: serializedCoordinates,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> updateRoute({
+    required MapRouteModel mapRoute,
+    required List<Coordinate> coordinates,
+  }) async {
+    final db = await database;
+
+    String serializedCoordinates =
+        jsonEncode(coordinates.map((e) => e.toJson()).toList());
+
+    await db.update(
+      tableMapRoute,
+      {
+        ...mapRoute.toJson(),
+        MapRouteFields.markers: serializedCoordinates,
+      },
+      where: '${MapRouteFields.id} = ?',
+      whereArgs: [mapRoute.id],
+    );
+  }
+
+  Future<void> deleteRoute(MapRouteModel mapRoute) async {
+    final db = await database;
+
+    await db.delete(
+      tableMapRoute,
+      where: '${MapRouteFields.id} = ?',
+      whereArgs: [mapRoute.id],
+    );
+  }
+
+  Future<List<MapRouteModel>> getListRoute() async {
+    final db = await database;
+
+    const orderBy = '${EventFields.id} ASC';
+    final result = await db.query(tableMapRoute, orderBy: orderBy);
+
+    if (result.isNotEmpty) {
+      return List<MapRouteModel>.from(
+        result.map(
+          (map) => MapRouteModel(
+            id: map[MapRouteFields.id] as int,
+            name: map[MapRouteFields.name] as String,
+            description: map[MapRouteFields.description] as String,
+            markerLocations: (jsonDecode(map[MapRouteFields.markers] as String)
+                    as List<dynamic>)
+                .map(
+                    (json) => Coordinate.fromJson(json as Map<String, dynamic>))
+                .toList(),
+          ),
+        ),
+      );
+    }
+
+    return [];
   }
 }

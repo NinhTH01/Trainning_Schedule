@@ -32,7 +32,7 @@ class AppTextStyles {
 
   static final s16w400 = defaultStyle.copyWith(
     fontSize: 16,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w400,
   );
 
   static final s16w500 = defaultStyle.copyWith(

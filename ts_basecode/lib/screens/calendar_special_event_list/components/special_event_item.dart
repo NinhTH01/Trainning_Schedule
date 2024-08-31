@@ -55,10 +55,9 @@ class _SpecialEventItemState extends State<SpecialEventItem> {
                       widget.isEditing
                           ? const Row(
                               children: [
-                                SizedBox(width: 20),
                                 Icon(
                                   Icons.menu,
-                                  size: 16,
+                                  size: 20,
                                 ),
                               ],
                             )

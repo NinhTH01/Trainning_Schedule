@@ -6,6 +6,7 @@ class TextConstants {
   static const map = "Map";
   static const weather = "Weather";
   static const special = "Special";
+  static const route = 'Route';
 
   /// Splash Screen
   static const appName = "Training Schedule";
@@ -45,6 +46,7 @@ class TextConstants {
   static const editEvent = 'Edit Event';
   static const description = 'Description';
   static const save = 'Save';
+  static const name = 'Name';
   static const edit = 'Edit';
   static const delete = 'Delete';
 
@@ -88,6 +90,14 @@ class TextConstants {
 
   static const specialEvent = 'Special Event';
 
+  static const mapRouteList = 'Map Route List';
+
+  static const mapRouteEdit = 'Edit Map Route';
+
+  static const mapRouteCreate = 'Create Map Route';
+
   static const noWeatherData =
       "Can't get the weather forecast data, please try again!";
+
+  static const emptyNameValidate = "Name Can't Be Empty";
 }

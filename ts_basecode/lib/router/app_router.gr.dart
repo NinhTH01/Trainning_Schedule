@@ -50,6 +50,39 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MainScreen(),
       );
     },
+    MapRouteEditRoute.name: (routeData) {
+      final args = routeData.argsAs<MapRouteEditRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MapRouteEditScreen(
+          key: args.key,
+          isEdit: args.isEdit,
+          mapRoute: args.mapRoute,
+        ),
+      );
+    },
+    MapRouteListRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MapRouteListScreen(),
+      );
+    },
+    MapRouteMapRoute.name: (routeData) {
+      final args = routeData.argsAs<MapRouteMapRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MapRouteMapScreen(
+          key: args.key,
+          markerLocationList: args.markerLocationList,
+        ),
+      );
+    },
+    MapRouteTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MapRouteTabPage(),
+      );
+    },
     MapRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -191,6 +224,115 @@ class MainRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MainRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MapRouteEditScreen]
+class MapRouteEditRoute extends PageRouteInfo<MapRouteEditRouteArgs> {
+  MapRouteEditRoute({
+    Key? key,
+    required bool isEdit,
+    required MapRouteModel? mapRoute,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MapRouteEditRoute.name,
+          args: MapRouteEditRouteArgs(
+            key: key,
+            isEdit: isEdit,
+            mapRoute: mapRoute,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'MapRouteEditRoute';
+
+  static const PageInfo<MapRouteEditRouteArgs> page =
+      PageInfo<MapRouteEditRouteArgs>(name);
+}
+
+class MapRouteEditRouteArgs {
+  const MapRouteEditRouteArgs({
+    this.key,
+    required this.isEdit,
+    required this.mapRoute,
+  });
+
+  final Key? key;
+
+  final bool isEdit;
+
+  final MapRouteModel? mapRoute;
+
+  @override
+  String toString() {
+    return 'MapRouteEditRouteArgs{key: $key, isEdit: $isEdit, mapRoute: $mapRoute}';
+  }
+}
+
+/// generated route for
+/// [MapRouteListScreen]
+class MapRouteListRoute extends PageRouteInfo<void> {
+  const MapRouteListRoute({List<PageRouteInfo>? children})
+      : super(
+          MapRouteListRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MapRouteListRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MapRouteMapScreen]
+class MapRouteMapRoute extends PageRouteInfo<MapRouteMapRouteArgs> {
+  MapRouteMapRoute({
+    Key? key,
+    required List<LatLng> markerLocationList,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MapRouteMapRoute.name,
+          args: MapRouteMapRouteArgs(
+            key: key,
+            markerLocationList: markerLocationList,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'MapRouteMapRoute';
+
+  static const PageInfo<MapRouteMapRouteArgs> page =
+      PageInfo<MapRouteMapRouteArgs>(name);
+}
+
+class MapRouteMapRouteArgs {
+  const MapRouteMapRouteArgs({
+    this.key,
+    required this.markerLocationList,
+  });
+
+  final Key? key;
+
+  final List<LatLng> markerLocationList;
+
+  @override
+  String toString() {
+    return 'MapRouteMapRouteArgs{key: $key, markerLocationList: $markerLocationList}';
+  }
+}
+
+/// generated route for
+/// [MapRouteTabPage]
+class MapRouteTabRoute extends PageRouteInfo<void> {
+  const MapRouteTabRoute({List<PageRouteInfo>? children})
+      : super(
+          MapRouteTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MapRouteTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

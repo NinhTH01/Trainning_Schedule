@@ -1,14 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/screens/calendar/calendar_screen.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_screen.dart';
 import 'package:ts_basecode/screens/calendar_special_event_list/calendar_special_event_list_screen.dart';
 import 'package:ts_basecode/screens/main/main_screen.dart';
 import 'package:ts_basecode/screens/map/map_screen.dart';
+import 'package:ts_basecode/screens/map_route_edit/map_route_edit_screen.dart';
+import 'package:ts_basecode/screens/map_route_list/map_route_list_screen.dart';
+import 'package:ts_basecode/screens/map_route_map/map_route_map_screen.dart';
 import 'package:ts_basecode/screens/splash/splash_screen.dart';
 import 'package:ts_basecode/screens/weather/weather_screen.dart';
 
+import '../data/models/storage/map_route/map_route_model.dart';
 import '../screens/onboarding/onboarding_screen.dart';
 
 part 'app_router.gr.dart';
@@ -32,9 +37,6 @@ class AppRouter extends _$AppRouter {
                 page: CalendarDateEventEditRoute.page,
                 path: 'dateEventEdit',
               ),
-              // AutoRoute(
-              //     page: CalendarSpecialEventListRoute.page,
-              //     path: 'specialEventList'),
             ],
           ),
           AutoRoute(
@@ -74,6 +76,25 @@ class AppRouter extends _$AppRouter {
               // inspection child page define here
             ],
           ),
+          AutoRoute(
+            page: MapRouteTabRoute.page,
+            path: 'mapRouteTab',
+            children: [
+              AutoRoute(
+                page: MapRouteListRoute.page,
+                path: '',
+              ),
+              AutoRoute(
+                page: MapRouteEditRoute.page,
+                path: 'mapRouteEdit',
+              ),
+              AutoRoute(
+                page: MapRouteMapRoute.page,
+                path: 'mapRouteMap',
+              ),
+              // inspection child page define here
+            ],
+          )
         ]),
       ];
 }
@@ -96,4 +117,9 @@ class WeatherTabPage extends AutoRouter {
 @RoutePage(name: 'SpecialTabRoute')
 class SpecialTabPage extends AutoRouter {
   const SpecialTabPage({super.key});
+}
+
+@RoutePage(name: 'MapRouteTabRoute')
+class MapRouteTabPage extends AutoRouter {
+  const MapRouteTabPage({super.key});
 }
