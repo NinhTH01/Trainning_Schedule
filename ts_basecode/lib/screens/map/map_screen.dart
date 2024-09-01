@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
+import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
@@ -15,6 +17,7 @@ import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/screens/map/models/zoom_mode.dart';
+import 'package:ts_basecode/screens/map_route_list/components/map_route_item.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
@@ -43,6 +46,11 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   void onInitState() {
     super.onInitState();
     WidgetsBinding.instance.addObserver(this);
+    context.tabsRouter.addListener(() async {
+      if (context.tabsRouter.activeIndex == 1) {
+        await viewModel.getRouteMapList();
+      }
+    });
 
     _onInitState();
   }
@@ -83,6 +91,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   Future<void> _onInitState() async {
     try {
+      await viewModel.getRouteMapList();
       await viewModel.getLocationUpdate();
     } catch (e) {
       handleError(e);
@@ -117,37 +126,180 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     }
   }
 
-  Widget buildZoomIcon() {
+  void _showModal(BuildContext context) {
+    final double modalHeight = MediaQuery.of(context).size.height * 0.6;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          height: modalHeight,
+          decoration: const BoxDecoration(
+            color: ColorName.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 8.0,
+                  right: 8.0,
+                  bottom: 8.0,
+                  left: 16.0,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      TextConstants.mapRouteList,
+                      style: AppTextStyles.s16w700,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Close the modal
+                      },
+                      child: Text(
+                        TextConstants.close,
+                        style: AppTextStyles.s14w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: viewModel.mapRouteList.length,
+                  itemBuilder: (context, index) {
+                    return MapRouteItem(
+                      mapRoute: viewModel.mapRouteList[index],
+                      onPress: () {
+                        _showActionSheet(
+                          context: context,
+                          mapRoute: viewModel.mapRouteList[index],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showActionSheet({
+    required BuildContext context,
+    required MapRouteModel mapRoute,
+  }) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext modalContext) => CupertinoActionSheet(
+        title: const Text(TextConstants.addRoute),
+        message: const Text(TextConstants.confirmToAddRoute),
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            isDestructiveAction: true,
+            onPressed: () async {
+              viewModel.createUnfinishedMarkerFromMapRoute(mapRoute);
+              if (context.mounted) {
+                Navigator.pop(modalContext);
+                Navigator.pop(context);
+              }
+            },
+            child: const Text(TextConstants.confirm),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(modalContext);
+            },
+            child: const Text(TextConstants.cancel),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _buildZoomIcon() {
     switch (state.zoomMode) {
       case ZoomMode.close:
-        {
-          return const Icon(
-            Icons.zoom_in_map_outlined,
-            size: 20,
-            color: ColorName.black,
-          );
-        }
+        return Icons.zoom_in_map_outlined;
+
       case ZoomMode.normal:
-        {
-          return const Icon(
-            Icons.crop_free_outlined,
-            size: 20,
-            color: ColorName.black,
-          );
-        }
+        return Icons.crop_free_outlined;
+
       case ZoomMode.far:
-        {
-          return const Icon(
-            Icons.zoom_out_map_outlined,
-            size: 20,
-            color: ColorName.black,
-          );
-        }
+        return Icons.zoom_out_map_outlined;
     }
+  }
+
+  Widget _buildBottomRowButtons() {
+    return Positioned(
+      bottom: 24,
+      left: 10,
+      right: 10,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(24),
+            ),
+            onPressed: () {
+              viewModel.updateZoomMode();
+            },
+            child: Icon(
+              _buildZoomIcon(),
+              size: 20,
+              color: ColorName.black,
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(24),
+            ),
+            onPressed: () async {
+              if (state.isRunning) {
+                viewModel.setupRunningStatusInGlobal(false);
+              } else {
+                viewModel.toggleRunning();
+              }
+            },
+            child: Text(
+              state.isRunning ? TextConstants.mapStop : TextConstants.mapStart,
+              style: AppTextStyles.defaultStyle,
+            ),
+          ),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(24),
+              ),
+              onPressed: () async {
+                viewModel.animatedCamera();
+              },
+              child: const Icon(
+                Icons.my_location_outlined,
+                size: 20,
+                color: ColorName.black,
+              )),
+        ],
+      ),
+    );
   }
 
   @override
   Widget buildBody(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+
     ref.listen(
         globalRunningStatusManagerProvider.select((state) => state.isRunning),
         (prev, next) async {
@@ -172,55 +324,18 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
           polylines: state.polylines,
           myLocationButtonEnabled: false,
         ),
+        _buildBottomRowButtons(),
         Positioned(
-          bottom: 24,
-          left: 10,
           right: 10,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(24),
-                  ),
-                  onPressed: () {
-                    viewModel.updateZoomMode();
-                  },
-                  child: buildZoomIcon()),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(24),
-                ),
-                onPressed: () async {
-                  if (state.isRunning) {
-                    viewModel.setupRunningStatusInGlobal(false);
-                  } else {
-                    viewModel.toggleRunning();
-                  }
-                },
-                child: Text(
-                  state.isRunning
-                      ? TextConstants.mapStop
-                      : TextConstants.mapStart,
-                  style: AppTextStyles.defaultStyle,
-                ),
-              ),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(24),
-                  ),
-                  onPressed: () async {
-                    viewModel.animatedCamera();
-                  },
-                  child: const Icon(
-                    Icons.my_location_outlined,
-                    size: 20,
-                    color: ColorName.black,
-                  )),
-            ],
+          top: topInset,
+          child: ElevatedButton(
+            onPressed: () {
+              _showModal(context);
+            },
+            child: Text(
+              TextConstants.addRoute,
+              style: AppTextStyles.s12w500,
+            ),
           ),
         ),
         StatusView(

@@ -28,6 +28,7 @@ class TextConstants {
   static const mapStart = 'Start';
   static const mapStop = 'Stop';
   static const close = 'Close';
+  static const addRoute = 'Add route';
 
   /// Calendar Screen
   static const weekday_1 = 'Mon';
@@ -100,4 +101,7 @@ class TextConstants {
       "Can't get the weather forecast data, please try again!";
 
   static const emptyNameValidate = "Name Can't Be Empty";
+
+  static const confirmToAddRoute =
+      'Adding route markers will delete all current marker on the map.';
 }

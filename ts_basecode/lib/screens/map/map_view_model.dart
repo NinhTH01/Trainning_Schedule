@@ -10,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/exception/general_exception/general_exception.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
@@ -60,6 +61,8 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   StreamSubscription<Position>? _positionStreamSubscription;
 
+  List<MapRouteModel> mapRouteList = [];
+
   @override
   void dispose() {
     _positionStreamSubscription?.cancel();
@@ -70,13 +73,27 @@ class MapViewModel extends BaseViewModel<MapState> {
     globalMapManager.handleUpdateState(isRunning: runningStatus);
   }
 
-  void setupGoogleMapController(GoogleMapController mapController) {
+  void setupGoogleMapController(GoogleMapController mapController) async {
     _googleMapController = mapController;
-    _moveCamera();
+    final currentLocation = await geolocatorManager.getCurrentLocation();
+
+    _googleMapController?.moveCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        target: LatLng(
+          currentLocation.latitude,
+          currentLocation.longitude,
+        ),
+        zoom: defaultCameraZoom,
+      ),
+    ));
   }
 
   Future<void> checkAlwaysPermission() async {
     await geolocatorManager.checkAlwaysPermission();
+  }
+
+  Future<void> getRouteMapList() async {
+    mapRouteList = await sqfliteManager.getListRoute();
   }
 
   Future<void> getLocationUpdate() async {
@@ -328,7 +345,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   void _moveCamera() {
-    if (_googleMapController != null) {
+    if (_googleMapController != null && state.currentPosition != null) {
       _googleMapController!.moveCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -390,7 +407,7 @@ class MapViewModel extends BaseViewModel<MapState> {
         newZoomMode = ZoomMode.far;
 
         state = state.copyWith(
-          zoomValue: 18.0,
+          zoomValue: defaultCameraZoom,
           zoomMode: newZoomMode,
         );
         _moveCamera();
@@ -402,18 +419,24 @@ class MapViewModel extends BaseViewModel<MapState> {
           newZoomMode = ZoomMode.normal;
         }
 
-        var bounds = _calculateBoundsForMarkers();
+        if (state.locationMarkers.length > 1) {
+          var bounds = _calculateBoundsForMarkers();
 
-        if (bounds != null) {
-          var cameraUpdate =
-              CameraUpdate.newLatLngBounds(bounds, cameraPadding);
-          _googleMapController!.moveCamera(cameraUpdate).then((_) async {
-            newZoomValue = await _googleMapController!.getZoomLevel();
-            state = state.copyWith(
-              zoomValue: newZoomValue,
-              zoomMode: newZoomMode,
-            );
-          });
+          if (bounds != null) {
+            var cameraUpdate =
+                CameraUpdate.newLatLngBounds(bounds, cameraPadding);
+            _googleMapController!.moveCamera(cameraUpdate).then((_) async {
+              newZoomValue = await _googleMapController!.getZoomLevel();
+              state = state.copyWith(
+                zoomValue: newZoomValue,
+                zoomMode: newZoomMode,
+              );
+            });
+          }
+        } else {
+          state = state.copyWith(
+            zoomMode: newZoomMode,
+          );
         }
     }
   }
@@ -611,6 +634,19 @@ class MapViewModel extends BaseViewModel<MapState> {
     _updateMarkersForMap(
         unfinishedMarkersCoordinateList: [...unfinishedMarkerList, location],
         finishMarkersCoordinateList: state.finishMarkersCoordinateList);
+  }
+
+  void createUnfinishedMarkerFromMapRoute(MapRouteModel mapRoute) {
+    List<LatLng> markerLocationList = mapRoute.markerLocations!.map((location) {
+      return LatLng(
+        location.latitude,
+        location.longitude,
+      );
+    }).toList();
+
+    _updateMarkersForMap(
+        unfinishedMarkersCoordinateList: markerLocationList,
+        finishMarkersCoordinateList: []);
   }
 
   void _removeMarker({
