@@ -10,9 +10,11 @@ import 'package:ts_basecode/data/providers/local_notification_provider.dart';
 import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
 import 'package:ts_basecode/data/providers/sqflite_provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
+import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
+import 'package:ts_basecode/screens/map/models/zoom_mode.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
@@ -115,6 +117,35 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     }
   }
 
+  Widget buildZoomIcon() {
+    switch (state.zoomMode) {
+      case ZoomMode.close:
+        {
+          return const Icon(
+            Icons.zoom_in_map_outlined,
+            size: 20,
+            color: ColorName.black,
+          );
+        }
+      case ZoomMode.normal:
+        {
+          return const Icon(
+            Icons.crop_free_outlined,
+            size: 20,
+            color: ColorName.black,
+          );
+        }
+      case ZoomMode.far:
+        {
+          return const Icon(
+            Icons.zoom_out_map_outlined,
+            size: 20,
+            color: ColorName.black,
+          );
+        }
+    }
+  }
+
   @override
   Widget buildBody(BuildContext context) {
     ref.listen(
@@ -134,7 +165,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               state.currentPosition?.latitude ?? 0,
               state.currentPosition?.longitude ?? 0,
             ),
-            zoom: 18.0,
+            zoom: 16.0,
           ),
           onTap: viewModel.createUnfinishedMarker,
           markers: state.locationMarkers,
@@ -142,23 +173,54 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
           myLocationButtonEnabled: false,
         ),
         Positioned(
-          bottom: 16,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(24),
-            ),
-            onPressed: () async {
-              if (state.isRunning) {
-                viewModel.setupRunningStatusInGlobal(false);
-              } else {
-                viewModel.toggleRunning();
-              }
-            },
-            child: Text(
-              state.isRunning ? TextConstants.mapStop : TextConstants.mapStart,
-              style: AppTextStyles.defaultStyle,
-            ),
+          bottom: 24,
+          left: 10,
+          right: 10,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(24),
+                  ),
+                  onPressed: () {
+                    viewModel.updateZoomMode();
+                  },
+                  child: buildZoomIcon()),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  padding: const EdgeInsets.all(24),
+                ),
+                onPressed: () async {
+                  if (state.isRunning) {
+                    viewModel.setupRunningStatusInGlobal(false);
+                  } else {
+                    viewModel.toggleRunning();
+                  }
+                },
+                child: Text(
+                  state.isRunning
+                      ? TextConstants.mapStop
+                      : TextConstants.mapStart,
+                  style: AppTextStyles.defaultStyle,
+                ),
+              ),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(24),
+                  ),
+                  onPressed: () async {
+                    viewModel.animatedCamera();
+                  },
+                  child: const Icon(
+                    Icons.my_location_outlined,
+                    size: 20,
+                    color: ColorName.black,
+                  )),
+            ],
           ),
         ),
         StatusView(

@@ -19,6 +19,7 @@ import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/models/marker_type.dart';
+import 'package:ts_basecode/screens/map/models/zoom_mode.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class MapViewModel extends BaseViewModel<MapState> {
@@ -51,7 +52,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final Size currentLocationMarkerSize = const Size(24, 24);
 
-  final double defaultCameraZoom = 18.0;
+  final double defaultCameraZoom = 16.0;
 
   final double cameraPadding = 50.0;
 
@@ -71,6 +72,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   void setupGoogleMapController(GoogleMapController mapController) {
     _googleMapController = mapController;
+    _moveCamera();
   }
 
   Future<void> checkAlwaysPermission() async {
@@ -104,7 +106,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
         await _handleIconLogic();
 
-        await _handleMarkerOutsideCamera();
+        // await _handleMarkerOutsideCamera();
 
         if (state.isRunning) {
           _handleRunningLogic(updatedLocation);
@@ -280,6 +282,38 @@ class MapViewModel extends BaseViewModel<MapState> {
     return null;
   }
 
+  LatLngBounds? _calculateBoundsForMarkers() {
+    var markers = state.locationMarkers;
+
+    if (state.locationMarkers.isNotEmpty) {
+      var southWestLat = markers.first.position.latitude;
+      var southWestLng = markers.first.position.longitude;
+      var northEastLat = markers.first.position.latitude;
+      var northEastLng = markers.first.position.longitude;
+
+      for (var marker in markers) {
+        if (marker.position.latitude < southWestLat) {
+          southWestLat = marker.position.latitude;
+        }
+        if (marker.position.longitude < southWestLng) {
+          southWestLng = marker.position.longitude;
+        }
+        if (marker.position.latitude > northEastLat) {
+          northEastLat = marker.position.latitude;
+        }
+        if (marker.position.longitude > northEastLng) {
+          northEastLng = marker.position.longitude;
+        }
+      }
+
+      return LatLngBounds(
+        southwest: LatLng(southWestLat, southWestLng),
+        northeast: LatLng(northEastLat, northEastLng),
+      );
+    }
+    return null;
+  }
+
   Future<void> _setCameraToPolylineBounds() async {
     if (_googleMapController != null) {
       var bounds = _calculateBoundsForPolylines(state.polylineCoordinateList);
@@ -299,7 +333,7 @@ class MapViewModel extends BaseViewModel<MapState> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: state.currentPosition!,
-            zoom: defaultCameraZoom,
+            zoom: state.zoomValue,
           ),
         ),
       );
@@ -308,21 +342,97 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  Future<void> _handleMarkerOutsideCamera() async {
-    if (_googleMapController == null) {
-      await Future.delayed(const Duration(seconds: 1));
-      _handleMarkerOutsideCamera();
-    }
-    final bounds = await _googleMapController!.getVisibleRegion();
-    final isInside =
-        bounds.northeast.latitude >= state.currentPosition!.latitude &&
-            bounds.southwest.latitude <= state.currentPosition!.latitude &&
-            bounds.northeast.longitude >= state.currentPosition!.longitude &&
-            bounds.southwest.longitude <= state.currentPosition!.longitude;
-    if (isInside == false) {
-      _moveCamera();
+  void animatedCamera() {
+    if (_googleMapController != null) {
+      _googleMapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: state.currentPosition!,
+            zoom: state.zoomValue,
+          ),
+        ),
+      );
+    } else {
+      throw GeneralException('Controller is null in camera move.');
     }
   }
+
+  void updateZoomMode() async {
+    ZoomMode newZoomMode;
+    double newZoomValue = state.zoomValue;
+
+    switch (state.zoomMode) {
+      case ZoomMode.close:
+        newZoomMode = ZoomMode.normal;
+
+        if (state.isRunning) {
+          var bounds =
+              _calculateBoundsForPolylines(state.polylineCoordinateList);
+
+          if (bounds != null) {
+            var cameraUpdate =
+                CameraUpdate.newLatLngBounds(bounds, cameraPadding);
+            _googleMapController!.moveCamera(cameraUpdate).then((_) async {
+              newZoomValue = await _googleMapController!.getZoomLevel();
+              state = state.copyWith(
+                zoomValue: newZoomValue,
+                zoomMode: newZoomMode,
+              );
+            });
+          }
+        } else {
+          state = state.copyWith(
+            zoomMode: newZoomMode,
+          );
+        }
+
+      case ZoomMode.normal:
+        newZoomMode = ZoomMode.far;
+
+        state = state.copyWith(
+          zoomValue: 18.0,
+          zoomMode: newZoomMode,
+        );
+        _moveCamera();
+
+      case ZoomMode.far:
+        if (state.isRunning) {
+          newZoomMode = ZoomMode.close;
+        } else {
+          newZoomMode = ZoomMode.normal;
+        }
+
+        var bounds = _calculateBoundsForMarkers();
+
+        if (bounds != null) {
+          var cameraUpdate =
+              CameraUpdate.newLatLngBounds(bounds, cameraPadding);
+          _googleMapController!.moveCamera(cameraUpdate).then((_) async {
+            newZoomValue = await _googleMapController!.getZoomLevel();
+            state = state.copyWith(
+              zoomValue: newZoomValue,
+              zoomMode: newZoomMode,
+            );
+          });
+        }
+    }
+  }
+
+  // Future<void> _handleMarkerOutsideCamera() async {
+  //   if (_googleMapController == null) {
+  //     await Future.delayed(const Duration(seconds: 1));
+  //     _handleMarkerOutsideCamera();
+  //   }
+  //   final bounds = await _googleMapController!.getVisibleRegion();
+  //   final isInside =
+  //       bounds.northeast.latitude >= state.currentPosition!.latitude &&
+  //           bounds.southwest.latitude <= state.currentPosition!.latitude &&
+  //           bounds.northeast.longitude >= state.currentPosition!.longitude &&
+  //           bounds.southwest.longitude <= state.currentPosition!.longitude;
+  //   if (isInside == false) {
+  //     _moveCamera();
+  //   }
+  // }
 
   /// Distance handle
   void _calculateNewDistance(newCoordinate) {
