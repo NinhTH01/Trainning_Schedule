@@ -75,17 +75,6 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   void setupGoogleMapController(GoogleMapController mapController) async {
     _googleMapController = mapController;
-    final currentLocation = await geolocatorManager.getCurrentLocation();
-
-    _googleMapController?.moveCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        target: LatLng(
-          currentLocation.latitude,
-          currentLocation.longitude,
-        ),
-        zoom: defaultCameraZoom,
-      ),
-    ));
   }
 
   Future<void> checkAlwaysPermission() async {
@@ -101,6 +90,20 @@ class MapViewModel extends BaseViewModel<MapState> {
       _configureBackgroundLocation();
 
       await geolocatorManager.checkPermissionForMap();
+
+      final currentLocation = await geolocatorManager.getCurrentLocation();
+
+      _googleMapController?.moveCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(
+              currentLocation.latitude,
+              currentLocation.longitude,
+            ),
+            zoom: defaultCameraZoom,
+          ),
+        ),
+      );
 
       Stream<Position> activeCurrentLocationStream =
           await geolocatorManager.getActiveCurrentLocationStream();
