@@ -7,8 +7,8 @@ part 'calendar_date_event_edit_state.freezed.dart';
 class CalendarDateEventEditState with _$CalendarDateEventEditState {
   const factory CalendarDateEventEditState({
     @Default(TimeOfDay(hour: 0, minute: 0)) TimeOfDay eventTime,
-    @Default(null) DateTime? eventDate,
-    @Default(null) TextEditingController? textEditController,
+    DateTime? eventDate,
+    @Default(false) bool emptyDescriptionValidate,
   }) = _CalendarDateEventEditState;
 
   const CalendarDateEventEditState._();

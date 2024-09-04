@@ -72,6 +72,11 @@ class _CalendarDateEventEditState extends BaseViewState<
   CalendarDateEventEditViewModel get viewModel => ref.read(_provider.notifier);
 
   void _handleSaveOrUpdateEvent() async {
+    if (viewModel.textController.text.isEmpty) {
+      viewModel.updateEmptyDescriptionValidate(true);
+      return;
+    }
+
     if (widget.isEdit) {
       await viewModel.updateEvent(
         isEdit: widget.isEdit,
@@ -149,11 +154,19 @@ class _CalendarDateEventEditState extends BaseViewState<
                   SizedBox(
                     width: 300,
                     child: TextField(
-                      controller: state.textEditController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
+                      controller: viewModel.textController,
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
                         labelText: TextConstants.description,
+                        errorText: state.emptyDescriptionValidate
+                            ? TextConstants.emptyDescriptionValidate
+                            : null,
                       ),
+                      onChanged: ((_) {
+                        if (viewModel.textController.text.isNotEmpty) {
+                          viewModel.updateEmptyDescriptionValidate(false);
+                        }
+                      }),
                     ),
                   ),
                   const SizedBox(height: 16),

@@ -20,11 +20,19 @@ class CalendarDateEventEditViewModel
 
   final GlobalRunningStatusManager globalMapManager;
 
+  TextEditingController textController = TextEditingController();
+
   void initData(Event? event) {
     state = state.copyWith(
-      textEditController: TextEditingController(text: event?.description ?? ''),
       eventTime: TimeOfDay.fromDateTime(event?.createdTime ?? DateTime.now()),
       eventDate: event?.createdTime ?? DateTime.now(),
+    );
+    textController = TextEditingController(text: event?.description);
+  }
+
+  void updateEmptyDescriptionValidate(bool value) {
+    state = state.copyWith(
+      emptyDescriptionValidate: value,
     );
   }
 
@@ -45,7 +53,7 @@ class CalendarDateEventEditViewModel
     Event? eventInfo,
   }) async {
     final selectedTime = state.eventTime;
-    final description = state.textEditController!.text;
+    final description = textController.text;
 
     final event = eventInfo!.copyWith(
       createdTime: DateTime(
@@ -62,7 +70,7 @@ class CalendarDateEventEditViewModel
 
   Future<void> addEvent() async {
     final selectedTime = state.eventTime;
-    final description = state.textEditController!.text;
+    final description = textController.text;
 
     final event = Event(
       createdTime: DateTime(

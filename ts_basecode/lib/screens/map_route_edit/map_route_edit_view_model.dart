@@ -25,8 +25,6 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
 
   TextEditingController descriptionController = TextEditingController();
 
-  bool emptyNameValidate = false;
-
   Future<void> initData({
     required MapRouteModel? mapRoute,
   }) async {
