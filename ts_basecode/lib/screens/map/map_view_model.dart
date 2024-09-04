@@ -381,32 +381,8 @@ class MapViewModel extends BaseViewModel<MapState> {
     double newZoomValue = state.zoomValue;
 
     switch (state.zoomMode) {
-      case ZoomMode.close:
+      case ZoomMode.polyline:
         newZoomMode = ZoomMode.normal;
-
-        if (state.isRunning) {
-          var bounds =
-              _calculateBoundsForPolylines(state.polylineCoordinateList);
-
-          if (bounds != null) {
-            var cameraUpdate =
-                CameraUpdate.newLatLngBounds(bounds, cameraPadding);
-            _googleMapController!.moveCamera(cameraUpdate).then((_) async {
-              newZoomValue = await _googleMapController!.getZoomLevel();
-              state = state.copyWith(
-                zoomValue: newZoomValue,
-                zoomMode: newZoomMode,
-              );
-            });
-          }
-        } else {
-          state = state.copyWith(
-            zoomMode: newZoomMode,
-          );
-        }
-
-      case ZoomMode.normal:
-        newZoomMode = ZoomMode.far;
 
         state = state.copyWith(
           zoomValue: defaultCameraZoom,
@@ -414,12 +390,8 @@ class MapViewModel extends BaseViewModel<MapState> {
         );
         _moveCamera();
 
-      case ZoomMode.far:
-        if (state.isRunning) {
-          newZoomMode = ZoomMode.close;
-        } else {
-          newZoomMode = ZoomMode.normal;
-        }
+      case ZoomMode.normal:
+        newZoomMode = ZoomMode.marker;
 
         if (state.locationMarkers.length > 1) {
           var bounds = _calculateBoundsForMarkers();
@@ -439,6 +411,33 @@ class MapViewModel extends BaseViewModel<MapState> {
           state = state.copyWith(
             zoomMode: newZoomMode,
           );
+        }
+
+      case ZoomMode.marker:
+        if (state.isRunning) {
+          newZoomMode = ZoomMode.polyline;
+
+          var bounds =
+              _calculateBoundsForPolylines(state.polylineCoordinateList);
+
+          if (bounds != null) {
+            var cameraUpdate =
+                CameraUpdate.newLatLngBounds(bounds, cameraPadding);
+            _googleMapController!.moveCamera(cameraUpdate).then((_) async {
+              newZoomValue = await _googleMapController!.getZoomLevel();
+              state = state.copyWith(
+                zoomValue: newZoomValue,
+                zoomMode: newZoomMode,
+              );
+            });
+          }
+        } else {
+          newZoomMode = ZoomMode.normal;
+          state = state.copyWith(
+            zoomValue: defaultCameraZoom,
+            zoomMode: newZoomMode,
+          );
+          _moveCamera();
         }
     }
   }

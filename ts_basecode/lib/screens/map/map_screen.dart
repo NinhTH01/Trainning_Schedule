@@ -229,14 +229,14 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   IconData _buildZoomIcon() {
     switch (state.zoomMode) {
-      case ZoomMode.close:
-        return Icons.zoom_in_map_outlined;
+      case ZoomMode.polyline:
+        return Icons.route_outlined;
 
       case ZoomMode.normal:
-        return Icons.crop_free_outlined;
+        return Icons.near_me_rounded;
 
-      case ZoomMode.far:
-        return Icons.zoom_out_map_outlined;
+      case ZoomMode.marker:
+        return Icons.location_on_rounded;
     }
   }
 

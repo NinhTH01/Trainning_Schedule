@@ -21,7 +21,7 @@ class MapState with _$MapState {
     @Default(0.0) double directionAngle,
     @Default([]) List<LatLng> finishMarkersCoordinateList,
     @Default([]) List<LatLng> unfinishedMarkersCoordinateList,
-    @Default(ZoomMode.far) ZoomMode zoomMode,
+    @Default(ZoomMode.normal) ZoomMode zoomMode,
     @Default(18.0) double zoomValue,
   }) = _MapState;
 

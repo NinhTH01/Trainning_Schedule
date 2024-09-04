@@ -1,5 +1,5 @@
 enum ZoomMode {
-  close,
+  polyline,
   normal,
-  far,
+  marker,
 }
