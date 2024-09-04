@@ -141,7 +141,7 @@ class _CalendarDateEventEditState extends BaseViewState<
               padding: const EdgeInsets.all(24.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: ColorName.black12,
+                color: ColorName.grayFFEDEDED,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -204,14 +204,17 @@ class _CalendarDateEventEditState extends BaseViewState<
             ),
             const SizedBox(height: 40),
             widget.isEdit
-                ? TextButton(
-                    onPressed: () {
-                      _showActionSheet(context);
-                    },
-                    child: Text(
-                      TextConstants.delete,
-                      style: AppTextStyles.defaultStyle.copyWith(
-                        color: ColorName.red,
+                ? SizedBox(
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _showActionSheet(context);
+                      },
+                      child: Text(
+                        TextConstants.delete,
+                        style: AppTextStyles.defaultStyle.copyWith(
+                          color: ColorName.red,
+                        ),
                       ),
                     ),
                   )

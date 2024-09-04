@@ -102,6 +102,8 @@ class TextConstants {
 
   static const emptyNameValidate = "Name Can't Be Empty";
 
+  static const emptyDescriptionValidate = "Event Description Can't Be Empty";
+
   static const confirmToAddRoute =
       'Adding route markers will delete all current marker on the map.';
 }
