@@ -42,8 +42,9 @@ class WeatherScreen extends BaseView {
 
 class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
   final ScrollController _scrollController = ScrollController();
+
   // Final value for animation logic
-  final double _maxContainerHeight = 250;
+  double _maxContainerHeight = 250;
   double _maxOffsetDescription = 60;
   double _maxOffsetMinimize = 100;
   // Variables
@@ -121,6 +122,9 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Set final value based on screen height
       var height = MediaQuery.of(context).size.height;
+      if (height > 1000) {
+        _maxContainerHeight = 300;
+      }
       _maxOffsetDescription = height * 0.07;
       _maxOffsetMinimize = height * 0.11;
     });
