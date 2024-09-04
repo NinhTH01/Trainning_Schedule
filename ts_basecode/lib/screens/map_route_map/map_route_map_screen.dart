@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,10 +83,12 @@ class _MapRouteListScreen
           myLocationEnabled: true,
           onTap: viewModel.addMarker,
           markers: state.markers,
+          myLocationButtonEnabled: true,
+          zoomControlsEnabled: false,
         ),
         Positioned(
           right: 10,
-          top: 10,
+          top: Platform.isAndroid ? 50 : 10,
           child: Column(
             children: [
               ElevatedButton(

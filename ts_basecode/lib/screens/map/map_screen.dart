@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
+import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
@@ -49,6 +51,11 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     context.tabsRouter.addListener(() async {
       if (context.tabsRouter.activeIndex == 1) {
         await viewModel.getRouteMapList();
+        try {
+          await viewModel.checkAlwaysPermission();
+        } catch (e) {
+          handleError(e);
+        }
       }
     });
 
@@ -65,9 +72,16 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   void didChangeAppLifecycleState(AppLifecycleState appState) {
     Future.delayed(Duration.zero, () async {
       if (appState == AppLifecycleState.resumed) {
-        _onInitState();
         try {
-          await viewModel.checkAlwaysPermission();
+          PermissionStatus status =
+              await viewModel.geolocatorManager.getInUsePermission();
+          if (status == PermissionStatus.granted) {
+            await viewModel.checkAlwaysPermission();
+            await _onInitState();
+          } else {
+            handleError(AlwaysPermissionException(
+                TextConstants.alwaysExceptionMessage));
+          }
         } catch (e) {
           handleError(e);
         }
@@ -324,6 +338,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
           markers: state.locationMarkers,
           polylines: state.polylines,
           myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
         ),
         _buildBottomRowButtons(),
         Positioned(

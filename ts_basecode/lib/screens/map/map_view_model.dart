@@ -55,7 +55,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final double defaultCameraZoom = 16.0;
 
-  final double cameraPadding = 50.0;
+  final double cameraPadding = 100.0;
 
   GoogleMapController? _googleMapController;
 
@@ -87,9 +87,9 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   Future<void> getLocationUpdate() async {
     if (state.currentPosition == null) {
-      _configureBackgroundLocation();
-
       await geolocatorManager.checkPermissionForMap();
+
+      _configureBackgroundLocation();
 
       final currentLocation = await geolocatorManager.getCurrentLocation();
 
