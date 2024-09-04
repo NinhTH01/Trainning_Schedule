@@ -9,8 +9,8 @@ part 'weather_state.freezed.dart';
 @freezed
 class WeatherState with _$WeatherState {
   const factory WeatherState({
-    @Default(null) Weather? currentWeather,
-    @Default(null) WeatherForecast? weatherForecast,
+    Weather? currentWeather,
+    WeatherForecast? weatherForecast,
     @Default(ColorName.clearColor) Color backgroundColor,
     @Default(250.0) double containerHeight,
     @Default(1.0) double descriptionOpacity,

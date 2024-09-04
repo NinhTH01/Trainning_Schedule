@@ -7,8 +7,8 @@ part 'calendar_state.freezed.dart';
 @freezed
 class CalendarState with _$CalendarState {
   const factory CalendarState({
-    @Default(null) DateTime? currentDate,
-    @Default(null) DateTime? selectedDate,
+    DateTime? currentDate,
+    DateTime? selectedDate,
     @Default([]) List<EventDateInfo> eventDateList,
     @Default([]) List<Event> eventList,
     @Default(0) int columnNum,
