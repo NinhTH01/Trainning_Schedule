@@ -24,7 +24,8 @@ class WeatherForecastView extends StatelessWidget {
       margin: const EdgeInsets.all(16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: WeatherHelper.getBackgroundColor(weather.weather?[0].main),
+        color: WeatherHelper.getBackgroundColor(
+            weather.weatherDataList?[0].mainWeatherStatus),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
@@ -59,7 +60,7 @@ class WeatherForecastView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: WeatherHelper.getWeatherIcon(
-                          weatherForecastItem?.weather?[0].main,
+                          weatherForecastItem?.weather?[0].mainWeatherStatus,
                         ),
                       ),
                       Text(

@@ -16,7 +16,8 @@ class WeatherWindView extends StatelessWidget {
       margin: const EdgeInsets.all(16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: WeatherHelper.getBackgroundColor(weather.weather?[0].main),
+        color: WeatherHelper.getBackgroundColor(
+            weather.weatherDataList?[0].mainWeatherStatus),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(

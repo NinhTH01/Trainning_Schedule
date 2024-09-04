@@ -1,44 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 
-class WeatherCondition {
-  static const String cloud = 'Cloud';
-  static const String clear = 'Clear';
-  static const String drizzle = 'Drizzle';
-  static const String rain = 'Rain';
-  static const String thunderstorm = 'Thunderstorm';
-}
-
 class WeatherHelper {
-  static Color getBackgroundColor(String? weather) {
+  static Color getBackgroundColor(WeatherStatus? weather) {
     switch (weather) {
-      case WeatherCondition.cloud:
+      case WeatherStatus.cloud:
         return ColorName.cloudColor;
-      case WeatherCondition.thunderstorm:
+      case WeatherStatus.thunderstorm:
         return ColorName.cloudColor;
-      case WeatherCondition.rain:
+      case WeatherStatus.rain:
         return ColorName.rainColor;
-      case WeatherCondition.drizzle:
+      case WeatherStatus.drizzle:
         return ColorName.rainColor;
-      case WeatherCondition.clear:
+      case WeatherStatus.clear:
         return ColorName.clearColor;
       default:
         return ColorName.clearColor;
     }
   }
 
-  static Icon getWeatherIcon(String? weatherCondition) {
+  static Icon getWeatherIcon(WeatherStatus? weatherCondition) {
     switch (weatherCondition) {
-      case WeatherCondition.clear:
+      case WeatherStatus.clear:
         return const Icon(Icons.wb_sunny, size: 20.0, color: Colors.yellow);
-      case WeatherCondition.cloud:
+      case WeatherStatus.cloud:
         return const Icon(Icons.cloud, size: 20.0, color: Colors.grey);
-      case WeatherCondition.thunderstorm:
+      case WeatherStatus.thunderstorm:
         return const Icon(Icons.flash_on, size: 20.0, color: Colors.orange);
-      case WeatherCondition.rain:
+      case WeatherStatus.rain:
         return const Icon(Icons.beach_access, size: 20.0, color: Colors.white);
-      case WeatherCondition.drizzle:
+      case WeatherStatus.drizzle:
         return const Icon(Icons.grain, size: 20.0, color: Colors.lightBlue);
       default:
         return const Icon(Icons.cloud, size: 20.0, color: Colors.grey);

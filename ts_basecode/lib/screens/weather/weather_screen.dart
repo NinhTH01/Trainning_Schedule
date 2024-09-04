@@ -133,17 +133,17 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
     }
   }
 
-  dynamic _getBackgroundImagePath(String? weatherCondition) {
+  dynamic _getBackgroundImagePath(WeatherStatus? weatherCondition) {
     switch (weatherCondition) {
-      case WeatherCondition.clear:
+      case WeatherStatus.clear:
         return Assets.images.normal.path;
-      case WeatherCondition.cloud:
+      case WeatherStatus.cloud:
         return Assets.images.cloud.path;
-      case WeatherCondition.drizzle:
+      case WeatherStatus.drizzle:
         return Assets.images.drizzle.path;
-      case WeatherCondition.rain:
+      case WeatherStatus.rain:
         return Assets.images.rain.path;
-      case WeatherCondition.thunderstorm:
+      case WeatherStatus.thunderstorm:
         return Assets.images.lightning.path;
       default:
         return Assets.images.clear.path;
@@ -173,7 +173,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         ),
                       ),
                       Text(
-                        state.currentWeather!.weather![0].description!
+                        state.currentWeather!.weatherDataList![0].description!
                             .capitalizeFirstLetter(),
                         style: AppTextStyles.s20w600.copyWith(
                           color: ColorName.white,
@@ -191,7 +191,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
               : Opacity(
                   opacity: state.minimizeOpacity,
                   child: Text(
-                    '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weather![0].description!.capitalizeFirstLetter()}',
+                    '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weatherDataList![0].description!.capitalizeFirstLetter()}',
                     style: AppTextStyles.s16w600.copyWith(
                       color: ColorName.white,
                     ),
@@ -264,8 +264,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(
-                            _getBackgroundImagePath(
-                                state.currentWeather?.weather?[0].main),
+                            _getBackgroundImagePath(state.currentWeather
+                                ?.weatherDataList?[0].mainWeatherStatus),
                           ),
                           fit: BoxFit
                               .cover, // Adjust the fit property to control how the image is resized to cover the container
@@ -311,10 +311,14 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         Icons.refresh,
                         color: ColorName.white,
                       ),
-                      onPressed: () {
-                        // ref.invalidate(_provider);
+                      onPressed: () async {
                         viewModel.handleRetryState(true);
-                        viewModel.initData();
+                        try {
+                          await viewModel.initData();
+                        } catch (e) {
+                          handleError(e);
+                          viewModel.handleRetryState(false);
+                        }
                       },
                     ),
                   ),

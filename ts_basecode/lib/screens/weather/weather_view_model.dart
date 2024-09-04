@@ -43,8 +43,8 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
     state = state.copyWith(
       currentWeather: weatherResponse,
       needRetry: false,
-      backgroundColor:
-          WeatherHelper.getBackgroundColor(weatherResponse.weather?[0].main),
+      backgroundColor: WeatherHelper.getBackgroundColor(
+          weatherResponse.weatherDataList?[0].mainWeatherStatus),
     );
   }
 
