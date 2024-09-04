@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
-class WeatherStatusContainer extends StatelessWidget {
-  const WeatherStatusContainer({
+class WeatherStatusView extends StatelessWidget {
+  const WeatherStatusView({
     super.key,
     required this.title,
     this.value,

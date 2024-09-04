@@ -4,17 +4,11 @@ import 'package:ts_basecode/data/services/api/weather/api_weather_client.dart';
 
 abstract class WeatherRepository {
   Future<Weather> getWeather({
-    required Function(Weather weather) saveWeatherForSession,
-    required Function(Weather weather) writeWeatherForSecureStorage,
     required double lat,
     required double lon,
   });
 
   Future<WeatherForecast> getWeatherForecast({
-    required Function(WeatherForecast weatherForecast)
-        saveWeatherForecastForSession,
-    required Function(WeatherForecast weatherForecast)
-        writeWeatherForecastForSecureStorage,
     required double lat,
     required double lon,
   });
@@ -30,8 +24,6 @@ class WeatherRepositoryImpl implements WeatherRepository {
 
   @override
   Future<Weather> getWeather({
-    required Function(Weather weather) saveWeatherForSession,
-    required Function(Weather weather) writeWeatherForSecureStorage,
     required double lat,
     required double lon,
   }) async {
@@ -41,17 +33,11 @@ class WeatherRepositoryImpl implements WeatherRepository {
       apiKey: apiKey,
       units: 'metric',
     );
-    saveWeatherForSession(weatherResponse);
-    writeWeatherForSecureStorage(weatherResponse);
     return weatherResponse;
   }
 
   @override
   Future<WeatherForecast> getWeatherForecast({
-    required Function(WeatherForecast weatherForecast)
-        saveWeatherForecastForSession,
-    required Function(WeatherForecast weatherForecast)
-        writeWeatherForecastForSecureStorage,
     required double lat,
     required double lon,
   }) async {
@@ -61,8 +47,6 @@ class WeatherRepositoryImpl implements WeatherRepository {
       apiKey: apiKey,
       units: 'metric',
     );
-    saveWeatherForecastForSession(weatherForecastResponse);
-    writeWeatherForecastForSecureStorage(weatherForecastResponse);
     return weatherForecastResponse;
   }
 }

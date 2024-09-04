@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
-import 'package:ts_basecode/screens/weather/models/weather_container.dart';
+import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
-class WeatherForecastContainer extends StatelessWidget {
-  const WeatherForecastContainer({
+class WeatherForecastView extends StatelessWidget {
+  const WeatherForecastView({
     super.key,
     required this.weather,
     required this.weatherForecast,
@@ -43,14 +43,14 @@ class WeatherForecastContainer extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: weatherForecast.list?.length,
               itemBuilder: (context, index) {
+                final weatherForecastItem = weatherForecast.list?[index];
                 return Padding(
                   padding: const EdgeInsets.only(right: 24.0, top: 4.0),
                   child: Column(
                     children: [
                       Text(
-                        weatherForecast.list?[index].dt != null
-                            ? WeatherHelper.unixToHH(
-                                weatherForecast.list![index].dt!)
+                        weatherForecastItem?.dt != null
+                            ? WeatherHelper.unixToHH(weatherForecastItem!.dt!)
                             : '_',
                         style: AppTextStyles.s12w700.copyWith(
                           color: ColorName.white,
@@ -59,11 +59,11 @@ class WeatherForecastContainer extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: WeatherHelper.getWeatherIcon(
-                          weatherForecast.list?[index].weather?[0].main,
+                          weatherForecastItem?.weather?[0].main,
                         ),
                       ),
                       Text(
-                        '${weatherForecast.list?[index].main?.temp?.round()}°',
+                        '${weatherForecastItem?.main?.temp?.round()}°',
                         style: AppTextStyles.s12w700.copyWith(
                           color: ColorName.white,
                         ),

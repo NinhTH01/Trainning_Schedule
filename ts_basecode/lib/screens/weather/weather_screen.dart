@@ -7,23 +7,20 @@ import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
-import 'package:ts_basecode/data/providers/secure_storage_provider.dart';
-import 'package:ts_basecode/data/providers/session_repository_provider.dart';
 import 'package:ts_basecode/data/providers/weather_repository.provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
-import 'package:ts_basecode/screens/weather/components/weather_forecast_container.dart';
-import 'package:ts_basecode/screens/weather/components/weather_status_container.dart';
-import 'package:ts_basecode/screens/weather/components/weather_wind_container.dart';
+import 'package:ts_basecode/screens/weather/components/weather_forecast_view.dart';
+import 'package:ts_basecode/screens/weather/components/weather_status_view.dart';
+import 'package:ts_basecode/screens/weather/components/weather_wind_view.dart';
+import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
 import 'package:ts_basecode/screens/weather/weather_state.dart';
 import 'package:ts_basecode/screens/weather/weather_view_model.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 import 'package:ts_basecode/utilities/extensions/string_extension.dart';
-
-import 'models/weather_container.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<WeatherViewModel, WeatherState>(
@@ -31,8 +28,6 @@ final _provider =
               ref: ref,
               weatherRepository: ref.watch(weatherRepositoryProvider),
               geolocatorManager: ref.watch(geolocatorProvider),
-              sessionRepository: ref.watch(sessionRepositoryProvider),
-              secureStorageManager: ref.watch(secureStorageProvider),
               globalMapManager:
                   ref.watch(globalRunningStatusManagerProvider.notifier),
             ));
@@ -219,34 +214,34 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
         childAspectRatio: 1, // Width / Height ratio
       ),
       children: [
-        WeatherStatusContainer(
+        WeatherStatusView(
           title: TextConstants.humidityTitle,
           value: state.currentWeather?.main?.humidity == null
               ? null
               : '${state.currentWeather?.main?.humidity}%',
           backgroundColor: state.backgroundColor,
         ),
-        WeatherStatusContainer(
+        WeatherStatusView(
           title: TextConstants.feelslikeTitle,
           value: '${state.currentWeather?.main?.feelsLike?.round()}°',
           backgroundColor: state.backgroundColor,
         ),
-        WeatherStatusContainer(
+        WeatherStatusView(
           title: TextConstants.sunsetTitle,
           value: WeatherHelper.unixToHHmm(state.currentWeather!.sys!.sunset!),
           backgroundColor: state.backgroundColor,
         ),
-        WeatherStatusContainer(
+        WeatherStatusView(
           title: TextConstants.sunriseTitle,
           value: WeatherHelper.unixToHHmm(state.currentWeather!.sys!.sunrise!),
           backgroundColor: state.backgroundColor,
         ),
-        WeatherStatusContainer(
+        WeatherStatusView(
           title: TextConstants.pressureTitle,
           value: '${state.currentWeather?.main?.pressure}\nhPa',
           backgroundColor: state.backgroundColor,
         ),
-        WeatherStatusContainer(
+        WeatherStatusView(
           title: TextConstants.visibilityTitle,
           value: state.currentWeather?.visibility == null
               ? null
@@ -291,13 +286,13 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                                       CrossAxisAlignment.stretch,
                                   children: [
                                     // First item
-                                    WeatherForecastContainer(
+                                    WeatherForecastView(
                                       weather: state.currentWeather ??
                                           const Weather(),
                                       weatherForecast: state.weatherForecast ??
                                           const WeatherForecast(),
                                     ),
-                                    WeatherWindContainer(
+                                    WeatherWindView(
                                         weather: state.currentWeather!),
                                     // Grid
                                     _buildGridViewWeatherStatus()

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
-import 'package:ts_basecode/screens/weather/models/weather_container.dart';
+import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
-class WeatherWindContainer extends StatelessWidget {
-  const WeatherWindContainer({super.key, required this.weather});
+class WeatherWindView extends StatelessWidget {
+  const WeatherWindView({super.key, required this.weather});
 
   final Weather weather;
 
