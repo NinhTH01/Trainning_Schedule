@@ -23,7 +23,7 @@ class TabBarItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 80,
-        width: MediaQuery.of(context).size.width / 5,
+        width: MediaQuery.of(context).size.width / 4,
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(

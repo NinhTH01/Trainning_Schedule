@@ -196,22 +196,6 @@ class _CalendarDateEventEditState extends BaseViewState<
                             style: AppTextStyles.defaultStyle,
                           ),
                         ),
-                        Container(
-                          width: 40,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: ColorName.red,
-                          ),
-                          child: IconButton(
-                            onPressed: viewModel.toggleSpecialEvent,
-                            icon: const Icon(
-                              Icons.star,
-                            ),
-                            color: state.isSpecialEvent == 1
-                                ? ColorName.yellow
-                                : ColorName.white,
-                          ),
-                        ),
                       ],
                     ),
                   ),

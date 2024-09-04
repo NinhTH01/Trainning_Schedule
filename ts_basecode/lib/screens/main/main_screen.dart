@@ -39,7 +39,6 @@ class _HomeViewState extends BaseViewState<MainScreen, MainViewModel> {
         CalendarTabRoute(),
         MapTabRoute(),
         WeatherTabRoute(),
-        SpecialTabRoute(),
         MapRouteListRoute(),
       ],
       resizeToAvoidBottomInset: true,

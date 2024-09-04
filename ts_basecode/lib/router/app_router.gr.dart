@@ -32,12 +32,6 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const CalendarScreen(),
       );
     },
-    CalendarSpecialEventListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CalendarSpecialEventListScreen(),
-      );
-    },
     CalendarTabRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -99,12 +93,6 @@ abstract class _$AppRouter extends RootStackRouter {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const OnboardingScreen(),
-      );
-    },
-    SpecialTabRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SpecialTabPage(),
       );
     },
     SplashRoute.name: (routeData) {
@@ -182,20 +170,6 @@ class CalendarRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'CalendarRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [CalendarSpecialEventListScreen]
-class CalendarSpecialEventListRoute extends PageRouteInfo<void> {
-  const CalendarSpecialEventListRoute({List<PageRouteInfo>? children})
-      : super(
-          CalendarSpecialEventListRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CalendarSpecialEventListRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -375,20 +349,6 @@ class OnboardingRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'OnboardingRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [SpecialTabPage]
-class SpecialTabRoute extends PageRouteInfo<void> {
-  const SpecialTabRoute({List<PageRouteInfo>? children})
-      : super(
-          SpecialTabRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'SpecialTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

@@ -25,7 +25,6 @@ class CalendarDateEventEditViewModel
       textEditController: TextEditingController(text: event?.description ?? ''),
       eventTime: TimeOfDay.fromDateTime(event?.createdTime ?? DateTime.now()),
       eventDate: event?.createdTime ?? DateTime.now(),
-      isSpecialEvent: event?.isSpecial ?? 0,
     );
   }
 
@@ -38,12 +37,6 @@ class CalendarDateEventEditViewModel
   void updateEventDate(DateTime dateTime) {
     state = state.copyWith(
       eventDate: dateTime,
-    );
-  }
-
-  void toggleSpecialEvent() {
-    state = state.copyWith(
-      isSpecialEvent: state.isSpecialEvent == 1 ? 0 : 1,
     );
   }
 
@@ -63,7 +56,6 @@ class CalendarDateEventEditViewModel
         selectedTime.minute,
       ),
       description: description,
-      isSpecial: state.isSpecialEvent,
     );
     await sqfliteManager.update(event);
   }
@@ -82,7 +74,6 @@ class CalendarDateEventEditViewModel
       ),
       distance: 0,
       description: description,
-      isSpecial: state.isSpecialEvent,
     );
     await sqfliteManager.insert(event);
   }

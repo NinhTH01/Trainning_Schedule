@@ -6,7 +6,6 @@ enum MainTab {
   calendar,
   map,
   weather,
-  special,
   route,
 }
 
@@ -19,8 +18,6 @@ extension MainTabExtension on MainTab {
         return TextConstants.map;
       case MainTab.weather:
         return TextConstants.weather;
-      case MainTab.special:
-        return TextConstants.special;
       case MainTab.route:
         return TextConstants.route;
     }
@@ -34,8 +31,6 @@ extension MainTabExtension on MainTab {
         return const Icon(Icons.map_outlined);
       case MainTab.weather:
         return const Icon(Icons.cloud_outlined);
-      case MainTab.special:
-        return const Icon(Icons.star_outline);
       case MainTab.route:
         return const Icon(Icons.route_outlined);
     }
@@ -56,11 +51,6 @@ extension MainTabExtension on MainTab {
       case MainTab.weather:
         return const Icon(
           Icons.cloud,
-          color: ColorName.blue,
-        );
-      case MainTab.special:
-        return const Icon(
-          Icons.star,
           color: ColorName.blue,
         );
       case MainTab.route:

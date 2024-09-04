@@ -99,6 +99,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   }
 
   Future<void> _handleListenProvider() async {
+    print(3);
     try {
       if (state.isRunning) {
         await viewModel.addEventToDatabase();
@@ -122,6 +123,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
       }
       viewModel.toggleRunning();
     } catch (e) {
+      print(e);
       handleError(e);
     }
   }
@@ -268,6 +270,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             ),
             onPressed: () async {
               if (state.isRunning) {
+                print(0);
                 viewModel.setupRunningStatusInGlobal(false);
               } else {
                 viewModel.toggleRunning();
@@ -304,6 +307,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
         globalRunningStatusManagerProvider.select((state) => state.isRunning),
         (prev, next) async {
       if (next == false) {
+        print(1);
         _handleListenProvider();
       }
     });
