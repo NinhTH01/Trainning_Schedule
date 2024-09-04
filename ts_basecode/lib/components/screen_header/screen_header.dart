@@ -25,7 +25,9 @@ class ScreenHeader extends StatelessWidget {
                 onPressed: onBack,
                 icon: const Icon(Icons.arrow_back_ios),
               )
-            : const SizedBox(),
+            : const SizedBox(
+                width: 32,
+              ),
         Expanded(
           child: Text(
             style: AppTextStyles.s16w700,

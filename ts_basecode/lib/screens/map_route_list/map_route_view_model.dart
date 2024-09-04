@@ -16,9 +16,47 @@ class MapRouteViewModel extends BaseViewModel<MapRouteState> {
 
   Future<void> getMapRouteList() async {
     List<MapRouteModel> mapRouteList = await sqfliteManager.getListRoute();
-
     state = state.copyWith(
       mapRouteList: mapRouteList,
     );
+  }
+
+  void handleEdit() {
+    if (state.isEditing) {
+      _updateDatabaseOrder();
+    }
+    state = state.copyWith(
+      isEditing: !state.isEditing,
+    );
+  }
+
+  void handleReorder(
+    int oldIndex,
+    int newIndex,
+  ) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final List<MapRouteModel> mapRouteList = [...state.mapRouteList];
+    final item = mapRouteList.removeAt(oldIndex);
+    mapRouteList.insert(newIndex, item);
+    state = state.copyWith(
+      mapRouteList: mapRouteList,
+    );
+  }
+
+  Future<void> _updateDatabaseOrder() async {
+    final List<MapRouteModel> mapRouteList = state.mapRouteList;
+
+    for (var i = 0; i < mapRouteList.length; i++) {
+      MapRouteModel orderedItem = mapRouteList[i];
+
+      if (orderedItem.id != null) {
+        await sqfliteManager.updateMapRouteListOrder(
+          newOrderIndex: mapRouteList.length - i - 1,
+          id: orderedItem.id!,
+        );
+      }
+    }
   }
 }

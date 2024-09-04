@@ -32,6 +32,7 @@ class SqfliteManager {
     const textType = 'TEXT NOT NULL';
     const doubleType = 'REAL NOT NULL';
     const notNullTextType = 'TEXT NOT NULL';
+    const intType = 'INTEGER NOT NULL';
 
     await db.execute('''
       CREATE TABLE $tableEvents ( 
@@ -47,7 +48,8 @@ class SqfliteManager {
         ${MapRouteFields.id} $idType, 
         ${MapRouteFields.name} $textType,
         ${MapRouteFields.description} $textType,
-        ${MapRouteFields.markers} $textType
+        ${MapRouteFields.markers} $textType,
+        ${MapRouteFields.orderIndex} $intType
       )
  ''');
   }
@@ -128,6 +130,8 @@ class SqfliteManager {
   }) async {
     final db = await database;
 
+    var list = await getListRoute();
+
     String serializedCoordinates =
         jsonEncode(coordinates.map((e) => e.toJson()).toList());
 
@@ -135,6 +139,8 @@ class SqfliteManager {
       tableMapRoute,
       {
         ...mapRoute.toJson(),
+        MapRouteFields.orderIndex:
+            list.isNotEmpty ? list[0].orderIndex! + 1 : list.length,
         MapRouteFields.markers: serializedCoordinates,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -174,7 +180,7 @@ class SqfliteManager {
   Future<List<MapRouteModel>> getListRoute() async {
     final db = await database;
 
-    const orderBy = '${EventFields.id} ASC';
+    const orderBy = '${MapRouteFields.orderIndex} DESC';
     final result = await db.query(tableMapRoute, orderBy: orderBy);
 
     if (result.isNotEmpty) {
@@ -184,6 +190,7 @@ class SqfliteManager {
             id: map[MapRouteFields.id] as int,
             name: map[MapRouteFields.name] as String,
             description: map[MapRouteFields.description] as String,
+            orderIndex: map[MapRouteFields.orderIndex] as int,
             markerLocations: (jsonDecode(map[MapRouteFields.markers] as String)
                     as List<dynamic>)
                 .map(
@@ -195,5 +202,56 @@ class SqfliteManager {
     }
 
     return [];
+  }
+
+  Future<void> updateMapRouteListOrder({
+    required int id,
+    required int newOrderIndex,
+  }) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      tableMapRoute,
+      where: '${MapRouteFields.id} = ?',
+      whereArgs: [id],
+    );
+
+    if (result.isNotEmpty) {
+      MapRouteModel item = result
+          .map(
+            (map) => MapRouteModel(
+              id: map[MapRouteFields.id] as int,
+              name: map[MapRouteFields.name] as String,
+              description: map[MapRouteFields.description] as String,
+              orderIndex: map[MapRouteFields.orderIndex] as int,
+              markerLocations:
+                  (jsonDecode(map[MapRouteFields.markers] as String)
+                          as List<dynamic>)
+                      .map((json) =>
+                          Coordinate.fromJson(json as Map<String, dynamic>))
+                      .toList(),
+            ),
+          )
+          .toList()[0];
+
+      String serializedCoordinates =
+          jsonEncode(item.markerLocations?.map((e) => e.toJson()).toList());
+
+      MapRouteModel insertEvent = MapRouteModel(
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        orderIndex: newOrderIndex,
+      );
+
+      await db.update(
+        tableMapRoute,
+        {
+          ...insertEvent.toJson(),
+          MapRouteFields.markers: serializedCoordinates,
+        },
+        where: '${MapRouteFields.id} = ?',
+        whereArgs: [item.id],
+      );
+    }
   }
 }

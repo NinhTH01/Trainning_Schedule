@@ -10,6 +10,7 @@ class MapRouteFields {
   static const String name = 'name';
   static const String description = 'description';
   static const String markers = 'markerLocations';
+  static const String orderIndex = 'orderIndex';
 }
 
 @freezed
@@ -17,6 +18,7 @@ class MapRouteModel with _$MapRouteModel {
   const factory MapRouteModel({
     @JsonKey(name: MapRouteFields.id) int? id,
     @JsonKey(name: MapRouteFields.markers) List? markerLocations,
+    @JsonKey(name: MapRouteFields.orderIndex) int? orderIndex,
     String? name,
     String? description,
   }) = _MapRouteModel;

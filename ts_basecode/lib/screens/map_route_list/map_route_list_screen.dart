@@ -13,6 +13,7 @@ import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/map_route_list/components/map_route_item.dart';
 import 'package:ts_basecode/screens/map_route_list/map_route_state.dart';
 import 'package:ts_basecode/screens/map_route_list/map_route_view_model.dart';
+import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final _provider =
@@ -109,7 +110,15 @@ class _MapRouteListScreen
               onBack: () {
                 Navigator.pop(context);
               },
-              rightWidget: const SizedBox(),
+              rightWidget: TextButton(
+                onPressed: () {
+                  viewModel.handleEdit();
+                },
+                child: Text(
+                  state.isEditing ? TextConstants.save : TextConstants.edit,
+                  style: AppTextStyles.s14w400,
+                ),
+              ),
             ),
             Expanded(
                 child: RefreshIndicator(
@@ -117,10 +126,12 @@ class _MapRouteListScreen
                 ref.invalidate(_provider);
                 await viewModel.getMapRouteList();
               },
-              child: ListView.builder(
+              child: ReorderableListView.builder(
+                buildDefaultDragHandles: state.isEditing,
                 itemCount: state.mapRouteList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return MapRouteItem(
+                    key: Key('$index'),
                     mapRoute: state.mapRouteList[index],
                     onPress: () {
                       _handleGoToMapRouteEditScreen(
@@ -128,8 +139,10 @@ class _MapRouteListScreen
                         mapRoute: state.mapRouteList[index],
                       );
                     },
+                    isEditing: state.isEditing,
                   );
                 },
+                onReorder: viewModel.handleReorder,
               ),
             )),
           ],

@@ -7,6 +7,7 @@ part 'map_route_state.freezed.dart';
 class MapRouteState with _$MapRouteState {
   const factory MapRouteState({
     @Default([]) List<MapRouteModel> mapRouteList,
+    @Default(false) bool isEditing,
   }) = _MapRouteState;
 
   const MapRouteState._();

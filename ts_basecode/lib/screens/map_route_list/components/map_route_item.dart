@@ -8,11 +8,14 @@ class MapRouteItem extends StatelessWidget {
     super.key,
     required this.mapRoute,
     required this.onPress,
+    required this.isEditing,
   });
 
   final MapRouteModel mapRoute;
 
   final VoidCallback onPress;
+
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +73,17 @@ class MapRouteItem extends StatelessWidget {
                   ],
                 ),
               ),
+              isEditing
+                  ? const Row(
+                      children: [
+                        SizedBox(width: 20),
+                        Icon(
+                          Icons.menu,
+                          size: 16,
+                        ),
+                      ],
+                    )
+                  : const SizedBox()
             ],
           ),
         ),

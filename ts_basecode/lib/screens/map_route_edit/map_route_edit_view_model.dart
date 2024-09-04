@@ -88,10 +88,12 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
       return;
     } else {
       MapRouteModel mapRoute = MapRouteModel(
-          id: editMapRoute?.id,
-          name: nameController.text,
-          description: descriptionController.text,
-          markerLocations: []);
+        id: editMapRoute?.id,
+        name: nameController.text,
+        description: descriptionController.text,
+        markerLocations: [],
+        orderIndex: 0,
+      );
 
       List<Coordinate> list = state.markerLocationList.map((value) {
         return Coordinate(
@@ -101,12 +103,12 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
       }).toList();
 
       if (isEdit) {
-        sqfliteManager.updateRoute(
+        await sqfliteManager.updateRoute(
           coordinates: list,
           mapRoute: mapRoute,
         );
       } else {
-        sqfliteManager.insertRoute(
+        await sqfliteManager.insertRoute(
           coordinates: list,
           mapRoute: mapRoute,
         );
@@ -122,7 +124,7 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
       MapRouteModel mapRoute = MapRouteModel(
         id: editMapRoute?.id,
       );
-      sqfliteManager.deleteRoute(
+      await sqfliteManager.deleteRoute(
         mapRoute,
       );
     }
