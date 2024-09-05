@@ -265,9 +265,9 @@ class MapViewModel extends BaseViewModel<MapState> {
           }
         );
       }
-      throw GeneralException("Can't get the image.");
+      throw GeneralException(TextConstants.imageError);
     }
-    throw GeneralException("Can't get map controller.");
+    throw GeneralException(TextConstants.controllerNotFound);
   }
 
   /// Camera handle
@@ -342,11 +342,11 @@ class MapViewModel extends BaseViewModel<MapState> {
         await _googleMapController!.animateCamera(cameraUpdate);
       }
     } else {
-      throw GeneralException('Controller is null in set camera to polyline.');
+      throw GeneralException(TextConstants.controllerNotFound);
     }
   }
 
-  void _moveCamera() {
+  Future<void> _moveCamera() async {
     if (_googleMapController != null && state.currentPosition != null) {
       _googleMapController!.moveCamera(
         CameraUpdate.newCameraPosition(
@@ -357,12 +357,12 @@ class MapViewModel extends BaseViewModel<MapState> {
         ),
       );
     } else {
-      throw GeneralException('Controller is null in camera move.');
+      throw GeneralException(TextConstants.controllerOrPositionNull);
     }
   }
 
   void animatedCamera() {
-    if (_googleMapController != null) {
+    if (_googleMapController != null && state.currentPosition != null) {
       _googleMapController!.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
@@ -372,11 +372,11 @@ class MapViewModel extends BaseViewModel<MapState> {
         ),
       );
     } else {
-      throw GeneralException('Controller is null in camera move.');
+      throw GeneralException(TextConstants.controllerOrPositionNull);
     }
   }
 
-  void updateZoomMode() async {
+  Future<void> updateZoomMode() async {
     ZoomMode newZoomMode;
     double newZoomValue = state.zoomValue;
 
@@ -388,7 +388,7 @@ class MapViewModel extends BaseViewModel<MapState> {
           zoomValue: defaultCameraZoom,
           zoomMode: newZoomMode,
         );
-        _moveCamera();
+        await _moveCamera();
 
       case ZoomMode.normal:
         newZoomMode = ZoomMode.marker;
@@ -437,7 +437,7 @@ class MapViewModel extends BaseViewModel<MapState> {
             zoomValue: defaultCameraZoom,
             zoomMode: newZoomMode,
           );
-          _moveCamera();
+          await _moveCamera();
         }
     }
   }

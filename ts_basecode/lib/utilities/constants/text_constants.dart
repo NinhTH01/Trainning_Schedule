@@ -106,4 +106,11 @@ class TextConstants {
 
   static const confirmToAddRoute =
       'Adding route markers will delete all current marker on the map.';
+
+  static const imageError = "Can't get the image.";
+
+  static const controllerNotFound = "Can't get map controller.";
+
+  static const controllerOrPositionNull =
+      "Controller or currentPosition is null in camera move.";
 }

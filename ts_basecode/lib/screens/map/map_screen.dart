@@ -267,8 +267,12 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(24),
             ),
-            onPressed: () {
-              viewModel.updateZoomMode();
+            onPressed: () async {
+              try {
+                await viewModel.updateZoomMode();
+              } catch (e) {
+                handleError(e);
+              }
             },
             child: Icon(
               _buildZoomIcon(),
@@ -299,7 +303,11 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
                 padding: const EdgeInsets.all(24),
               ),
               onPressed: () async {
-                viewModel.animatedCamera();
+                try {
+                  viewModel.animatedCamera();
+                } catch (e) {
+                  handleError(e);
+                }
               },
               child: const Icon(
                 Icons.my_location_outlined,
