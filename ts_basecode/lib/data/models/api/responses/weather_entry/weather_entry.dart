@@ -18,7 +18,7 @@ class WeatherEntry with _$WeatherEntry {
     Wind? wind,
     Rain? rain,
     Clouds? clouds,
-    int? dt,
+    @JsonKey(name: 'dt') int? dateTime,
     Sys? sys,
     dynamic pop,
     String? dtTxt,

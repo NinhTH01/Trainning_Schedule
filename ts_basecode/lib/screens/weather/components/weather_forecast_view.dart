@@ -50,8 +50,9 @@ class WeatherForecastView extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        weatherForecastItem?.dt != null
-                            ? WeatherHelper.unixToHH(weatherForecastItem!.dt!)
+                        weatherForecastItem?.dateTime != null
+                            ? WeatherHelper.unixToHH(
+                                weatherForecastItem!.dateTime!)
                             : '_',
                         style: AppTextStyles.s12w700.copyWith(
                           color: ColorName.white,
