@@ -86,13 +86,10 @@ class SqfliteManager {
   }
 
   Future<List<Event>> getList() async {
-    // Get a reference to the database.
     final db = await database;
 
     const orderBy = '${EventFields.time} ASC';
-    // Query the table for all the dogs.
     final result = await db.query(tableEvents, orderBy: orderBy);
-    // Convert the list of each dog's fields into a list of `Dog` objects.
     return result.map(Event.fromJson).toList();
   }
 
@@ -100,9 +97,7 @@ class SqfliteManager {
     DateTime date, {
     String orderBy = 'ASC',
   }) async {
-    // Get a reference to the database.
     final db = await database;
-    // const orderBy = '${EventFields.time} ${orderBy}';
 
     var startDate = DateTime(date.year, date.month, date.day);
     var endDate = DateTime(date.year, date.month, date.day + 1);
@@ -112,7 +107,6 @@ class SqfliteManager {
         DateFormat(AppConstants.yyyyMMddHHmmssFormat).format(startDate);
     var formattedEndDate =
         DateFormat(AppConstants.yyyyMMddHHmmssFormat).format(endDate);
-    // Query the table for all the dogs.
     final result = await db.query(
       tableEvents,
       where: 'time BETWEEN ? AND ?',
@@ -120,7 +114,6 @@ class SqfliteManager {
       orderBy: '${EventFields.time} $orderBy',
     );
 
-    // Convert the list of each dog's fields into a list of `Dog` objects.
     return result.map(Event.fromJson).toList();
   }
 

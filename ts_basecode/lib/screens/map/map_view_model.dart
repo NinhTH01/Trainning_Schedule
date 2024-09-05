@@ -399,7 +399,7 @@ class MapViewModel extends BaseViewModel<MapState> {
           if (bounds != null) {
             var cameraUpdate =
                 CameraUpdate.newLatLngBounds(bounds, cameraPadding);
-            _googleMapController!.moveCamera(cameraUpdate).then((_) async {
+            _googleMapController!.animateCamera(cameraUpdate).then((_) async {
               newZoomValue = await _googleMapController!.getZoomLevel();
               state = state.copyWith(
                 zoomValue: newZoomValue,
@@ -423,7 +423,7 @@ class MapViewModel extends BaseViewModel<MapState> {
           if (bounds != null) {
             var cameraUpdate =
                 CameraUpdate.newLatLngBounds(bounds, cameraPadding);
-            _googleMapController!.moveCamera(cameraUpdate).then((_) async {
+            _googleMapController!.animateCamera(cameraUpdate).then((_) async {
               newZoomValue = await _googleMapController!.getZoomLevel();
               state = state.copyWith(
                 zoomValue: newZoomValue,
