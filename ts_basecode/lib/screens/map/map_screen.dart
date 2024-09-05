@@ -52,6 +52,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
       if (context.tabsRouter.activeIndex == 1) {
         await viewModel.getRouteMapList();
         try {
+          await viewModel.getLocationUpdate();
           await viewModel.checkAlwaysPermission();
         } catch (e) {
           handleError(e);
