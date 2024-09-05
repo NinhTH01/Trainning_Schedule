@@ -287,10 +287,14 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
               padding: const EdgeInsets.all(24),
             ),
             onPressed: () async {
-              if (state.isRunning) {
-                viewModel.setupRunningStatusInGlobal(false);
-              } else {
-                viewModel.toggleRunning();
+              try {
+                if (state.isRunning) {
+                  viewModel.setupRunningStatusInGlobal(false);
+                } else {
+                  await viewModel.toggleRunning();
+                }
+              } catch (e) {
+                handleError(e);
               }
             },
             child: Text(

@@ -176,6 +176,10 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   /// Action handle
   Future<void> toggleRunning() async {
+    if (state.currentPosition == null) {
+      throw GeneralException(TextConstants.currentPositionNull);
+    }
+
     final isRunning = state.isRunning;
 
     if (isRunning) {
@@ -587,6 +591,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
 
     /// Current Location Marker
+
     Marker currentMarker = Marker(
       markerId: const MarkerId('Id'),
       position: LatLng(
@@ -630,6 +635,10 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   void createUnfinishedMarker(LatLng location) {
+    if (state.currentPosition == null) {
+      return;
+    }
+
     var unfinishedMarkerList = List.from(state.unfinishedMarkersCoordinateList);
 
     _updateMarkersForMap(
@@ -638,6 +647,10 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   void createUnfinishedMarkerFromMapRoute(MapRouteModel mapRoute) {
+    if (state.currentPosition == null) {
+      return;
+    }
+
     List<LatLng> markerLocationList = mapRoute.markerLocations!.map((location) {
       return LatLng(
         location.latitude,

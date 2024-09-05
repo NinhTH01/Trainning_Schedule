@@ -113,4 +113,6 @@ class TextConstants {
 
   static const controllerOrPositionNull =
       "Controller or currentPosition is null in camera move.";
+
+  static const currentPositionNull = "CurrentPosition is null.";
 }
