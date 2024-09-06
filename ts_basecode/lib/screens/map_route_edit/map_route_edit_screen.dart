@@ -212,29 +212,11 @@ class _MapRouteEditScreen
                             textAlign: TextAlign.start,
                           ),
                         ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                viewModel.toggleEditingLocation();
-                              },
-                              icon: Icon(
-                                state.isEditingLocationOrder
-                                    ? Icons.check_circle_outline
-                                    : Icons.edit_note_outlined,
-                                color: state.isEditingLocationOrder
-                                    ? ColorName.blue
-                                    : ColorName.black,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                handleGoToMapScreen();
-                              },
-                              icon:
-                                  const Icon(Icons.add_circle_outline_outlined),
-                            )
-                          ],
+                        IconButton(
+                          onPressed: () {
+                            handleGoToMapScreen();
+                          },
+                          icon: const Icon(Icons.add_circle_outline_outlined),
                         ),
                       ],
                     ),
@@ -245,19 +227,16 @@ class _MapRouteEditScreen
                   ),
                   const SizedBox(height: 8),
                   Expanded(
-                    child: ReorderableListView.builder(
-                      buildDefaultDragHandles: state.isEditingLocationOrder,
+                    child: ListView.builder(
                       itemCount: state.markerLocationList.length,
                       padding: const EdgeInsets.only(bottom: 80),
                       itemBuilder: (BuildContext context, int index) {
                         return RouteItem(
                           key: Key('$index'),
                           name: index + 1,
-                          isEditing: state.isEditingLocationOrder,
                           location: state.markerLocationList[index],
                         );
                       },
-                      onReorder: viewModel.handleReorder,
                     ),
                   )
                 ],

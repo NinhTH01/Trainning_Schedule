@@ -8,12 +8,10 @@ class RouteItem extends StatelessWidget {
     super.key,
     required this.name,
     required this.location,
-    required this.isEditing,
   });
 
   final int name;
   final LatLng location;
-  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
@@ -49,19 +47,10 @@ class RouteItem extends StatelessWidget {
               child: Text(
                 "(${location.latitude}, ${location.longitude})",
                 style: AppTextStyles.s14w400,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            isEditing
-                ? const Row(
-                    children: [
-                      SizedBox(width: 20),
-                      Icon(
-                        Icons.menu,
-                        size: 16,
-                      ),
-                    ],
-                  )
-                : const SizedBox()
           ],
         ),
       ),

@@ -7,7 +7,6 @@ part 'map_route_edit_state.freezed.dart';
 class MapRouteEditState with _$MapRouteEditState {
   const factory MapRouteEditState({
     @Default([]) List<LatLng> markerLocationList,
-    @Default(false) bool isEditingLocationOrder,
     @Default(false) bool emptyNameValidate,
   }) = _MapRouteEditState;
 

@@ -50,29 +50,6 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
     );
   }
 
-  void toggleEditingLocation() {
-    state = state.copyWith(
-      isEditingLocationOrder: !state.isEditingLocationOrder,
-    );
-  }
-
-  void handleReorder(
-    int oldIndex,
-    int newIndex,
-  ) {
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
-    }
-    final List<LatLng> orderedMarkerLocationList = [
-      ...state.markerLocationList
-    ];
-    final item = orderedMarkerLocationList.removeAt(oldIndex);
-    orderedMarkerLocationList.insert(newIndex, item);
-    state = state.copyWith(
-      markerLocationList: orderedMarkerLocationList,
-    );
-  }
-
   void updateEmptyNameValidate(bool value) {
     state = state.copyWith(
       emptyNameValidate: value,
