@@ -21,18 +21,19 @@ class MapRouteItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: InkWell(
-        onTap: onPress,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            vertical: 8.0,
-            horizontal: 16.0,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: ColorName.grayF2F6FA,
-            border: Border.all(width: 0.5, color: ColorName.grayFFCCCCCC),
-          ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 16.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: ColorName.grayF2F6FA,
+          border: Border.all(width: 0.5, color: ColorName.grayFFCCCCCC),
+        ),
+        child: InkWell(
+          onTap: onPress,
+          hoverColor: ColorName.transparent,
           child: Row(
             children: [
               Expanded(

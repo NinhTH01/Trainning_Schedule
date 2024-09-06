@@ -117,6 +117,7 @@ class _MapRouteListScreen
             context.tabsRouter.setActiveIndex(1);
             viewModel.globalMapManager.toggleRunning();
           },
+          screenContext: context,
         ),
       ],
     );

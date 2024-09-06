@@ -11,19 +11,25 @@ class StatusView extends ConsumerWidget {
     required this.distance,
     required this.isVisible,
     required this.onPress,
+    required this.screenContext,
+    this.isIgnoreSafeArea = false,
   });
 
   final double distance;
   final bool isVisible;
   final Function() onPress;
+  final BuildContext screenContext;
+  final bool isIgnoreSafeArea;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topInset = MediaQuery.of(context).padding.top;
+    final topInset = MediaQuery.of(screenContext).padding.top;
+    final botInset = MediaQuery.of(screenContext).padding.bottom;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    const double viewSize = 140;
+    const double viewWidth = 140;
+    const double viewHeight = 60;
 
     final position = ref.watch(draggablePositionProvider);
 
@@ -32,15 +38,17 @@ class StatusView extends ConsumerWidget {
     } else {
       return Positioned(
         left: position.dx,
-        top: position.dy + topInset, // Adjust position by top inset
+        top: isIgnoreSafeArea ? position.dy + topInset : position.dy,
         child: GestureDetector(
           onPanUpdate: (details) {
             ref.read(draggablePositionProvider.notifier).updatePosition(
                   newPosition: position + details.delta,
                   screenWidth: screenWidth,
                   screenHeight: screenHeight,
-                  viewSize: viewSize,
+                  viewWidth: viewWidth,
+                  viewHeight: viewHeight,
                   topInset: topInset,
+                  bottomInset: botInset,
                 );
           },
           onPanEnd: (details) {
@@ -48,19 +56,24 @@ class StatusView extends ConsumerWidget {
                   position: position,
                   screenWidth: screenWidth,
                   screenHeight: screenHeight,
-                  viewSize: viewSize,
+                  viewWidth: viewWidth,
+                  viewHeight: viewHeight,
                   topInset: topInset,
+                  bottomInset: botInset,
                 );
           },
           child: Container(
-              width: viewSize,
+              height: viewHeight,
+              width: viewWidth,
               decoration: BoxDecoration(
                 color: ColorName.white,
                 borderRadius: _calculateBorderRadius(
                   position: position,
                   topInset: topInset,
-                  viewSize: viewSize,
+                  viewWidth: viewWidth,
+                  viewHeight: viewHeight,
                   screenWidth: screenWidth,
+                  screenHeight: screenHeight,
                 ), // Adjust corner radius
                 border: Border.all(color: ColorName.black, width: 0.4),
               ),
@@ -117,23 +130,29 @@ class StatusView extends ConsumerWidget {
   BorderRadius _calculateBorderRadius({
     required Offset position,
     required double topInset,
-    required double viewSize,
+    required double viewWidth,
+    required double viewHeight,
     required double screenWidth,
+    required double screenHeight,
   }) {
     const double radius = 20.0;
     const double snapThreshold = 20.0;
 
     bool nearLeft = position.dx <= snapThreshold;
-    bool nearRight = position.dx >= screenWidth - viewSize - snapThreshold;
+    bool nearRight = position.dx >= screenWidth - viewWidth - snapThreshold;
     bool nearTop = position.dy <= snapThreshold + topInset;
+    bool nearBottom = position.dy >=
+        screenHeight - snapThreshold - topInset - tabBarHeight - viewHeight;
 
     return BorderRadius.only(
       topLeft:
           nearLeft || nearTop ? Radius.zero : const Radius.circular(radius),
       topRight:
           nearRight || nearTop ? Radius.zero : const Radius.circular(radius),
-      bottomLeft: nearLeft ? Radius.zero : const Radius.circular(radius),
-      bottomRight: nearRight ? Radius.zero : const Radius.circular(radius),
+      bottomLeft:
+          nearLeft || nearBottom ? Radius.zero : const Radius.circular(radius),
+      bottomRight:
+          nearRight || nearBottom ? Radius.zero : const Radius.circular(radius),
     );
   }
 }

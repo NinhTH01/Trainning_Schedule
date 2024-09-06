@@ -266,6 +266,7 @@ class _MapRouteEditScreen
           ],
         ),
         StatusView(
+          screenContext: context,
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,
           onPress: () async {

@@ -148,6 +148,7 @@ class _MapRouteListScreen
           ],
         ),
         StatusView(
+          screenContext: context,
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,
           onPress: () async {

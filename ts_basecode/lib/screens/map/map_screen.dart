@@ -373,6 +373,8 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
           onPress: () async {
             viewModel.globalMapManager.toggleRunning();
           },
+          screenContext: context,
+          isIgnoreSafeArea: true,
         )
       ],
     );

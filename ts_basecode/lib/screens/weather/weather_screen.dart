@@ -399,6 +399,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
             context.tabsRouter.setActiveIndex(1);
             viewModel.globalMapManager.toggleRunning();
           },
+          screenContext: context,
+          isIgnoreSafeArea: true,
         ),
       ],
     );

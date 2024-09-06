@@ -207,6 +207,7 @@ class _CalendarViewState
           ],
         ),
         StatusView(
+          screenContext: context,
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,
           onPress: () async {

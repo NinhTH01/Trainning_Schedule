@@ -235,6 +235,7 @@ class _CalendarDateEventEditState extends BaseViewState<
           ],
         ),
         StatusView(
+          screenContext: context,
           isVisible: globalMapState.isRunning,
           distance: globalMapState.totalDistance,
           onPress: () async {

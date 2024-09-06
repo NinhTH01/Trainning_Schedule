@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Define a state notifier for managing the position
+const tabBarHeight = 80;
+
 class DraggablePositionNotifier extends StateNotifier<Offset> {
   DraggablePositionNotifier() : super(Offset.zero);
 
@@ -10,15 +11,20 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
     required Offset newPosition,
     required double screenWidth,
     required double screenHeight,
-    required double viewSize,
+    required double viewWidth,
+    required double viewHeight,
     required double topInset,
+    required double bottomInset,
   }) {
     double x = newPosition.dx;
     double y = newPosition.dy;
 
     // Clamp position within screen boundaries, considering the top inset
-    x = x.clamp(0.0, screenWidth - viewSize);
-    y = y.clamp(0, screenHeight - viewSize - 50);
+    x = x.clamp(0.0, screenWidth - viewWidth);
+    y = y.clamp(
+      0,
+      screenHeight - topInset - viewHeight - bottomInset - tabBarHeight,
+    );
 
     state = Offset(x, y);
   }
@@ -27,8 +33,10 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
     required Offset position,
     required double screenWidth,
     required double screenHeight,
-    required double viewSize,
+    required double viewWidth,
+    required double viewHeight,
     required double topInset,
+    required double bottomInset,
   }) {
     const double snapThreshold = 20.0;
 
@@ -37,14 +45,20 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
 
     if (x <= snapThreshold) {
       x = 0;
-    } else if (x >= screenWidth - viewSize - snapThreshold) {
-      x = screenWidth - viewSize;
+    } else if (x >= screenWidth - viewWidth - snapThreshold) {
+      x = screenWidth - viewWidth;
     }
 
-    if (y <= snapThreshold + topInset) {
+    if (y <= snapThreshold) {
       y = 0;
-    } else if (y >= screenHeight - viewSize - snapThreshold - topInset) {
-      y = screenHeight - viewSize - topInset;
+    } else if (y >=
+        screenHeight -
+            viewHeight -
+            tabBarHeight -
+            snapThreshold -
+            topInset -
+            bottomInset) {
+      y = screenHeight - viewHeight - tabBarHeight - topInset - bottomInset;
     }
 
     state = Offset(x, y);
