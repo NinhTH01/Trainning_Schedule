@@ -140,7 +140,7 @@ class StatusView extends ConsumerWidget {
 
     bool nearLeft = position.dx <= snapThreshold;
     bool nearRight = position.dx >= screenWidth - viewWidth - snapThreshold;
-    bool nearTop = position.dy <= snapThreshold + topInset;
+    bool nearTop = position.dy <= snapThreshold;
     bool nearBottom = position.dy >=
         screenHeight - snapThreshold - topInset - tabBarHeight - viewHeight;
 

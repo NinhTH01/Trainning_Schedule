@@ -144,7 +144,7 @@ class _CalendarViewState
             const SizedBox(height: 24),
             state.eventDateList.isNotEmpty
                 ? SizedBox(
-                    height: width * state.columnNum / 7,
+                    height: width * state.columnNum / 7 - 10,
                     child: calendarBody(
                         numOfCalendarColumn: state.columnNum,
                         dateList: state.eventDateList,
