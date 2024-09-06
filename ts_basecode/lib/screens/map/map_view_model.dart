@@ -219,7 +219,7 @@ class MapViewModel extends BaseViewModel<MapState> {
           'You have run ${state.totalDistance.toStringAsFixed(2)} meters.',
     );
 
-    await sqfliteManager.insert(event);
+    await sqfliteManager.insertEvent(event);
   }
 
   void _showNotification() {
@@ -486,7 +486,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   Future<(bool achieved, double totalDistance)>
       checkAndCalculateToShowAchievement() async {
-    List<Event> eventList = await sqfliteManager.getList();
+    List<Event> eventList = await sqfliteManager.getListEvent();
 
     double totalDistance = 0.0;
 

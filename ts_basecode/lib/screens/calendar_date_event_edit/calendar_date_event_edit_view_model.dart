@@ -65,7 +65,7 @@ class CalendarDateEventEditViewModel
       ),
       description: description,
     );
-    await sqfliteManager.update(event);
+    await sqfliteManager.updateEvent(event);
   }
 
   Future<void> addEvent() async {
@@ -83,7 +83,7 @@ class CalendarDateEventEditViewModel
       distance: 0,
       description: description,
     );
-    await sqfliteManager.insert(event);
+    await sqfliteManager.insertEvent(event);
   }
 
   Future<void> deleteEvent({
@@ -91,7 +91,7 @@ class CalendarDateEventEditViewModel
     required Function() goBack,
   }) async {
     if (eventInfo != null) {
-      await sqfliteManager.delete(eventInfo);
+      await sqfliteManager.deleteEvent(eventInfo);
       goBack();
     }
   }

@@ -54,7 +54,7 @@ class SqfliteManager {
  ''');
   }
 
-  Future<void> insert(Event event) async {
+  Future<void> insertEvent(Event event) async {
     final db = await database;
 
     await db.insert(
@@ -64,7 +64,7 @@ class SqfliteManager {
     );
   }
 
-  Future<void> update(Event event) async {
+  Future<void> updateEvent(Event event) async {
     final db = await database;
 
     await db.update(
@@ -75,7 +75,7 @@ class SqfliteManager {
     );
   }
 
-  Future<void> delete(Event event) async {
+  Future<void> deleteEvent(Event event) async {
     final db = await database;
 
     await db.delete(
@@ -85,7 +85,7 @@ class SqfliteManager {
     );
   }
 
-  Future<List<Event>> getList() async {
+  Future<List<Event>> getListEvent() async {
     final db = await database;
 
     const orderBy = '${EventFields.time} ASC';
@@ -93,7 +93,7 @@ class SqfliteManager {
     return result.map(Event.fromJson).toList();
   }
 
-  Future<List<Event>> getListOnDate(
+  Future<List<Event>> getListEventOnDate(
     DateTime date, {
     String orderBy = 'ASC',
   }) async {

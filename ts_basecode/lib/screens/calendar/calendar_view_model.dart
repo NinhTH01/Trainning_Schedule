@@ -113,7 +113,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
     required int columnNum,
   }) async {
     if (defaultDateList.isNotEmpty) {
-      final eventList = await sqfliteManager.getList();
+      final eventList = await sqfliteManager.getListEvent();
 
       final eventDateInfoList = <EventDateInfo>[];
 
@@ -151,7 +151,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   }
 
   Future<void> _getDateEventList(DateTime date) async {
-    List<Event> eventList = await sqfliteManager.getListOnDate(date);
+    List<Event> eventList = await sqfliteManager.getListEventOnDate(date);
     state = state.copyWith(
       eventList: eventList,
       selectedDate: date,

@@ -6,7 +6,7 @@ class TextConstants {
   static const map = "Map";
   static const weather = "Weather";
   static const special = "Special";
-  static const route = 'Route';
+  static const route = 'Place';
 
   /// Splash Screen
   static const appName = "Training Schedule";
@@ -28,7 +28,7 @@ class TextConstants {
   static const mapStart = 'Start';
   static const mapStop = 'Stop';
   static const close = 'Close';
-  static const addRoute = 'Add route';
+  static const addRoute = 'Add Place';
 
   /// Calendar Screen
   static const weekday_1 = 'Mon';
@@ -91,11 +91,11 @@ class TextConstants {
 
   static const specialEvent = 'Special Event';
 
-  static const mapRouteList = 'Map Route List';
+  static const mapRouteList = 'Map Place List';
 
-  static const mapRouteEdit = 'Edit Map Route';
+  static const mapRouteEdit = 'Edit Map Place';
 
-  static const mapRouteCreate = 'Create Map Route';
+  static const mapRouteCreate = 'Create Map Place';
 
   static const noWeatherData =
       "Can't get the weather forecast data, please try again!";
@@ -105,7 +105,7 @@ class TextConstants {
   static const emptyDescriptionValidate = "Event Description Can't Be Empty";
 
   static const confirmToAddRoute =
-      'Adding route markers will delete all current marker on the map.';
+      'Adding place markers will delete all current marker on the map.';
 
   static const imageError = "Can't get the image.";
 
