@@ -8,11 +8,12 @@ import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
+import 'package:ts_basecode/data/providers/event_repository_provider.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
-import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
-import 'package:ts_basecode/data/providers/sqflite_provider.dart';
+import 'package:ts_basecode/data/providers/map_route_repository_provider.dart';
+import 'package:ts_basecode/data/providers/shared_preferences_repository_provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
@@ -28,8 +29,10 @@ final _provider =
           ref: ref,
           geolocatorManager: ref.watch(geolocatorProvider),
           localNotificationManager: ref.watch(localNotificationProvider),
-          sqfliteManager: ref.watch(sqfliteProvider),
-          sharedPreferencesManager: ref.watch(sharedPreferenceProvider),
+          mapRouteRepository: ref.watch(mapRouteRepositoryProvider),
+          sharedPreferencesRepository:
+              ref.watch(sharedPreferencesRepositoryProvider),
+          eventRepository: ref.watch(eventRepositoryProvider),
           globalMapManager:
               ref.watch(globalRunningStatusManagerProvider.notifier),
         ));

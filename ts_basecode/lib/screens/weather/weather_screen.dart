@@ -7,7 +7,7 @@ import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
-import 'package:ts_basecode/data/providers/weather_repository.provider.dart';
+import 'package:ts_basecode/data/providers/weather_repository_provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';

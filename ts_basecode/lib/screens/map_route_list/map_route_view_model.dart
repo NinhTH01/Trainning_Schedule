@@ -1,21 +1,21 @@
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
+import 'package:ts_basecode/data/repositories/storage/map_route/map_route_repository.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
-import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/map_route_list/map_route_state.dart';
 
 class MapRouteViewModel extends BaseViewModel<MapRouteState> {
   MapRouteViewModel({
     required this.globalMapManager,
-    required this.sqfliteManager,
+    required this.mapRouteRepository,
   }) : super(const MapRouteState());
 
   final GlobalRunningStatusManager globalMapManager;
 
-  final SqfliteManager sqfliteManager;
+  final MapRouteRepository mapRouteRepository;
 
   Future<void> getMapRouteList() async {
-    List<MapRouteModel> mapRouteList = await sqfliteManager.getListRoute();
+    List<MapRouteModel> mapRouteList = await mapRouteRepository.getList();
     state = state.copyWith(
       mapRouteList: mapRouteList,
     );
@@ -52,7 +52,7 @@ class MapRouteViewModel extends BaseViewModel<MapRouteState> {
       MapRouteModel orderedItem = mapRouteList[i];
 
       if (orderedItem.id != null) {
-        await sqfliteManager.updateMapRouteListOrder(
+        await mapRouteRepository.updateListOrder(
           newOrderIndex: mapRouteList.length - i - 1,
           id: orderedItem.id!,
         );

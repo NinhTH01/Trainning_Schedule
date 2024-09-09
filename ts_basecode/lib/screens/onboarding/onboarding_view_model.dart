@@ -1,19 +1,19 @@
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
-import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
+import 'package:ts_basecode/data/repositories/storage/shared_preferences/shared_preferences_repository.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 
 class OnboardingViewModel extends BaseViewModel<OnboardingState> {
   OnboardingViewModel({
-    required this.sharedPreferencesManager,
+    required this.sharedPreferencesRepository,
   }) : super(const OnboardingState());
 
-  final SharedPreferencesManager sharedPreferencesManager;
+  final SharedPreferencesRepository sharedPreferencesRepository;
 
   void setCurrentPageIndex(int index) {
     state = state.copyWith(currentPageIndex: index);
   }
 
   Future<void> setOnboardingValue(bool value) async {
-    await sharedPreferencesManager.setOnboarding(value: value);
+    await sharedPreferencesRepository.setOnboarding(value: value);
   }
 }

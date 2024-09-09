@@ -7,8 +7,8 @@ import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
 import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/providers/event_repository_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
-import 'package:ts_basecode/data/providers/sqflite_provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
@@ -22,7 +22,7 @@ final _provider = StateNotifierProvider.autoDispose<
     CalendarDateEventEditViewModel, CalendarDateEventEditState>(
   (ref) => CalendarDateEventEditViewModel(
     ref: ref,
-    sqfliteManager: ref.watch(sqfliteProvider),
+    eventRepository: ref.watch(eventRepositoryProvider),
     globalMapManager: ref.watch(globalRunningStatusManagerProvider.notifier),
   ),
 );

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
-import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
+import 'package:ts_basecode/data/providers/shared_preferences_repository_provider.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_state.dart';
 import 'package:ts_basecode/screens/onboarding/onboarding_view_model.dart';
@@ -13,7 +13,8 @@ import 'package:ts_basecode/utilities/constants/text_constants.dart';
 final _provider =
     StateNotifierProvider.autoDispose<OnboardingViewModel, OnboardingState>(
   (ref) => OnboardingViewModel(
-      sharedPreferencesManager: ref.watch(sharedPreferenceProvider)),
+      sharedPreferencesRepository:
+          ref.watch(sharedPreferencesRepositoryProvider)),
 );
 
 /// Screen code: A_01

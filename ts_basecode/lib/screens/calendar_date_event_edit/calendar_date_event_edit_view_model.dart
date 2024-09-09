@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/repositories/storage/event/event_repository.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
-import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar_date_event_edit/calendar_date_event_edit_state.dart';
 
 class CalendarDateEventEditViewModel
     extends BaseViewModel<CalendarDateEventEditState> {
   CalendarDateEventEditViewModel({
     required this.ref,
-    required this.sqfliteManager,
+    required this.eventRepository,
     required this.globalMapManager,
   }) : super(const CalendarDateEventEditState());
 
   final Ref ref;
 
-  final SqfliteManager sqfliteManager;
+  final EventRepository eventRepository;
 
   final GlobalRunningStatusManager globalMapManager;
 
@@ -69,7 +69,7 @@ class CalendarDateEventEditViewModel
       ),
       description: description,
     );
-    await sqfliteManager.updateEvent(event);
+    await eventRepository.update(event);
   }
 
   Future<void> addEvent() async {
@@ -91,7 +91,7 @@ class CalendarDateEventEditViewModel
       distance: 0,
       description: description,
     );
-    await sqfliteManager.insertEvent(event);
+    await eventRepository.insert(event);
   }
 
   Future<void> deleteEvent({
@@ -99,7 +99,7 @@ class CalendarDateEventEditViewModel
     required Function() goBack,
   }) async {
     if (eventInfo != null) {
-      await sqfliteManager.deleteEvent(eventInfo);
+      await eventRepository.delete(eventInfo);
       goBack();
     }
   }

@@ -3,19 +3,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/coordinate/coordinate.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
+import 'package:ts_basecode/data/repositories/storage/map_route/map_route_repository.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
-import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/map_route_edit/map_route_edit_state.dart';
 
 class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
   MapRouteEditViewModel({
     required this.globalMapManager,
-    required this.sqfliteManager,
+    required this.mapRouteRepository,
   }) : super(const MapRouteEditState());
 
   final GlobalRunningStatusManager globalMapManager;
 
-  final SqfliteManager sqfliteManager;
+  final MapRouteRepository mapRouteRepository;
 
   final double defaultCameraZoom = 16.0;
 
@@ -85,12 +85,12 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
       }).toList();
 
       if (isEdit) {
-        await sqfliteManager.updateRoute(
+        await mapRouteRepository.update(
           coordinates: list,
           mapRoute: mapRoute,
         );
       } else {
-        await sqfliteManager.insertRoute(
+        await mapRouteRepository.insert(
           coordinates: list,
           mapRoute: mapRoute,
         );
@@ -110,7 +110,7 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
       MapRouteModel mapRoute = MapRouteModel(
         id: editMapRoute.id,
       );
-      await sqfliteManager.deleteRoute(
+      await mapRouteRepository.delete(
         mapRoute,
       );
     }

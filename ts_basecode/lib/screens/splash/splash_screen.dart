@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/data/providers/local_notification_provider.dart';
-import 'package:ts_basecode/data/providers/shared_preference_provider.dart';
+import 'package:ts_basecode/data/providers/shared_preferences_repository_provider.dart';
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/splash/splash_view_model.dart';
@@ -12,7 +12,7 @@ import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 final _provider = StateNotifierProvider.autoDispose(
   (ref) => SplashViewModel(
-    sharedPreferencesManager: ref.watch(sharedPreferenceProvider),
+    sharedPreferencesRepository: ref.watch(sharedPreferencesRepositoryProvider),
     localNotificationManager: ref.watch(localNotificationProvider),
   ),
 );

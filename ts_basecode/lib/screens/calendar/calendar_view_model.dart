@@ -2,20 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
+import 'package:ts_basecode/data/repositories/storage/event/event_repository.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
-import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
 
 class CalendarViewModel extends BaseViewModel<CalendarState> {
   CalendarViewModel({
     required this.ref,
-    required this.sqfliteManager,
+    required this.eventRepository,
     required this.globalMapManager,
   }) : super(const CalendarState());
 
   final Ref ref;
 
-  final SqfliteManager sqfliteManager;
+  final EventRepository eventRepository;
 
   final GlobalRunningStatusManager globalMapManager;
 
@@ -119,7 +119,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
       return;
     }
 
-    final eventList = await sqfliteManager.getListEvent();
+    final eventList = await eventRepository.getList();
 
     final eventDateInfoList = <EventDateInfo>[];
 
@@ -155,7 +155,7 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   }
 
   Future<void> _getDateEventList(DateTime date) async {
-    List<Event> eventList = await sqfliteManager.getListEventOnDate(date);
+    List<Event> eventList = await eventRepository.getListOnDate(date);
     state = state.copyWith(
       eventList: eventList,
       selectedDate: date,

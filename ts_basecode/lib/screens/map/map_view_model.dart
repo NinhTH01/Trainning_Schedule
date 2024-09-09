@@ -11,11 +11,12 @@ import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/exception/general_exception/general_exception.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
+import 'package:ts_basecode/data/repositories/storage/event/event_repository.dart';
+import 'package:ts_basecode/data/repositories/storage/map_route/map_route_repository.dart';
+import 'package:ts_basecode/data/repositories/storage/shared_preferences/shared_preferences_repository.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
 import 'package:ts_basecode/data/services/local_notification_manager/local_notification_manager.dart';
-import 'package:ts_basecode/data/services/shared_preferences/shared_preferences_manager.dart';
-import 'package:ts_basecode/data/services/sqflite_manager/sqflite_manager.dart';
 import 'package:ts_basecode/resources/gen/assets.gen.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
@@ -28,9 +29,10 @@ class MapViewModel extends BaseViewModel<MapState> {
     required this.ref,
     required this.geolocatorManager,
     required this.localNotificationManager,
-    required this.sqfliteManager,
-    required this.sharedPreferencesManager,
+    required this.mapRouteRepository,
+    required this.sharedPreferencesRepository,
     required this.globalMapManager,
+    required this.eventRepository,
   }) : super(const MapState());
 
   final Ref ref;
@@ -39,9 +41,11 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final LocalNotificationManager localNotificationManager;
 
-  final SqfliteManager sqfliteManager;
+  final MapRouteRepository mapRouteRepository;
 
-  final SharedPreferencesManager sharedPreferencesManager;
+  final EventRepository eventRepository;
+
+  final SharedPreferencesRepository sharedPreferencesRepository;
 
   final GlobalRunningStatusManager globalMapManager;
 
@@ -82,7 +86,7 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> getRouteMapList() async {
-    mapRouteList = await sqfliteManager.getListRoute();
+    mapRouteList = await mapRouteRepository.getList();
   }
 
   Future<void> getLocationUpdate() async {
@@ -219,7 +223,7 @@ class MapViewModel extends BaseViewModel<MapState> {
           'You have run ${state.totalDistance.toStringAsFixed(2)} meters.',
     );
 
-    await sqfliteManager.insertEvent(event);
+    await eventRepository.insert(event);
   }
 
   void _showNotification() {
@@ -470,7 +474,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   Future<(bool achieved, double totalDistance)>
       checkAndCalculateToShowAchievement() async {
-    List<Event> eventList = await sqfliteManager.getListEvent();
+    List<Event> eventList = await eventRepository.getList();
 
     double totalDistance = 0.0;
 
@@ -478,9 +482,9 @@ class MapViewModel extends BaseViewModel<MapState> {
       totalDistance += item.distance ?? 0;
     }
 
-    final hasAchieved = await sharedPreferencesManager.getAchievement();
+    final hasAchieved = await sharedPreferencesRepository.getAchievement();
     if (!hasAchieved && totalDistance > 100.0) {
-      await sharedPreferencesManager.setAchievement(value: true);
+      await sharedPreferencesRepository.setAchievement(value: true);
       return (true, totalDistance);
     }
     return (false, 0.0);
