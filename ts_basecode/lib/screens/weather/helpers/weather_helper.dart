@@ -26,7 +26,7 @@ class WeatherHelper {
       case WeatherStatus.clear:
         return const Icon(Icons.wb_sunny, size: 20.0, color: Colors.yellow);
       case WeatherStatus.cloud:
-        return const Icon(Icons.cloud, size: 20.0, color: Colors.grey);
+        return const Icon(Icons.cloud, size: 20.0, color: Colors.white);
       case WeatherStatus.thunderstorm:
         return const Icon(Icons.flash_on, size: 20.0, color: Colors.orange);
       case WeatherStatus.rain:
