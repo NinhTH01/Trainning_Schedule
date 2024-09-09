@@ -1,23 +1,20 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/status_view/status_view_model.dart';
+import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
+import 'package:ts_basecode/screens/main/models/main_tab.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 
 class StatusView extends ConsumerWidget {
   const StatusView({
     super.key,
-    required this.distance,
-    required this.isVisible,
-    required this.onPress,
     required this.screenContext,
     this.viewHasSafeArea = false,
   });
 
-  final double distance;
-  final bool isVisible;
-  final Function() onPress;
   final BuildContext? screenContext;
   final bool viewHasSafeArea;
 
@@ -36,8 +33,12 @@ class StatusView extends ConsumerWidget {
     const double viewHeight = 60;
 
     final position = ref.watch(draggablePositionProvider);
+    final globalRunningStatusState =
+        ref.watch(globalRunningStatusManagerProvider);
+    final globalRunningStatusManager =
+        ref.watch(globalRunningStatusManagerProvider.notifier);
 
-    if (isVisible == false) {
+    if (globalRunningStatusState.isRunning == false) {
       return const SizedBox();
     } else {
       return Positioned(
@@ -91,7 +92,14 @@ class StatusView extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton(
-                      onPressed: onPress,
+                      onPressed: () {
+                        if (screenContext?.tabsRouter.activeIndex !=
+                            MainTab.map.index) {
+                          screenContext?.tabsRouter
+                              .setActiveIndex(MainTab.map.index);
+                        }
+                        globalRunningStatusManager.toggleRunning();
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
                         padding: const EdgeInsets.all(2.0),
@@ -109,7 +117,7 @@ class StatusView extends ConsumerWidget {
                           Icons.run_circle_outlined,
                         ),
                         Text(
-                          '~${formatDistance(distance)}',
+                          '~${formatDistance(globalRunningStatusState.totalDistance)}',
                           style: AppTextStyles.s12w500,
                         ),
                       ],

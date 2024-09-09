@@ -69,19 +69,6 @@ class _CalendarViewState
       ref.watch(globalRunningStatusManagerProvider);
 
   @override
-  void onStatusViewPressed() {
-    super.onStatusViewPressed();
-    context.tabsRouter.setActiveIndex(1);
-    viewModel.globalMapManager.toggleRunning();
-  }
-
-  @override
-  bool get isVisibleStatusView => globalMapState.isRunning;
-
-  @override
-  double get totalDistanceOfStatusView => globalMapState.totalDistance;
-
-  @override
   BuildContext get statusViewContext => context;
 
   Future<void> _onInitState() async {

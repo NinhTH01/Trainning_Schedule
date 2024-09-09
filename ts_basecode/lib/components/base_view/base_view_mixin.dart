@@ -22,10 +22,6 @@ mixin BaseViewMixin {
 
   BuildContext? get statusViewContext => null;
 
-  bool get isVisibleStatusView => false;
-
-  double get totalDistanceOfStatusView => 0.0;
-
   /// For iOS status bar
   Brightness? get statusBarBrightness => Brightness.light;
 
@@ -80,9 +76,6 @@ mixin BaseViewMixin {
                 : Stack(children: [
                     buildBody(context),
                     StatusView(
-                      isVisible: isVisibleStatusView,
-                      distance: totalDistanceOfStatusView,
-                      onPress: onStatusViewPressed,
                       screenContext: statusViewContext,
                       viewHasSafeArea: !ignoreSafeAreaTop,
                     )
@@ -97,8 +90,6 @@ mixin BaseViewMixin {
   }
 
   void onPopInvoked(bool didPop) {}
-
-  void onStatusViewPressed() {}
 
   void dismissKeyBoard(BuildContext context) {
     if (FocusScope.of(context).hasFocus) {

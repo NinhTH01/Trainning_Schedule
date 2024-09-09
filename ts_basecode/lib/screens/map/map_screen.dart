@@ -107,18 +107,6 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
   MapViewModel get viewModel => ref.read(_provider.notifier);
 
   @override
-  void onStatusViewPressed() {
-    super.onStatusViewPressed();
-    viewModel.globalMapManager.toggleRunning();
-  }
-
-  @override
-  bool get isVisibleStatusView => globalMapState.isRunning;
-
-  @override
-  double get totalDistanceOfStatusView => globalMapState.totalDistance;
-
-  @override
   BuildContext get statusViewContext => context;
 
   Future<void> _onInitState() async {

@@ -65,19 +65,6 @@ class _CalendarDateEventEditState extends BaseViewState<
   bool get ignoreSafeAreaTop => true;
 
   @override
-  void onStatusViewPressed() {
-    super.onStatusViewPressed();
-    context.tabsRouter.setActiveIndex(1);
-    viewModel.globalMapManager.toggleRunning();
-  }
-
-  @override
-  bool get isVisibleStatusView => globalMapState.isRunning;
-
-  @override
-  double get totalDistanceOfStatusView => globalMapState.totalDistance;
-
-  @override
   BuildContext get statusViewContext => context;
 
   @override
