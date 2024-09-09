@@ -31,7 +31,7 @@ class GeolocatorManager {
     return status;
   }
 
-  Future<void> checkPermissionForWeather() async {
+  Future<void> checkPermissionWithoutAlwaysRequired() async {
     PermissionStatus status = await Permission.locationWhenInUse.request();
 
     if (status.isGranted) {

@@ -52,10 +52,14 @@ class CalendarDateEventEditViewModel
     required bool isEdit,
     Event? eventInfo,
   }) async {
+    if (eventInfo == null || state.eventDate == null) {
+      return;
+    }
+
     final selectedTime = state.eventTime;
     final description = textController.text;
 
-    final event = eventInfo!.copyWith(
+    final event = eventInfo.copyWith(
       createdTime: DateTime(
         state.eventDate!.year,
         state.eventDate!.month,
@@ -69,6 +73,10 @@ class CalendarDateEventEditViewModel
   }
 
   Future<void> addEvent() async {
+    if (state.eventDate == null) {
+      return;
+    }
+
     final selectedTime = state.eventTime;
     final description = textController.text;
 

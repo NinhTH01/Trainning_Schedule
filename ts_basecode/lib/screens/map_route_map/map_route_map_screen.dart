@@ -42,7 +42,7 @@ class _MapRouteListScreen
   @override
   void onInitState() async {
     super.onInitState();
-    _onInitState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _onInitState());
   }
 
   Future<void> _onInitState() async {

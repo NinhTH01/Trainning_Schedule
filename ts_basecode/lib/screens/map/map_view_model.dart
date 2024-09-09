@@ -152,7 +152,7 @@ class MapViewModel extends BaseViewModel<MapState> {
     );
   }
 
-  Future<void> _handleRunningLogic(updatedLocation) async {
+  Future<void> _handleRunningLogic(LatLng updatedLocation) async {
     _calculateNewDistance(updatedLocation);
 
     _showNotification();
@@ -446,29 +446,13 @@ class MapViewModel extends BaseViewModel<MapState> {
     }
   }
 
-  // Future<void> _handleMarkerOutsideCamera() async {
-  //   if (_googleMapController == null) {
-  //     await Future.delayed(const Duration(seconds: 1));
-  //     _handleMarkerOutsideCamera();
-  //   }
-  //   final bounds = await _googleMapController!.getVisibleRegion();
-  //   final isInside =
-  //       bounds.northeast.latitude >= state.currentPosition!.latitude &&
-  //           bounds.southwest.latitude <= state.currentPosition!.latitude &&
-  //           bounds.northeast.longitude >= state.currentPosition!.longitude &&
-  //           bounds.southwest.longitude <= state.currentPosition!.longitude;
-  //   if (isInside == false) {
-  //     _moveCamera();
-  //   }
-  // }
-
   /// Distance handle
-  void _calculateNewDistance(newCoordinate) {
+  void _calculateNewDistance(LatLng newCoordinate) {
     LatLng? lastCoordinate = state.polylineCoordinateList.lastOrNull;
 
     if (lastCoordinate != null) {
       var distance = Geolocator.distanceBetween(
-        newCoordinate!.latitude,
+        newCoordinate.latitude,
         newCoordinate.longitude,
         lastCoordinate.latitude,
         lastCoordinate.longitude,

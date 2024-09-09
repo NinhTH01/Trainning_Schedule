@@ -6,8 +6,9 @@ import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/repositories/api/weather/weather_repository.dart';
 import 'package:ts_basecode/data/services/geolocator_manager/geolocator_manager.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_manager.dart';
-import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
+import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/weather/weather_state.dart';
+import 'package:ts_basecode/utilities/extensions/weather_status_extension.dart';
 
 class WeatherViewModel extends BaseViewModel<WeatherState> {
   WeatherViewModel({
@@ -26,7 +27,7 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
   final GeolocatorManager geolocatorManager;
 
   Future<void> initData() async {
-    await geolocatorManager.checkPermissionForWeather();
+    await geolocatorManager.checkPermissionWithoutAlwaysRequired();
     Position currentLocation = await geolocatorManager.getCurrentLocation();
     await Future.wait([
       _getWeather(currentLocation),
@@ -43,8 +44,11 @@ class WeatherViewModel extends BaseViewModel<WeatherState> {
     state = state.copyWith(
       currentWeather: weatherResponse,
       needRetry: false,
-      backgroundColor: WeatherHelper.getBackgroundColor(
-          weatherResponse.weatherDataList?[0].mainWeatherStatus),
+      backgroundColor:
+          weatherResponse.weatherDataList![0].mainWeatherStatus == null
+              ? ColorName.clearColor
+              : weatherResponse.weatherDataList![0].mainWeatherStatus!
+                  .getBackgroundColor(),
     );
   }
 

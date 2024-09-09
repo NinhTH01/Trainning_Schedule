@@ -36,9 +36,18 @@ class MapRouteMapViewModel extends BaseViewModel<MapRouteMapState> {
   }
 
   Future<LatLng> _getCurrentLocation() async {
-    await geolocatorManager.checkPermissionForWeather();
+    await geolocatorManager.checkPermissionWithoutAlwaysRequired();
     Position currentLocation = await geolocatorManager.getCurrentLocation();
 
+    _moveCamera(currentLocation);
+
+    return LatLng(
+      currentLocation.latitude,
+      currentLocation.longitude,
+    );
+  }
+
+  void _moveCamera(Position currentLocation) {
     if (_googleMapController != null) {
       _googleMapController!.moveCamera(
         CameraUpdate.newCameraPosition(
@@ -52,11 +61,6 @@ class MapRouteMapViewModel extends BaseViewModel<MapRouteMapState> {
         ),
       );
     }
-
-    return LatLng(
-      currentLocation.latitude,
-      currentLocation.longitude,
-    );
   }
 
   Future<Set<Marker>> addMarker(

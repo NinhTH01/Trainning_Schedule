@@ -5,6 +5,7 @@ import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
+import 'package:ts_basecode/utilities/extensions/weather_status_extension.dart';
 
 class WeatherForecastView extends StatelessWidget {
   const WeatherForecastView({
@@ -24,8 +25,10 @@ class WeatherForecastView extends StatelessWidget {
       margin: const EdgeInsets.all(16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: WeatherHelper.getBackgroundColor(
-            weather.weatherDataList?[0].mainWeatherStatus),
+        color: weather.weatherDataList?[0].mainWeatherStatus == null
+            ? ColorName.clearColor
+            : weather.weatherDataList?[0].mainWeatherStatus!
+                .getBackgroundColor(),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
@@ -60,9 +63,14 @@ class WeatherForecastView extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: WeatherHelper.getWeatherIcon(
-                          weatherForecastItem?.weather?[0].mainWeatherStatus,
-                        ),
+                        child: weatherForecastItem
+                                    ?.weather?[0].mainWeatherStatus ==
+                                null
+                            ? const Icon(Icons.cloud,
+                                size: 20.0, color: Colors.grey)
+                            : weatherForecastItem
+                                ?.weather?[0].mainWeatherStatus!
+                                .getWeatherIcon(),
                       ),
                       Text(
                         '${weatherForecastItem?.main?.temp?.round()}°',

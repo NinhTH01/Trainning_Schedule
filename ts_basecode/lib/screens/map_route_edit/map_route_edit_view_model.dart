@@ -28,20 +28,21 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
   Future<void> initData({
     required MapRouteModel? mapRoute,
   }) async {
-    if (mapRoute != null) {
-      List<LatLng>? markerLocationList = mapRoute.markerLocations?.map((item) {
-        return LatLng(
-          item.latitude!,
-          item.longitude!,
-        );
-      }).toList();
-
-      state = state.copyWith(
-        markerLocationList: markerLocationList ?? [],
-      );
-      nameController = TextEditingController(text: mapRoute.name);
-      descriptionController = TextEditingController(text: mapRoute.description);
+    if (mapRoute == null) {
+      return;
     }
+    List<LatLng>? markerLocationList = mapRoute.markerLocations?.map((item) {
+      return LatLng(
+        item.latitude!,
+        item.longitude!,
+      );
+    }).toList();
+
+    state = state.copyWith(
+      markerLocationList: markerLocationList ?? [],
+    );
+    nameController = TextEditingController(text: mapRoute.name);
+    descriptionController = TextEditingController(text: mapRoute.description);
   }
 
   void updateMarkerLocation(markerLocationList) async {
@@ -60,12 +61,16 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
     required bool isEdit,
     required MapRouteModel? editMapRoute,
   }) async {
+    if (editMapRoute == null) {
+      return;
+    }
+
     if (nameController.text.isEmpty) {
       updateEmptyNameValidate(true);
       return;
     } else {
       MapRouteModel mapRoute = MapRouteModel(
-        id: editMapRoute?.id,
+        id: editMapRoute.id,
         name: nameController.text,
         description: descriptionController.text,
         markerLocations: [],
@@ -97,9 +102,13 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
     required bool isEdit,
     required MapRouteModel? editMapRoute,
   }) async {
+    if (editMapRoute == null) {
+      return;
+    }
+
     if (isEdit) {
       MapRouteModel mapRoute = MapRouteModel(
-        id: editMapRoute?.id,
+        id: editMapRoute.id,
       );
       await sqfliteManager.deleteRoute(
         mapRoute,

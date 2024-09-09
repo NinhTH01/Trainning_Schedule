@@ -127,38 +127,44 @@ class _CalendarViewState
     );
   }
 
+  Widget buildCalendarMonthView() {
+    var width = MediaQuery.of(context).size.width;
+    return (Column(
+      children: [
+        calendarHeader(
+          handleChangeHeaderMonth: _handleChangeHeaderMonth,
+          currentDate: state.currentDate,
+          changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
+          changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
+        ),
+        calendarWeekBar(context),
+        const SizedBox(height: 24),
+        state.eventDateList.isNotEmpty
+            ? SizedBox(
+                height: width * state.columnNum / 7 - 10,
+                child: calendarBody(
+                    numOfCalendarColumn: state.columnNum,
+                    dateList: state.eventDateList,
+                    selectedDate: state.selectedDate ?? DateTime.now(),
+                    currentDate: state.currentDate ?? DateTime.now(),
+                    changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
+                    changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
+                    changeSelectedDate: (date) {
+                      viewModel.updateSelectedDate(date.date!);
+                    }),
+              )
+            : const Center(child: CircularProgressIndicator()),
+      ],
+    ));
+  }
+
   @override
   Widget buildBody(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
     return Stack(
       children: [
         Column(
           children: [
-            calendarHeader(
-              handleChangeHeaderMonth: _handleChangeHeaderMonth,
-              currentDate: state.currentDate,
-              changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
-              changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
-            ),
-            calendarWeekBar(context),
-            const SizedBox(height: 24),
-            state.eventDateList.isNotEmpty
-                ? SizedBox(
-                    height: width * state.columnNum / 7 - 10,
-                    child: calendarBody(
-                        numOfCalendarColumn: state.columnNum,
-                        dateList: state.eventDateList,
-                        selectedDate: state.selectedDate ?? DateTime.now(),
-                        currentDate: state.currentDate ?? DateTime.now(),
-                        changeToLastMonth:
-                            viewModel.changeCurrentDateToLastMonth,
-                        changeToNextMonth:
-                            viewModel.changeCurrentDateToNextMonth,
-                        changeSelectedDate: (date) {
-                          viewModel.updateSelectedDate(date.date!);
-                        }),
-                  )
-                : const Center(child: CircularProgressIndicator()),
+            buildCalendarMonthView(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

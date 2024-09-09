@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
-import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
+import 'package:ts_basecode/utilities/extensions/weather_status_extension.dart';
 
 class WeatherWindView extends StatelessWidget {
   const WeatherWindView({super.key, required this.weather});
@@ -16,8 +16,10 @@ class WeatherWindView extends StatelessWidget {
       margin: const EdgeInsets.all(16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: WeatherHelper.getBackgroundColor(
-            weather.weatherDataList?[0].mainWeatherStatus),
+        color: weather.weatherDataList?[0].mainWeatherStatus == null
+            ? ColorName.clearColor
+            : weather.weatherDataList?[0].mainWeatherStatus!
+                .getBackgroundColor(),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(

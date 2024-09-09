@@ -33,107 +33,111 @@ class CalendarViewModel extends BaseViewModel<CalendarState> {
   }
 
   void changeCurrentDateToNextMonth() async {
-    if (state.currentDate != null) {
-      state = state.copyWith(
-          currentDate: DateTime(
-        state.currentDate!.year,
-        state.currentDate!.month + 1,
-      ));
-      await getDefaultDateList();
+    if (state.currentDate == null) {
+      return;
     }
+    state = state.copyWith(
+        currentDate: DateTime(
+      state.currentDate!.year,
+      state.currentDate!.month + 1,
+    ));
+    await getDefaultDateList();
   }
 
   void changeCurrentDateToLastMonth() async {
-    if (state.currentDate != null) {
-      state = state.copyWith(
-          currentDate: DateTime(
-        state.currentDate!.year,
-        state.currentDate!.month - 1,
-      ));
-      await getDefaultDateList();
+    if (state.currentDate == null) {
+      return;
     }
+    state = state.copyWith(
+        currentDate: DateTime(
+      state.currentDate!.year,
+      state.currentDate!.month - 1,
+    ));
+    await getDefaultDateList();
   }
 
   void changeCurrentDateToPicker(DateTime? date) async {
-    if (state.currentDate != null && date != null) {
-      state = state.copyWith(
-        currentDate: DateTime(
-          date.year,
-          date.month,
-        ),
-      );
-      await getDefaultDateList();
-      updateSelectedDate(date);
+    if (state.currentDate == null || date == null) {
+      return;
     }
+    state = state.copyWith(
+      currentDate: DateTime(
+        date.year,
+        date.month,
+      ),
+    );
+    await getDefaultDateList();
+    updateSelectedDate(date);
   }
 
   Future<void> getDefaultDateList() async {
-    if (state.currentDate != null) {
-      var calendarColumn = 6;
-      var firstDayOfMonth =
-          DateTime(state.currentDate!.year, state.currentDate!.month, 1);
-      var weekday = firstDayOfMonth.weekday;
-      var previousSunday =
-          firstDayOfMonth.subtract(Duration(days: weekday - 1));
+    if (state.currentDate == null) {
+      return;
+    }
+    var calendarColumn = 6;
+    var firstDayOfMonth =
+        DateTime(state.currentDate!.year, state.currentDate!.month, 1);
+    var weekday = firstDayOfMonth.weekday;
+    var previousSunday = firstDayOfMonth.subtract(Duration(days: weekday - 1));
 
-      DateTime firstDayNextMonth;
-      if (state.currentDate!.month == 12) {
-        firstDayNextMonth = DateTime(state.currentDate!.year + 1, 1, 1);
-      } else {
-        firstDayNextMonth =
-            DateTime(state.currentDate!.year, state.currentDate!.month + 1, 1);
-      }
+    DateTime firstDayNextMonth;
+    if (state.currentDate!.month == 12) {
+      firstDayNextMonth = DateTime(state.currentDate!.year + 1, 1, 1);
+    } else {
+      firstDayNextMonth =
+          DateTime(state.currentDate!.year, state.currentDate!.month + 1, 1);
+    }
 
-      if (weekday + firstDayNextMonth.subtract(const Duration(days: 1)).day >
-          36) {
-        calendarColumn = 6;
-      } else {
-        calendarColumn = 5;
-      }
+    if (weekday + firstDayNextMonth.subtract(const Duration(days: 1)).day >
+        36) {
+      calendarColumn = 6;
+    } else {
+      calendarColumn = 5;
+    }
 
-      var defaultDateInfoList = <EventDateInfo>[];
-      for (var i = 0; i < calendarColumn * 7; i++) {
-        defaultDateInfoList.add(
-          EventDateInfo(
-            date: previousSunday.add(Duration(days: i)),
-            hasEvent: false,
-          ),
-        );
-      }
-
-      await _fetchEventDateList(
-        defaultDateList: defaultDateInfoList,
-        columnNum: calendarColumn,
+    var defaultDateInfoList = <EventDateInfo>[];
+    for (var i = 0; i < calendarColumn * 7; i++) {
+      defaultDateInfoList.add(
+        EventDateInfo(
+          date: previousSunday.add(Duration(days: i)),
+          hasEvent: false,
+        ),
       );
     }
+
+    await _fetchEventDateList(
+      defaultDateList: defaultDateInfoList,
+      columnNum: calendarColumn,
+    );
   }
 
   Future<void> _fetchEventDateList({
     required List<EventDateInfo> defaultDateList,
     required int columnNum,
   }) async {
-    if (defaultDateList.isNotEmpty) {
-      final eventList = await sqfliteManager.getListEvent();
-
-      final eventDateInfoList = <EventDateInfo>[];
-
-      for (EventDateInfo date in defaultDateList) {
-        bool hasEvent = false;
-        for (Event event in eventList) {
-          if (isSameDay(date.date, event.createdTime)) {
-            hasEvent = true;
-            break;
-          }
-        }
-        eventDateInfoList
-            .add(EventDateInfo(hasEvent: hasEvent, date: date.date));
-      }
-
-      state = state.copyWith(
-        eventDateList: eventDateInfoList,
-        columnNum: columnNum,
-      );
+    if (defaultDateList.isEmpty) {
+      return;
     }
+
+    final eventList = await sqfliteManager.getListEvent();
+
+    final eventDateInfoList = <EventDateInfo>[];
+
+    for (EventDateInfo date in defaultDateList) {
+      bool hasEvent = false;
+      for (Event event in eventList) {
+        if (isSameDay(date.date, event.createdTime)) {
+          hasEvent = true;
+          break;
+        }
+      }
+      eventDateInfoList.add(EventDateInfo(hasEvent: hasEvent, date: date.date));
+    }
+
+    state = state.copyWith(
+      eventDateList: eventDateInfoList,
+      columnNum: columnNum,
+    );
   }
 
   bool isSameDay(DateTime? date1, DateTime? date2) {

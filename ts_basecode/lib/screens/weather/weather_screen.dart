@@ -21,6 +21,7 @@ import 'package:ts_basecode/screens/weather/weather_view_model.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
 import 'package:ts_basecode/utilities/extensions/string_extension.dart';
+import 'package:ts_basecode/utilities/extensions/weather_status_extension.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<WeatherViewModel, WeatherState>(
@@ -137,23 +138,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
     }
   }
 
-  dynamic _getBackgroundImagePath(WeatherStatus? weatherCondition) {
-    switch (weatherCondition) {
-      case WeatherStatus.clear:
-        return Assets.images.normal.path;
-      case WeatherStatus.cloud:
-        return Assets.images.cloud.path;
-      case WeatherStatus.drizzle:
-        return Assets.images.drizzle.path;
-      case WeatherStatus.rain:
-        return Assets.images.rain.path;
-      case WeatherStatus.thunderstorm:
-        return Assets.images.lightning.path;
-      default:
-        return Assets.images.clear.path;
-    }
-  }
-
   Widget _buildWeatherDetail() {
     return SizedBox(
       height: state.containerHeight,
@@ -267,10 +251,13 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                   DecoratedBox(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                            _getBackgroundImagePath(state.currentWeather
-                                ?.weatherDataList?[0].mainWeatherStatus),
-                          ),
+                          image: AssetImage(state.currentWeather
+                                      ?.weatherDataList![0].mainWeatherStatus ==
+                                  null
+                              ? Assets.images.clear.path
+                              : state.currentWeather!.weatherDataList![0]
+                                  .mainWeatherStatus!
+                                  .getBackgroundImagePath()),
                           fit: BoxFit
                               .cover, // Adjust the fit property to control how the image is resized to cover the container
                         ),
