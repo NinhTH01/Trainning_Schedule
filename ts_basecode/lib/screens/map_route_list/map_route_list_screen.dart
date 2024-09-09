@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/map_route_repository_provider.dart';
@@ -62,6 +61,22 @@ class _MapRouteListScreen
   bool get ignoreSafeAreaTop => true;
 
   @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    context.tabsRouter.setActiveIndex(1);
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
+
+  @override
   String get screenName => MapRouteListRoute.name;
 
   @override
@@ -100,62 +115,49 @@ class _MapRouteListScreen
 
   @override
   Widget buildBody(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Column(
-          children: [
-            ScreenHeader(
-              hasBackIcon: false,
-              title: TextConstants.mapRouteList,
-              onBack: () {
-                Navigator.pop(context);
-              },
-              rightWidget: TextButton(
-                onPressed: () {
-                  viewModel.handleEdit();
-                },
-                child: Text(
-                  state.isEditing ? TextConstants.save : TextConstants.edit,
-                  style: AppTextStyles.s14w400,
-                ),
-              ),
+        ScreenHeader(
+          hasBackIcon: false,
+          title: TextConstants.mapRouteList,
+          onBack: () {
+            Navigator.pop(context);
+          },
+          rightWidget: TextButton(
+            onPressed: () {
+              viewModel.handleEdit();
+            },
+            child: Text(
+              state.isEditing ? TextConstants.save : TextConstants.edit,
+              style: AppTextStyles.s14w400,
             ),
-            Expanded(
-                child: RefreshIndicator(
-              onRefresh: () async {
-                ref.invalidate(_provider);
-                await viewModel.getMapRouteList();
-              },
-              child: ReorderableListView.builder(
-                buildDefaultDragHandles: state.isEditing,
-                itemCount: state.mapRouteList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return MapRouteItem(
-                    key: Key('$index'),
+          ),
+        ),
+        Expanded(
+            child: RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(_provider);
+            await viewModel.getMapRouteList();
+          },
+          child: ReorderableListView.builder(
+            buildDefaultDragHandles: state.isEditing,
+            itemCount: state.mapRouteList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return MapRouteItem(
+                key: Key('$index'),
+                mapRoute: state.mapRouteList[index],
+                onPress: () {
+                  _handleGoToMapRouteEditScreen(
+                    isEdit: true,
                     mapRoute: state.mapRouteList[index],
-                    onPress: () {
-                      _handleGoToMapRouteEditScreen(
-                        isEdit: true,
-                        mapRoute: state.mapRouteList[index],
-                      );
-                    },
-                    isEditing: state.isEditing,
                   );
                 },
-                onReorder: viewModel.handleReorder,
-              ),
-            )),
-          ],
-        ),
-        StatusView(
-          screenContext: context,
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () async {
-            context.tabsRouter.setActiveIndex(1);
-            viewModel.globalMapManager.toggleRunning();
-          },
-        ),
+                isEditing: state.isEditing,
+              );
+            },
+            onReorder: viewModel.handleReorder,
+          ),
+        )),
       ],
     );
   }

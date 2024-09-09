@@ -12,19 +12,23 @@ class StatusView extends ConsumerWidget {
     required this.isVisible,
     required this.onPress,
     required this.screenContext,
-    this.isIgnoreSafeArea = false,
+    this.viewHasSafeArea = false,
   });
 
   final double distance;
   final bool isVisible;
   final Function() onPress;
-  final BuildContext screenContext;
-  final bool isIgnoreSafeArea;
+  final BuildContext? screenContext;
+  final bool viewHasSafeArea;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topInset = MediaQuery.of(screenContext).padding.top;
-    final botInset = MediaQuery.of(screenContext).padding.bottom;
+    if (screenContext == null) {
+      return const SizedBox();
+    }
+
+    final topInset = MediaQuery.of(screenContext!).padding.top;
+    final botInset = MediaQuery.of(screenContext!).padding.bottom;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -38,7 +42,7 @@ class StatusView extends ConsumerWidget {
     } else {
       return Positioned(
         left: position.dx,
-        top: isIgnoreSafeArea ? position.dy + topInset : position.dy,
+        top: viewHasSafeArea ? position.dy + topInset : position.dy,
         child: GestureDetector(
           onPanUpdate: (details) {
             ref.read(draggablePositionProvider.notifier).updatePosition(

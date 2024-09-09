@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/exception/always_permission_exception/always_permission_exception.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/providers/event_repository_provider.dart';
@@ -106,6 +105,21 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
 
   @override
   MapViewModel get viewModel => ref.read(_provider.notifier);
+
+  @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
 
   Future<void> _onInitState() async {
     try {
@@ -370,15 +384,6 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
             ),
           ),
         ),
-        StatusView(
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () async {
-            viewModel.globalMapManager.toggleRunning();
-          },
-          screenContext: context,
-          isIgnoreSafeArea: true,
-        )
       ],
     );
   }

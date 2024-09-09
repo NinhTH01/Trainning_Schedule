@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/providers/event_repository_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
@@ -66,6 +65,22 @@ class _CalendarDateEventEditState extends BaseViewState<
   bool get ignoreSafeAreaTop => true;
 
   @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    context.tabsRouter.setActiveIndex(1);
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
+
+  @override
   String get screenName => CalendarDateEventEditRoute.name;
 
   @override
@@ -124,125 +139,111 @@ class _CalendarDateEventEditState extends BaseViewState<
 
   @override
   Widget buildBody(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Column(
-          children: [
-            ScreenHeader(
-              title: widget.isEdit
-                  ? TextConstants.editEvent
-                  : TextConstants.newEvent,
-              onBack: () {
-                Navigator.pop(context);
-              },
-              rightWidget: TextButton(
-                onPressed: _handleSaveOrUpdateEvent,
-                child: Text(
-                  widget.isEdit ? TextConstants.edit : TextConstants.save,
+        ScreenHeader(
+          title:
+              widget.isEdit ? TextConstants.editEvent : TextConstants.newEvent,
+          onBack: () {
+            Navigator.pop(context);
+          },
+          rightWidget: TextButton(
+            onPressed: _handleSaveOrUpdateEvent,
+            child: Text(
+              widget.isEdit ? TextConstants.edit : TextConstants.save,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(24.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: ColorName.grayFFEDEDED,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: viewModel.textController,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: TextConstants.description,
+                    errorText: state.emptyDescriptionValidate
+                        ? TextConstants.emptyDescriptionValidate
+                        : null,
+                  ),
+                  onChanged: ((_) {
+                    if (viewModel.textController.text.isNotEmpty) {
+                      viewModel.updateEmptyDescriptionValidate(false);
+                    }
+                  }),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: ColorName.grayFFEDEDED,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: 300,
-                    child: TextField(
-                      controller: viewModel.textController,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: TextConstants.description,
-                        errorText: state.emptyDescriptionValidate
-                            ? TextConstants.emptyDescriptionValidate
-                            : null,
-                      ),
-                      onChanged: ((_) {
-                        if (viewModel.textController.text.isNotEmpty) {
-                          viewModel.updateEmptyDescriptionValidate(false);
+              const SizedBox(height: 16),
+              SizedBox(
+                width: 300,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        final date = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(DateTime.now().year - 10),
+                          lastDate: DateTime(DateTime.now().year + 10),
+                        );
+                        if (date != null) {
+                          viewModel.updateEventDate(date);
                         }
-                      }),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: 300,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            final date = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(DateTime.now().year - 10),
-                              lastDate: DateTime(DateTime.now().year + 10),
-                            );
-                            if (date != null) {
-                              viewModel.updateEventDate(date);
-                            }
-                          },
-                          child: Text(
-                            DateFormat(AppConstants.yyyyMMddFormat)
-                                .format(state.eventDate ?? DateTime.now()),
-                            style: AppTextStyles.defaultStyle,
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final timeOfDay = await showTimePicker(
-                              context: context,
-                              initialTime: state.eventTime,
-                              initialEntryMode: TimePickerEntryMode.input,
-                            );
-                            if (timeOfDay != null) {
-                              viewModel.updateEventTime(timeOfDay);
-                            }
-                          },
-                          child: Text(
-                            state.eventTime.format(context),
-                            style: AppTextStyles.defaultStyle,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-            widget.isEdit
-                ? SizedBox(
-                    width: 300,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _showActionSheet(context);
                       },
                       child: Text(
-                        TextConstants.delete,
-                        style: AppTextStyles.defaultStyle.copyWith(
-                          color: ColorName.red,
-                        ),
+                        DateFormat(AppConstants.yyyyMMddFormat)
+                            .format(state.eventDate ?? DateTime.now()),
+                        style: AppTextStyles.defaultStyle,
                       ),
                     ),
-                  )
-                : const SizedBox(),
-          ],
+                    ElevatedButton(
+                      onPressed: () async {
+                        final timeOfDay = await showTimePicker(
+                          context: context,
+                          initialTime: state.eventTime,
+                          initialEntryMode: TimePickerEntryMode.input,
+                        );
+                        if (timeOfDay != null) {
+                          viewModel.updateEventTime(timeOfDay);
+                        }
+                      },
+                      child: Text(
+                        state.eventTime.format(context),
+                        style: AppTextStyles.defaultStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-        StatusView(
-          screenContext: context,
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () async {
-            context.tabsRouter.setActiveIndex(1);
-            viewModel.globalMapManager.toggleRunning();
-          },
-        ),
+        const SizedBox(height: 40),
+        widget.isEdit
+            ? SizedBox(
+                width: 300,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _showActionSheet(context);
+                  },
+                  child: Text(
+                    TextConstants.delete,
+                    style: AppTextStyles.defaultStyle.copyWith(
+                      color: ColorName.red,
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox(),
       ],
     );
   }

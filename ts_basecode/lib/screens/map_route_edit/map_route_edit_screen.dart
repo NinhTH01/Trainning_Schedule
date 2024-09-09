@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/components/screen_header/screen_header.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/map_route/map_route_model.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/providers/map_route_repository_provider.dart';
@@ -70,6 +69,22 @@ class _MapRouteEditScreen
       viewModel.updateMarkerLocation(value);
     });
   }
+
+  @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    context.tabsRouter.setActiveIndex(1);
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
 
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
@@ -141,117 +156,104 @@ class _MapRouteEditScreen
 
   @override
   Widget buildBody(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Column(
-          children: [
-            ScreenHeader(
-              title: widget.isEdit
-                  ? TextConstants.mapRouteEdit
-                  : TextConstants.mapRouteCreate,
-              onBack: () {
-                Navigator.pop(context);
-              },
-              rightWidget: TextButton(
-                  onPressed: () async {
-                    await viewModel.handleUpdateDatabase(
-                      isEdit: widget.isEdit,
-                      editMapRoute: widget.mapRoute,
-                    );
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Text(
-                    widget.isEdit ? TextConstants.edit : TextConstants.save,
-                    style: AppTextStyles.s16w500,
-                  )),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: TextField(
-                      controller: viewModel.nameController,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        labelText: TextConstants.name,
-                        errorText: state.emptyNameValidate
-                            ? TextConstants.emptyNameValidate
-                            : null,
-                      ),
-                      onChanged: ((_) {
-                        if (viewModel.nameController.text.isNotEmpty) {
-                          viewModel.updateEmptyNameValidate(false);
-                        }
-                      }),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: TextField(
-                      controller: viewModel.descriptionController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: TextConstants.description,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            TextConstants.route,
-                            style: AppTextStyles.s16w500,
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            handleGoToMapScreen();
-                          },
-                          icon: const Icon(Icons.add_circle_outline_outlined),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 0.5,
-                    color: ColorName.black,
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.markerLocationList.length,
-                      padding: const EdgeInsets.only(bottom: 80),
-                      itemBuilder: (BuildContext context, int index) {
-                        return RouteItem(
-                          key: Key('$index'),
-                          name: index + 1,
-                          location: state.markerLocationList[index],
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-        StatusView(
-          screenContext: context,
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () async {
-            context.tabsRouter.setActiveIndex(1);
-            viewModel.globalMapManager.toggleRunning();
+        ScreenHeader(
+          title: widget.isEdit
+              ? TextConstants.mapRouteEdit
+              : TextConstants.mapRouteCreate,
+          onBack: () {
+            Navigator.pop(context);
           },
+          rightWidget: TextButton(
+              onPressed: () async {
+                await viewModel.handleUpdateDatabase(
+                  isEdit: widget.isEdit,
+                  editMapRoute: widget.mapRoute,
+                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: Text(
+                widget.isEdit ? TextConstants.edit : TextConstants.save,
+                style: AppTextStyles.s16w500,
+              )),
+        ),
+        Expanded(
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: viewModel.nameController,
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    labelText: TextConstants.name,
+                    errorText: state.emptyNameValidate
+                        ? TextConstants.emptyNameValidate
+                        : null,
+                  ),
+                  onChanged: ((_) {
+                    if (viewModel.nameController.text.isNotEmpty) {
+                      viewModel.updateEmptyNameValidate(false);
+                    }
+                  }),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: viewModel.descriptionController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: TextConstants.description,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        TextConstants.route,
+                        style: AppTextStyles.s16w500,
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        handleGoToMapScreen();
+                      },
+                      icon: const Icon(Icons.add_circle_outline_outlined),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: 0.5,
+                color: ColorName.black,
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.markerLocationList.length,
+                  padding: const EdgeInsets.only(bottom: 80),
+                  itemBuilder: (BuildContext context, int index) {
+                    return RouteItem(
+                      key: Key('$index'),
+                      name: index + 1,
+                      location: state.markerLocationList[index],
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ],
     );

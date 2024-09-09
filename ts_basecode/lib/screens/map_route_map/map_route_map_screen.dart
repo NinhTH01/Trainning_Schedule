@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
@@ -52,6 +51,22 @@ class _MapRouteListScreen
       handleError(e);
     }
   }
+
+  @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    context.tabsRouter.setActiveIndex(1);
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
 
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
@@ -109,15 +124,6 @@ class _MapRouteListScreen
               ),
             ],
           ),
-        ),
-        StatusView(
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () async {
-            context.tabsRouter.setActiveIndex(1);
-            viewModel.globalMapManager.toggleRunning();
-          },
-          screenContext: context,
         ),
       ],
     );

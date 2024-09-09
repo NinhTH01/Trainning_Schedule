@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/data/providers/geolocator_provider.dart';
@@ -117,6 +116,22 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
 
   @override
   WeatherViewModel get viewModel => ref.read(_provider.notifier);
+
+  @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    context.tabsRouter.setActiveIndex(1);
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
 
   Future<void> _onInitData() async {
     _scrollController.addListener(_onScroll);
@@ -379,16 +394,6 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         ],
                       )
                     : const CircularProgressIndicator())),
-        StatusView(
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () {
-            context.tabsRouter.setActiveIndex(1);
-            viewModel.globalMapManager.toggleRunning();
-          },
-          screenContext: context,
-          isIgnoreSafeArea: true,
-        ),
       ],
     );
   }

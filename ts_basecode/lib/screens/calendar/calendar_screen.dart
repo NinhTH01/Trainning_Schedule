@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
-import 'package:ts_basecode/components/status_view/status_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
 import 'package:ts_basecode/data/providers/event_repository_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
@@ -70,6 +69,22 @@ class _CalendarViewState
 
   GlobalRunningStatusState get globalMapState =>
       ref.watch(globalRunningStatusManagerProvider);
+
+  @override
+  void onStatusViewPressed() {
+    super.onStatusViewPressed();
+    context.tabsRouter.setActiveIndex(1);
+    viewModel.globalMapManager.toggleRunning();
+  }
+
+  @override
+  bool get isVisibleStatusView => globalMapState.isRunning;
+
+  @override
+  double get totalDistanceOfStatusView => globalMapState.totalDistance;
+
+  @override
+  BuildContext get statusViewContext => context;
 
   Future<void> _onInitState() async {
     var size = MediaQuery.of(context).size;
@@ -160,67 +175,54 @@ class _CalendarViewState
 
   @override
   Widget buildBody(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Column(
+        buildCalendarMonthView(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            buildCalendarMonthView(),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Expanded(
-                  child: Divider(
-                    color: ColorName.black,
-                    thickness: 0.5,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    viewModel.isSameDay(DateTime.now(), state.selectedDate)
-                        ? TextConstants.today
-                        : DateFormat(AppConstants.mmmmddFormat)
-                            .format(state.selectedDate ?? DateTime.now()),
-                    style: AppTextStyles.s16w600,
-                  ),
-                ),
-                const Expanded(
-                  child: Divider(
-                    color: ColorName.black,
-                    thickness: 0.5,
-                  ),
-                ),
-              ],
+            const Expanded(
+              child: Divider(
+                color: ColorName.black,
+                thickness: 0.5,
+              ),
             ),
-            state.eventList.isNotEmpty
-                ? Expanded(
-                    child: ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 80),
-                    itemBuilder: (BuildContext context, int index) {
-                      return EventListItem(
-                        event: state.eventList[index],
-                        onTap: _handleGoToEditEventScreen,
-                      );
-                    },
-                    itemCount: state.eventList.length,
-                  ))
-                : Center(
-                    child: Text(
-                      TextConstants.noEvent,
-                      style: AppTextStyles.s16w700,
-                    ),
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                viewModel.isSameDay(DateTime.now(), state.selectedDate)
+                    ? TextConstants.today
+                    : DateFormat(AppConstants.mmmmddFormat)
+                        .format(state.selectedDate ?? DateTime.now()),
+                style: AppTextStyles.s16w600,
+              ),
+            ),
+            const Expanded(
+              child: Divider(
+                color: ColorName.black,
+                thickness: 0.5,
+              ),
+            ),
           ],
         ),
-        StatusView(
-          screenContext: context,
-          isVisible: globalMapState.isRunning,
-          distance: globalMapState.totalDistance,
-          onPress: () async {
-            context.tabsRouter.setActiveIndex(1);
-            viewModel.globalMapManager.toggleRunning();
-          },
-        )
+        state.eventList.isNotEmpty
+            ? Expanded(
+                child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 80),
+                itemBuilder: (BuildContext context, int index) {
+                  return EventListItem(
+                    event: state.eventList[index],
+                    onTap: _handleGoToEditEventScreen,
+                  );
+                },
+                itemCount: state.eventList.length,
+              ))
+            : Center(
+                child: Text(
+                  TextConstants.noEvent,
+                  style: AppTextStyles.s16w700,
+                ),
+              ),
       ],
     );
   }
