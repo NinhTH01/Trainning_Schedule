@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:ts_basecode/components/base_view/base_view.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
+import 'package:ts_basecode/data/models/storage/event_date_info/event_date_info.dart';
 import 'package:ts_basecode/data/providers/event_repository_provider.dart';
 import 'package:ts_basecode/data/providers/global_running_status_manager_provider.dart';
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
@@ -11,14 +12,11 @@ import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
 import 'package:ts_basecode/screens/calendar/calendar_state.dart';
 import 'package:ts_basecode/screens/calendar/calendar_view_model.dart';
-import 'package:ts_basecode/screens/calendar/components/calendar_header.dart';
-import 'package:ts_basecode/screens/calendar/components/calendar_week_bar.dart';
+import 'package:ts_basecode/screens/calendar/components/calendar_month_view.dart';
 import 'package:ts_basecode/screens/calendar/components/event_list_item.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
-
-import 'components/calendar_body.dart';
 
 final _provider =
     StateNotifierProvider.autoDispose<CalendarViewModel, CalendarState>(
@@ -142,42 +140,22 @@ class _CalendarViewState
     );
   }
 
-  Widget buildCalendarMonthView() {
-    var width = MediaQuery.of(context).size.width;
-    return (Column(
-      children: [
-        calendarHeader(
-          handleChangeHeaderMonth: _handleChangeHeaderMonth,
-          currentDate: state.currentDate,
-          changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
-          changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
-        ),
-        calendarWeekBar(context),
-        const SizedBox(height: 24),
-        state.eventDateList.isNotEmpty
-            ? SizedBox(
-                height: width * state.columnNum / 7 - 10,
-                child: calendarBody(
-                    numOfCalendarColumn: state.columnNum,
-                    dateList: state.eventDateList,
-                    selectedDate: state.selectedDate ?? DateTime.now(),
-                    currentDate: state.currentDate ?? DateTime.now(),
-                    changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
-                    changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
-                    changeSelectedDate: (date) {
-                      viewModel.updateSelectedDate(date.date!);
-                    }),
-              )
-            : const Center(child: CircularProgressIndicator()),
-      ],
-    ));
-  }
-
   @override
   Widget buildBody(BuildContext context) {
     return Column(
       children: [
-        buildCalendarMonthView(),
+        CalendarMonthView(
+          eventDateList: state.eventDateList,
+          columnNum: state.columnNum,
+          handleChangeHeaderMonth: _handleChangeHeaderMonth,
+          changeToNextMonth: viewModel.changeCurrentDateToNextMonth,
+          changeToLastMonth: viewModel.changeCurrentDateToLastMonth,
+          currentDate: state.currentDate ?? DateTime.now(),
+          selectedDate: state.selectedDate ?? DateTime.now(),
+          changeSelectedDate: (EventDateInfo date) {
+            viewModel.updateSelectedDate(date.date!);
+          },
+        ),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

@@ -28,6 +28,8 @@ class MapRouteMapViewModel extends BaseViewModel<MapRouteMapState> {
   Future<void> updateData(List<LatLng> markerLocationList) async {
     LatLng currentLocation = await _getCurrentLocation();
 
+    _moveCamera(currentLocation);
+
     state = state.copyWith(
       currentLocation: currentLocation,
     );
@@ -39,15 +41,13 @@ class MapRouteMapViewModel extends BaseViewModel<MapRouteMapState> {
     await geolocatorManager.checkPermissionWithoutAlwaysRequired();
     Position currentLocation = await geolocatorManager.getCurrentLocation();
 
-    _moveCamera(currentLocation);
-
     return LatLng(
       currentLocation.latitude,
       currentLocation.longitude,
     );
   }
 
-  void _moveCamera(Position currentLocation) {
+  void _moveCamera(LatLng currentLocation) {
     if (_googleMapController != null) {
       _googleMapController!.moveCamera(
         CameraUpdate.newCameraPosition(

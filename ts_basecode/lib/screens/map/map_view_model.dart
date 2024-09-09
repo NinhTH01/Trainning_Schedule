@@ -51,7 +51,7 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   final double distanceThreshold = 100.0;
 
-  final double distanceMarkerThreshold = 10.0;
+  final double distanceMarkerThreshold = 20.0;
 
   final Size locationMarkersSize = const Size(32, 40);
 
