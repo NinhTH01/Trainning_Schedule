@@ -27,7 +27,8 @@ class EventListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Hollow(
-              isStroke: DateTime.now().isBefore(event.createdTime!),
+              isStroke:
+                  DateTime.now().isBefore(event.createdTime ?? DateTime.now()),
             ),
             const SizedBox(
               width: 16,
@@ -39,7 +40,7 @@ class EventListItem extends StatelessWidget {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: Text(
-                      event.description!,
+                      event.description ?? '_',
                       style: AppTextStyles.s14w400,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -47,7 +48,7 @@ class EventListItem extends StatelessWidget {
                   ),
                   Text(
                     DateFormat(AppConstants.hhmmFormat)
-                        .format(event.createdTime!),
+                        .format(event.createdTime ?? DateTime.now()),
                     style: AppTextStyles.s12w700,
                   ),
                 ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ts_basecode/data/models/api/responses/weather/weather.dart';
+import 'package:ts_basecode/data/models/api/responses/weather_entry/weather_entry.dart';
 import 'package:ts_basecode/data/models/api/responses/weather_forecast/weather_forecast.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/screens/weather/helpers/weather_helper.dart';
@@ -17,6 +18,15 @@ class WeatherForecastView extends StatelessWidget {
   final WeatherForecast weatherForecast;
 
   final Weather weather;
+
+  Icon? getWeatherForecastIcon(WeatherEntry? weatherForecastItem) {
+    if (weatherForecastItem?.weather?.firstOrNull == null) {
+      return const Icon(Icons.cloud, size: 20.0, color: Colors.grey);
+    } else {
+      return weatherForecastItem?.weather?[0].mainWeatherStatus!
+          .getWeatherIcon();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +72,8 @@ class WeatherForecastView extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: weatherForecastItem
-                                    ?.weather?[0].mainWeatherStatus ==
-                                null
-                            ? const Icon(Icons.cloud,
-                                size: 20.0, color: Colors.grey)
-                            : weatherForecastItem
-                                ?.weather?[0].mainWeatherStatus!
-                                .getWeatherIcon(),
-                      ),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: getWeatherForecastIcon(weatherForecastItem)),
                       Text(
                         '${weatherForecastItem?.main?.temp?.round()}°',
                         style: AppTextStyles.s12w700.copyWith(

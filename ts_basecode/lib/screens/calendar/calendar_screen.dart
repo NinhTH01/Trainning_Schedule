@@ -153,7 +153,9 @@ class _CalendarViewState
           currentDate: state.currentDate ?? DateTime.now(),
           selectedDate: state.selectedDate ?? DateTime.now(),
           changeSelectedDate: (EventDateInfo date) {
-            viewModel.updateSelectedDate(date.date!);
+            if (date.date != null) {
+              viewModel.updateSelectedDate(date.date!);
+            }
           },
         ),
         Row(

@@ -135,7 +135,7 @@ Widget buildDayInMonth({
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Text(day.date!.day.toString(),
+            child: Text(day.date?.day.toString() ?? '_',
                 style: getDayTextStyles(
                   isToday: isToday,
                   isSelectedDay: isSelectedDay,

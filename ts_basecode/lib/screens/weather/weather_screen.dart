@@ -159,7 +159,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
       child: Column(
         children: [
           Text(
-            state.currentWeather!.name!,
+            state.currentWeather?.name ?? "_",
             style: AppTextStyles.s30w700.copyWith(
               color: ColorName.white,
             ),
@@ -176,8 +176,9 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                         ),
                       ),
                       Text(
-                        state.currentWeather!.weatherDataList![0].description!
-                            .capitalizeFirstLetter(),
+                        state.currentWeather?.weatherDataList?.first.description
+                                ?.capitalizeFirstLetter() ??
+                            "_",
                         style: AppTextStyles.s20w600.copyWith(
                           color: ColorName.white,
                         ),
@@ -194,7 +195,7 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
               : Opacity(
                   opacity: state.minimizeOpacity,
                   child: Text(
-                    '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weatherDataList![0].description!.capitalizeFirstLetter()}',
+                    '${state.currentWeather?.main?.temp?.round()}° | ${state.currentWeather?.weatherDataList?.first.description?.capitalizeFirstLetter() ?? '_'}',
                     style: AppTextStyles.s16w600.copyWith(
                       color: ColorName.white,
                     ),
@@ -231,12 +232,14 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
         ),
         WeatherStatusView(
           title: TextConstants.sunsetTitle,
-          value: WeatherHelper.unixToHHmm(state.currentWeather!.sys!.sunset!),
+          value:
+              WeatherHelper.unixToHHmm(state.currentWeather?.sys?.sunset ?? 0),
           backgroundColor: state.backgroundColor,
         ),
         WeatherStatusView(
           title: TextConstants.sunriseTitle,
-          value: WeatherHelper.unixToHHmm(state.currentWeather!.sys!.sunrise!),
+          value:
+              WeatherHelper.unixToHHmm(state.currentWeather?.sys?.sunrise ?? 0),
           backgroundColor: state.backgroundColor,
         ),
         WeatherStatusView(
@@ -266,11 +269,14 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                   DecoratedBox(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(state.currentWeather
-                                      ?.weatherDataList![0].mainWeatherStatus ==
+                          image: AssetImage(state
+                                      .currentWeather
+                                      ?.weatherDataList
+                                      ?.first
+                                      .mainWeatherStatus ==
                                   null
                               ? Assets.images.clear.path
-                              : state.currentWeather!.weatherDataList![0]
+                              : state.currentWeather!.weatherDataList!.first
                                   .mainWeatherStatus!
                                   .getBackgroundImagePath()),
                           fit: BoxFit
@@ -299,7 +305,8 @@ class _WeatherViewState extends BaseViewState<WeatherScreen, WeatherViewModel> {
                                           const WeatherForecast(),
                                     ),
                                     WeatherWindView(
-                                        weather: state.currentWeather!),
+                                        weather: state.currentWeather ??
+                                            const Weather()),
                                     // Grid
                                     _buildGridViewWeatherStatus()
                                   ],

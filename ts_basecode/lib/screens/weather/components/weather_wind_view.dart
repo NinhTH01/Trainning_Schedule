@@ -16,9 +16,9 @@ class WeatherWindView extends StatelessWidget {
       margin: const EdgeInsets.all(16.0),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: weather.weatherDataList?[0].mainWeatherStatus == null
+        color: weather.weatherDataList?.first.mainWeatherStatus == null
             ? ColorName.clearColor
-            : weather.weatherDataList?[0].mainWeatherStatus!
+            : weather.weatherDataList?.first.mainWeatherStatus!
                 .getBackgroundColor(),
         borderRadius: BorderRadius.circular(12.0),
       ),
@@ -37,7 +37,9 @@ class WeatherWindView extends StatelessWidget {
             children: [
               Expanded(
                 child: windItemWidget(
-                  weather.wind!.speed! * 3.6,
+                  weather.wind?.speed == null
+                      ? null
+                      : weather.wind!.speed! * 3.6,
                   TextConstants.kmh,
                   TextConstants.wind,
                 ),
