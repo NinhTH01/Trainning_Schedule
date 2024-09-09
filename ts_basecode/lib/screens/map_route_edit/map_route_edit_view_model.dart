@@ -61,16 +61,12 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
     required bool isEdit,
     required MapRouteModel? editMapRoute,
   }) async {
-    if (editMapRoute == null) {
-      return;
-    }
-
     if (nameController.text.isEmpty) {
       updateEmptyNameValidate(true);
       return;
     } else {
       MapRouteModel mapRoute = MapRouteModel(
-        id: editMapRoute.id,
+        id: editMapRoute?.id,
         name: nameController.text,
         description: descriptionController.text,
         markerLocations: [],
