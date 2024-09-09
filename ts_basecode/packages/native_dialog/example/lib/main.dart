@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:native_dialog/native_dialog.dart';
 
@@ -33,13 +31,10 @@ class _MyAppState extends State<MyApp> {
       body: Center(
         child: TextButton(
             onPressed: () {
-              if (Platform.isAndroid) {
-                _nativeDialogPlugin.showAchievementInAndroid(
-                    context: context, totalDistance: 100);
-              } else {
-                _nativeDialogPlugin.showAchievementIniOS(
-                    context: context, totalDistance: 100);
-              }
+              _nativeDialogPlugin.showNativeAchievementView(
+                context: context,
+                totalDistance: 100,
+              );
             },
             child: const Text('Running on:')),
       ),

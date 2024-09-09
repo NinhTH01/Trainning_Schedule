@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 
 import 'native_dialog_platform_interface.dart';
@@ -7,19 +9,16 @@ class NativeDialog {
     return NativeDialogPlatform.instance.getPlatformVersion();
   }
 
-  void showAchievementIniOS({
+  void showNativeAchievementView({
     required BuildContext context,
     required double totalDistance,
   }) {
-    NativeDialogPlatform.instance
-        .showAchievementIniOS(context: context, totalDistance: totalDistance);
-  }
-
-  void showAchievementInAndroid({
-    required BuildContext context,
-    required double totalDistance,
-  }) {
-    NativeDialogPlatform.instance.showAchievementInAndroid(
-        context: context, totalDistance: totalDistance);
+    if (Platform.isIOS) {
+      NativeDialogPlatform.instance
+          .showAchievementIniOS(context: context, totalDistance: totalDistance);
+    } else {
+      NativeDialogPlatform.instance.showAchievementInAndroid(
+          context: context, totalDistance: totalDistance);
+    }
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,16 +99,9 @@ class Dialog {
     required BuildContext context,
     required double totalDistance,
   }) {
-    if (Platform.isIOS) {
-      nativeDialog.showAchievementIniOS(
-        context: context,
-        totalDistance: totalDistance,
-      );
-    } else {
-      nativeDialog.showAchievementInAndroid(
-        context: context,
-        totalDistance: totalDistance,
-      );
-    }
+    nativeDialog.showNativeAchievementView(
+      context: context,
+      totalDistance: totalDistance,
+    );
   }
 }
