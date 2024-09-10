@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +56,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
       if (context.tabsRouter.activeIndex == 1) {
         await viewModel.getRouteMapList();
         try {
-          await viewModel.checkAlwaysPermission();
+          await viewModel.requestAlwaysPermission();
           await viewModel.getLocationUpdate();
         } catch (e) {
           handleError(e);
@@ -76,9 +78,15 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     Future.delayed(Duration.zero, () async {
       if (appState == AppLifecycleState.resumed) {
         try {
-          PermissionStatus status = await viewModel.getAlwaysStatusPermission();
+          PermissionStatus status;
+          if (Platform.isIOS) {
+            status = await viewModel.getInUseStatusPermission();
+          } else {
+            status = await viewModel.getAlwaysStatusPermission();
+          }
+
           if (status == PermissionStatus.granted) {
-            await viewModel.checkAlwaysPermission();
+            await viewModel.requestAlwaysPermission();
             await viewModel.getLocationUpdate();
           } else {
             handleError(AlwaysPermissionException(

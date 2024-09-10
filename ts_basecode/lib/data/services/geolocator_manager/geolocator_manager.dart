@@ -31,6 +31,11 @@ class GeolocatorManager {
     return status;
   }
 
+  Future<PermissionStatus> getInUseStatusPermission() async {
+    PermissionStatus status = await Permission.locationWhenInUse.status;
+    return status;
+  }
+
   Future<void> checkPermissionWithoutAlwaysRequired() async {
     PermissionStatus status = await Permission.locationWhenInUse.request();
 

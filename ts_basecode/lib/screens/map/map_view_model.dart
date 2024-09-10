@@ -82,12 +82,16 @@ class MapViewModel extends BaseViewModel<MapState> {
     _googleMapController = mapController;
   }
 
-  Future<void> checkAlwaysPermission() async {
+  Future<void> requestAlwaysPermission() async {
     await geolocatorManager.checkAlwaysPermission();
   }
 
   Future<PermissionStatus> getAlwaysStatusPermission() async {
     return await geolocatorManager.getAlwaysStatusPermission();
+  }
+
+  Future<PermissionStatus> getInUseStatusPermission() async {
+    return await geolocatorManager.getInUseStatusPermission();
   }
 
   Future<void> getRouteMapList() async {
