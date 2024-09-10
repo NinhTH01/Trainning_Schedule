@@ -26,7 +26,7 @@ class GeolocatorManager {
     }
   }
 
-  Future<PermissionStatus> getInUsePermission() async {
+  Future<PermissionStatus> getAlwaysStatusPermission() async {
     PermissionStatus status = await Permission.locationAlways.status;
     return status;
   }

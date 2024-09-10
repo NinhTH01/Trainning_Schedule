@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/models/exception/general_exception/general_exception.dart';
 import 'package:ts_basecode/data/models/storage/event/event.dart';
@@ -83,6 +84,10 @@ class MapViewModel extends BaseViewModel<MapState> {
 
   Future<void> checkAlwaysPermission() async {
     await geolocatorManager.checkAlwaysPermission();
+  }
+
+  Future<PermissionStatus> getAlwaysStatusPermission() async {
+    return await geolocatorManager.getAlwaysStatusPermission();
   }
 
   Future<void> getRouteMapList() async {

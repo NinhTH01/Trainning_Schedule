@@ -76,11 +76,10 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     Future.delayed(Duration.zero, () async {
       if (appState == AppLifecycleState.resumed) {
         try {
-          PermissionStatus status =
-              await viewModel.geolocatorManager.getInUsePermission();
+          PermissionStatus status = await viewModel.getAlwaysStatusPermission();
           if (status == PermissionStatus.granted) {
             await viewModel.checkAlwaysPermission();
-            await _onInitState();
+            await viewModel.getLocationUpdate();
           } else {
             handleError(AlwaysPermissionException(
                 TextConstants.alwaysExceptionMessage));
