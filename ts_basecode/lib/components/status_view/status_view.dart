@@ -109,18 +109,21 @@ class StatusView extends ConsumerWidget {
                         style: AppTextStyles.s12w500,
                       ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          Icons.run_circle_outlined,
-                        ),
-                        Text(
-                          '~${formatDistance(globalRunningStatusState.totalDistance)}',
-                          style: AppTextStyles.s12w500,
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.run_circle_outlined,
+                          ),
+                          Text(
+                            '~${formatDistance(globalRunningStatusState.totalDistance)}',
+                            style: AppTextStyles.s12w500,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

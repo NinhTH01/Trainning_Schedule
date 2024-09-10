@@ -63,8 +63,10 @@ class MapRouteRepositoryImpl implements MapRouteRepository {
   }
 
   @override
-  Future<void> updateListOrder(
-      {required int id, required int newOrderIndex}) async {
+  Future<void> updateListOrder({
+    required int id,
+    required int newOrderIndex,
+  }) async {
     await _sqfliteManager.updateMapRouteListOrder(
       id: id,
       newOrderIndex: newOrderIndex,
