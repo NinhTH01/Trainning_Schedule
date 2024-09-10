@@ -136,8 +136,8 @@ class _CalendarDateEventEditState extends BaseViewState<
           },
           rightWidget: TextButton(
             onPressed: _handleSaveOrUpdateEvent,
-            child: Text(
-              widget.isEdit ? TextConstants.edit : TextConstants.save,
+            child: const Text(
+              TextConstants.save,
             ),
           ),
         ),
