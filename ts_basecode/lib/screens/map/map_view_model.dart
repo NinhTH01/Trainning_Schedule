@@ -99,53 +99,55 @@ class MapViewModel extends BaseViewModel<MapState> {
   }
 
   Future<void> getLocationUpdate() async {
-    if (state.currentPosition == null) {
-      await geolocatorManager.checkPermissionForMap();
+    if (state.currentPosition != null) {
+      return;
+    }
+    await geolocatorManager.checkPermissionForMap();
 
-      _configureBackgroundLocation();
+    _configureBackgroundLocation();
 
-      final currentLocation = await geolocatorManager.getCurrentLocation();
+    final currentLocation = await geolocatorManager.getCurrentLocation();
 
-      _googleMapController?.moveCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(
-              currentLocation.latitude,
-              currentLocation.longitude,
-            ),
-            zoom: defaultCameraZoom,
+    _googleMapController?.moveCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(
+            currentLocation.latitude,
+            currentLocation.longitude,
           ),
+          zoom: defaultCameraZoom,
         ),
+      ),
+    );
+
+    Stream<Position> activeCurrentLocationStream =
+        await geolocatorManager.getActiveCurrentLocationStream();
+
+    _positionStreamSubscription?.cancel();
+    _positionStreamSubscription =
+        activeCurrentLocationStream.listen((Position? position) async {
+      if (position == null || state.isTakingScreenshot) {
+        return;
+      }
+
+      final updatedLocation = LatLng(
+        position.latitude,
+        position.longitude,
       );
 
-      Stream<Position> activeCurrentLocationStream =
-          await geolocatorManager.getActiveCurrentLocationStream();
+      state = state.copyWith(
+        lastCurrentPosition: state.currentPosition,
+        currentPosition: updatedLocation,
+      );
 
-      _positionStreamSubscription =
-          activeCurrentLocationStream.listen((Position? position) async {
-        if (position == null || state.isTakingScreenshot) {
-          return;
-        }
+      await _handleIconLogic();
 
-        final updatedLocation = LatLng(
-          position.latitude,
-          position.longitude,
-        );
+      // await _handleMarkerOutsideCamera();
 
-        state = state.copyWith(
-          lastCurrentPosition: state.currentPosition,
-          currentPosition: updatedLocation,
-        );
-
-        await _handleIconLogic();
-
-        // await _handleMarkerOutsideCamera();
-
-        if (state.isRunning) {
-          _handleRunningLogic(updatedLocation);
-        }
-      });
-    }
+      if (state.isRunning) {
+        _handleRunningLogic(updatedLocation);
+      }
+    });
   }
 
   Future<void> _handleIconLogic() async {
