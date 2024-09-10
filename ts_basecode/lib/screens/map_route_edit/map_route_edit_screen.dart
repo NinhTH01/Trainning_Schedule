@@ -161,7 +161,7 @@ class _MapRouteEditScreen
                 );
               },
               child: Text(
-                widget.isEdit ? TextConstants.edit : TextConstants.save,
+                TextConstants.save,
                 style: AppTextStyles.s16w500,
               )),
         ),
