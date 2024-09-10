@@ -60,6 +60,7 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
   Future<void> handleUpdateDatabase({
     required bool isEdit,
     required MapRouteModel? editMapRoute,
+    required BuildContext context,
   }) async {
     if (nameController.text.isEmpty) {
       updateEmptyNameValidate(true);
@@ -90,6 +91,9 @@ class MapRouteEditViewModel extends BaseViewModel<MapRouteEditState> {
           coordinates: list,
           mapRoute: mapRoute,
         );
+      }
+      if (context.mounted) {
+        Navigator.pop(context);
       }
     }
   }

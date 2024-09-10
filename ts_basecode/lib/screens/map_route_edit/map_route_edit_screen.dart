@@ -157,10 +157,8 @@ class _MapRouteEditScreen
                 await viewModel.handleUpdateDatabase(
                   isEdit: widget.isEdit,
                   editMapRoute: widget.mapRoute,
+                  context: context,
                 );
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
               },
               child: Text(
                 widget.isEdit ? TextConstants.edit : TextConstants.save,
