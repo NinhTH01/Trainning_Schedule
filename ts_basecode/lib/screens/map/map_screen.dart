@@ -18,6 +18,7 @@ import 'package:ts_basecode/data/providers/shared_preferences_repository_provide
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
+import 'package:ts_basecode/screens/main/models/main_tab.dart';
 import 'package:ts_basecode/screens/map/map_state.dart';
 import 'package:ts_basecode/screens/map/map_view_model.dart';
 import 'package:ts_basecode/screens/map/models/zoom_mode.dart';
@@ -53,7 +54,7 @@ class _MapViewState extends BaseViewState<MapScreen, MapViewModel>
     super.onInitState();
     WidgetsBinding.instance.addObserver(this);
     context.tabsRouter.addListener(() async {
-      if (context.tabsRouter.activeIndex == 1) {
+      if (context.tabsRouter.activeIndex == MainTab.map.index) {
         await viewModel.getRouteMapList();
         try {
           await viewModel.requestAlwaysPermission();

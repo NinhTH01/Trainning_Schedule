@@ -14,6 +14,7 @@ import 'package:ts_basecode/screens/calendar/calendar_state.dart';
 import 'package:ts_basecode/screens/calendar/calendar_view_model.dart';
 import 'package:ts_basecode/screens/calendar/components/calendar_month_view.dart';
 import 'package:ts_basecode/screens/calendar/components/event_list_item.dart';
+import 'package:ts_basecode/screens/main/models/main_tab.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 import 'package:ts_basecode/utilities/constants/text_constants.dart';
@@ -45,7 +46,7 @@ class _CalendarViewState
     WidgetsBinding.instance.addPostFrameCallback((_) => _onInitState());
 
     context.tabsRouter.addListener(() async {
-      if (context.tabsRouter.activeIndex == 0) {
+      if (context.tabsRouter.activeIndex == MainTab.calendar.index) {
         await viewModel.fetchData();
       }
     });
