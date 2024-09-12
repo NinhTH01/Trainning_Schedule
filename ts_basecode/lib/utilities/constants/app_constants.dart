@@ -1,6 +1,10 @@
 class AppConstants {
   AppConstants._();
 
+  static const userName = 'user1';
+
+  static const altUserName = 'user0';
+
   static const mmmmddFormat = 'MMMM dd';
 
   static const yyyyMMddHHmmssFormat = 'yyyy-MM-dd HH:mm:ss';

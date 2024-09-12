@@ -10,6 +10,7 @@ import 'package:ts_basecode/screens/map_route_edit/map_route_edit_screen.dart';
 import 'package:ts_basecode/screens/map_route_list/map_route_list_screen.dart';
 import 'package:ts_basecode/screens/map_route_map/map_route_map_screen.dart';
 import 'package:ts_basecode/screens/splash/splash_screen.dart';
+import 'package:ts_basecode/screens/user/user_screen.dart';
 import 'package:ts_basecode/screens/weather/weather_screen.dart';
 
 import '../data/models/storage/map_route/map_route_model.dart';
@@ -78,7 +79,18 @@ class AppRouter extends _$AppRouter {
               ),
               // inspection child page define here
             ],
-          )
+          ),
+          AutoRoute(
+            page: UserTabRoute.page,
+            path: 'userTab',
+            children: [
+              AutoRoute(
+                page: UserRoute.page,
+                path: '',
+              ),
+              // inspection child page define here
+            ],
+          ),
         ]),
       ];
 }
@@ -101,4 +113,9 @@ class WeatherTabPage extends AutoRouter {
 @RoutePage(name: 'MapRouteTabRoute')
 class MapRouteTabPage extends AutoRouter {
   const MapRouteTabPage({super.key});
+}
+
+@RoutePage(name: 'UserTabRoute')
+class UserTabPage extends AutoRouter {
+  const UserTabPage({super.key});
 }
