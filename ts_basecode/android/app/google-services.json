@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "503434259165",
+    "project_id": "realtime-mapping-2fb76",
+    "storage_bucket": "realtime-mapping-2fb76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503434259165:android:17342b60880379ac910934",
+        "android_client_info": {
+          "package_name": "com.example.ts_basecode"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAZFSMJ9jdubdCuv7QECAycaFSZabKMzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
