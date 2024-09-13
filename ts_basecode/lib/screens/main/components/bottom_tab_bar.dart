@@ -23,7 +23,7 @@ class BottomTabBar extends StatelessWidget {
           MainTab.map,
           MainTab.weather,
           MainTab.route,
-          MainTab.name
+          MainTab.race
         ].map((tab) {
           return TabBarItem(
             mainTab: tab,

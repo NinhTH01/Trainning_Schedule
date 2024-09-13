@@ -40,7 +40,7 @@ class _HomeViewState extends BaseViewState<MainScreen, MainViewModel> {
         MapTabRoute(),
         WeatherTabRoute(),
         MapRouteListRoute(),
-        UserTabRoute(),
+        RaceTabRoute(),
       ],
       resizeToAvoidBottomInset: true,
       bottomNavigationBuilder: (context, tabsRouter) {

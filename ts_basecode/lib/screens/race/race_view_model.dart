@@ -1,11 +1,11 @@
 import 'package:ts_basecode/components/base_view/base_view_model.dart';
 import 'package:ts_basecode/data/repositories/storage/shared_preferences/shared_preferences_repository.dart';
-import 'package:ts_basecode/screens/user/user_state.dart';
+import 'package:ts_basecode/screens/race/race_state.dart';
 
-class UserViewModel extends BaseViewModel<UserState> {
-  UserViewModel({
+class RaceViewModel extends BaseViewModel<RaceState> {
+  RaceViewModel({
     required this.sharedPreferencesRepository,
-  }) : super(const UserState());
+  }) : super(const RaceState());
 
   final SharedPreferencesRepository sharedPreferencesRepository;
 

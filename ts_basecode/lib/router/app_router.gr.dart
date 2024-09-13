@@ -95,22 +95,22 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const OnboardingScreen(),
       );
     },
+    RaceRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const RaceScreen(),
+      );
+    },
+    RaceTabRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const RaceTabPage(),
+      );
+    },
     SplashRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const SplashScreen(),
-      );
-    },
-    UserRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const UserScreen(),
-      );
-    },
-    UserTabRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const UserTabPage(),
       );
     },
     WeatherRoute.name: (routeData) {
@@ -366,6 +366,34 @@ class OnboardingRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [RaceScreen]
+class RaceRoute extends PageRouteInfo<void> {
+  const RaceRoute({List<PageRouteInfo>? children})
+      : super(
+          RaceRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'RaceRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [RaceTabPage]
+class RaceTabRoute extends PageRouteInfo<void> {
+  const RaceTabRoute({List<PageRouteInfo>? children})
+      : super(
+          RaceTabRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'RaceTabRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
 /// [SplashScreen]
 class SplashRoute extends PageRouteInfo<void> {
   const SplashRoute({List<PageRouteInfo>? children})
@@ -375,34 +403,6 @@ class SplashRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'SplashRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [UserScreen]
-class UserRoute extends PageRouteInfo<void> {
-  const UserRoute({List<PageRouteInfo>? children})
-      : super(
-          UserRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'UserRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [UserTabPage]
-class UserTabRoute extends PageRouteInfo<void> {
-  const UserTabRoute({List<PageRouteInfo>? children})
-      : super(
-          UserTabRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'UserTabRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

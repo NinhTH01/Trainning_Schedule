@@ -7,28 +7,28 @@ import 'package:ts_basecode/data/providers/shared_preferences_repository_provide
 import 'package:ts_basecode/data/services/global_map_manager/global_running_status_state.dart';
 import 'package:ts_basecode/resources/gen/colors.gen.dart';
 import 'package:ts_basecode/router/app_router.dart';
-import 'package:ts_basecode/screens/user/user_state.dart';
-import 'package:ts_basecode/screens/user/user_view_model.dart';
+import 'package:ts_basecode/screens/race/race_state.dart';
+import 'package:ts_basecode/screens/race/race_view_model.dart';
 import 'package:ts_basecode/utilities/constants/app_constants.dart';
 import 'package:ts_basecode/utilities/constants/app_text_styles.dart';
 
-final _provider = StateNotifierProvider.autoDispose<UserViewModel, UserState>(
-  (ref) => UserViewModel(
+final _provider = StateNotifierProvider.autoDispose<RaceViewModel, RaceState>(
+  (ref) => RaceViewModel(
     sharedPreferencesRepository: ref.watch(sharedPreferencesRepositoryProvider),
   ),
 );
 
 @RoutePage()
-class UserScreen extends BaseView {
-  const UserScreen({
+class RaceScreen extends BaseView {
+  const RaceScreen({
     super.key,
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _UserScreen();
+  ConsumerState<ConsumerStatefulWidget> createState() => _RaceScreen();
 }
 
-class _UserScreen extends BaseViewState<UserScreen, UserViewModel> {
+class _RaceScreen extends BaseViewState<RaceScreen, RaceViewModel> {
   final listName = [
     AppConstants.userName,
     AppConstants.altUserName,
@@ -54,7 +54,7 @@ class _UserScreen extends BaseViewState<UserScreen, UserViewModel> {
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) => null;
 
-  UserState get state => ref.watch(_provider);
+  RaceState get state => ref.watch(_provider);
 
   GlobalRunningStatusState get globalMapState =>
       ref.watch(globalRunningStatusManagerProvider);
@@ -63,10 +63,10 @@ class _UserScreen extends BaseViewState<UserScreen, UserViewModel> {
   bool get ignoreSafeAreaTop => true;
 
   @override
-  String get screenName => UserRoute.name;
+  String get screenName => RaceRoute.name;
 
   @override
-  UserViewModel get viewModel => ref.read(_provider.notifier);
+  RaceViewModel get viewModel => ref.read(_provider.notifier);
 
   @override
   Widget buildBody(BuildContext context) {
