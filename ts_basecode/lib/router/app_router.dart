@@ -47,7 +47,6 @@ class AppRouter extends _$AppRouter {
                 page: MapRoute.page,
                 path: '',
               ),
-              // inspection child page define here
             ],
           ),
           AutoRoute(
@@ -58,7 +57,6 @@ class AppRouter extends _$AppRouter {
                 page: WeatherRoute.page,
                 path: '',
               ),
-              // inspection child page define here
             ],
           ),
           AutoRoute(
@@ -88,7 +86,6 @@ class AppRouter extends _$AppRouter {
                 page: RaceRoute.page,
                 path: '',
               ),
-              // inspection child page define here
             ],
           ),
         ]),
