@@ -19,9 +19,14 @@ class DraggablePositionNotifier extends StateNotifier<Offset> {
     double x = newPosition.dx;
     double y = newPosition.dy;
 
-    x = x.clamp(0.0, screenWidth - viewWidth);
+    x = x.clamp(
+      0.0,
+      screenWidth - viewWidth,
+    );
     y = y.clamp(
-        0, screenHeight - topInset - viewHeight - bottomInset - tabBarHeight);
+      0.0,
+      screenHeight - topInset - viewHeight - bottomInset - tabBarHeight,
+    );
 
     state = Offset(x, y);
   }
