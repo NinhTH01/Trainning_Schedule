@@ -8,6 +8,7 @@ class UserLocation with _$UserLocation {
   const factory UserLocation({
     double? latitude,
     double? longitude,
+    // It's temporary, so refactor to use id in the future.
     String? name,
     @JsonKey(name: 'isFinished') bool? isFinished,
   }) = _UserLocation;
